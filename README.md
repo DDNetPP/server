@@ -1,5 +1,9 @@
 # server
-A template repo for the actual server
+A template repo for the actual server.
+
+Create a srv.txt file in the root if this repository and write the name of your server there.
+
+Only 1 line no spaces or special characters. It will be used for filenames and other stuff.
 
 ## Setup
 
@@ -19,6 +23,8 @@ git clone https://github.com/chillerbot/chillerbot-fc
 
 cd
 git clone https://github.com/DDNetPP/server my_server
+cd my_server
+echo "my_server" > srv.txt
 ```
 
 ## Run with debugger
