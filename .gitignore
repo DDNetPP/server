@@ -1,0 +1,12 @@
+srv.txt
+private.cfg
+local.cfg
+passwords.cfg
+password.cfg
+*.map
+*_srv
+*_srv_old
+*_srv_d
+*_srv_d_old
+chillerbotFC_*
+
