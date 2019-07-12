@@ -15,14 +15,15 @@ then
 fi
 
 srv=$(cat srv.txt)
+srv_bin="{$srv}_srv_d"
 
-if [ ! -f "$srv" ]
+if [ ! -f "$srv_bin" ]
 then
-    echo "Error: server binary '$srv' not found!"
+    echo "Error: server binary '$srv_bin' not found!"
     echo "make sure the binary and your current path match"
     echo "try ./github_update.sh to fetch the new binary"
     exit
 fi
 
-gdb --args ./${srv}_srv_d "logfile /home/$USER/git/TeeworldsLogs/$srv/logs/${srv}_$(date +%F_%H-%M-%S).log"
+gdb --args ./$srv_bin "logfile /home/$USER/git/TeeworldsLogs/$srv/logs/${srv}_$(date +%F_%H-%M-%S).log"
 
