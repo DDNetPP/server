@@ -21,14 +21,14 @@ function suc() {
 function check_deps() {
     if [ ! -f srv.txt ]
     then
-        err "Error: srv.txt not found."
+        err "srv.txt not found."
         err "make sure you are in the server directory and created a srv.txt with the name of the server."
         exit
     fi
 
     if [ ! -d /home/$USER/git/TeeworldsLogs ]
     then
-        err "Error: log path not found /home/$USER/git/TeeworldsLogs"
+        err "log path not found /home/$USER/git/TeeworldsLogs"
         err "make sure to create this folder"
         exit
     fi
@@ -39,7 +39,7 @@ function check_deps() {
 
     if [ ! -f "$srv_bin" ]
     then
-        err "Error: server binary '$srv_bin' not found!"
+        err "server binary '$srv_bin' not found!"
         err "make sure the binary and your current path match"
         echo "try ./github_update.sh to fetch the new binary"
     exit
@@ -47,7 +47,7 @@ function check_deps() {
 
     if [ ! -d "$logpath" ]
     then
-        err "Error: logpath '$logpath' not found!"
+        err "logpath '$logpath' not found!"
         echo ""
         log "do you want to create this directory? [y/N]"
         read -r -n 1 yn

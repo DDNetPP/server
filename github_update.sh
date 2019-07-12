@@ -11,7 +11,7 @@ source lib/lib.sh
 
 if [ ! -f srv.txt ]
 then
-    err "Error: srv.txt not found."
+    err "srv.txt not found."
     err "make sure you are in the server directory and created a srv.txt with the name of the server."
     exit
 fi
