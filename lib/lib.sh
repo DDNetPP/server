@@ -7,7 +7,6 @@ Yellow='\033[0;33m'
 
 function err() {
   echo -e "[${Red}error${Reset}] $1"
-  exit
 }
 
 function log() {
