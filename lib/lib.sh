@@ -40,7 +40,7 @@ function check_deps() {
     then
         err "server binary '$srv_bin' not found!"
         err "make sure the binary and your current path match"
-        echo "try ./github_update.sh to fetch the new binary"
+        err "try ./github_update.sh to fetch the new binary"
     exit
     fi
 
@@ -56,7 +56,7 @@ function check_deps() {
             log "stopped."
             exit
         fi
-        mkdir -p "$logpath"
+        mkdir "$logpath" && suc "starting server..."
     fi
 }
 
