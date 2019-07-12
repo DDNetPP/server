@@ -56,7 +56,7 @@ function check_deps() {
             log "stopped."
             exit
         fi
-        mkdir "$logpath" && suc "starting server..."
+        mkdir -p "$logpath" && suc "starting server..."
     fi
 }
 
