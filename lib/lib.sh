@@ -33,7 +33,7 @@ function check_deps() {
     fi
 
     srv=$(cat srv.txt)
-    srv_bin="{$srv}_srv_d"
+    srv_bin="${srv}_srv_d"
     logpath="/home/$USER/git/TeeworldsLogs/$srv/logs/"
 
     if [ ! -f "$srv_bin" ]
