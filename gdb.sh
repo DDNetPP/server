@@ -16,6 +16,7 @@ fi
 
 srv=$(cat srv.txt)
 srv_bin="{$srv}_srv_d"
+logpath="/home/$USER/git/TeeworldsLogs/$srv/logs/"
 
 if [ ! -f "$srv_bin" ]
 then
@@ -23,6 +24,21 @@ then
     echo "make sure the binary and your current path match"
     echo "try ./github_update.sh to fetch the new binary"
     exit
+fi
+
+if [ ! -d "$logpath" ]
+then
+    echo "Error: logpath '$logpath' not found!"
+    echo ""
+    echo "do you want to create this directory? [y/N]"
+    read -r -n 1 yn
+    echo ""
+    if [[ ! "$yn" =~ [yY] ]]
+    then
+        echo "stopped."
+        exit
+    fi
+    mkdir -p "$logpath"
 fi
 
 gdb --args ./$srv_bin "logfile /home/$USER/git/TeeworldsLogs/$srv/logs/${srv}_$(date +%F_%H-%M-%S).log"
