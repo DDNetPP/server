@@ -7,7 +7,21 @@ then
     exit
 fi
 
+if [ ! -d /home/$USER/git/TeeworldsLogs ]
+then
+    echo "Error: log path not found /home/$USER/git/TeeworldsLogs"
+    echo "make sure to create this folder"
+    exit
+fi
+
 srv=$(cat srv.txt)
 
-nohup ./${srv}_srv_d > ../git/TeeworldsLogs/$srv/logs/${srv}_$(date +%F_%H-%M-%S).log 2>&1 &
+if [ ! -f "$srv" ]
+then
+    echo "Error: server binary '$srv' not found!"
+    echo "make sure the binary and your current path match"
+    exit
+fi
+
+nohup ./${srv}_srv_d > /home/$USER/git/TeeworldsLogs/$srv/logs/${srv}_$(date +%F_%H-%M-%S).log 2>&1 &
 
