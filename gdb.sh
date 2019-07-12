@@ -20,6 +20,7 @@ if [ ! -f "$srv" ]
 then
     echo "Error: server binary '$srv' not found!"
     echo "make sure the binary and your current path match"
+    echo "try ./github_update.sh to fetch the new binary"
     exit
 fi
 
