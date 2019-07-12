@@ -13,8 +13,31 @@ function log() {
   echo -e "[${Yellow}*${Reset}] $1"
 }
 
+function wrn() {
+  echo -e "[${Yellow}!${Reset}] $1"
+}
+
 function suc() {
   echo -e "[${Green}+${Reset}] $1"
+}
+
+function check_cfg() {
+    if [ ! -f autoexec.cfg ]
+    then
+        wrn "autoexec.cfg not found!"
+        echo ""
+        log "do you want to create one from template? [y/N]"
+        read -r -n 1 yn
+        echo ""
+        if [[ ! "$yn" =~ [yY] ]]
+        then
+            log "skipping config..."
+            return
+        fi
+        log "editing template cfg..."
+        sed "s/SERVER_NAME/$srv/g" lib/autoexec.txt > autoexec.cfg
+        vi autoexec.cfg # TODO: make sure vi is installed
+    fi
 }
 
 function check_deps() {
@@ -44,9 +67,11 @@ function check_deps() {
     exit
     fi
 
+    check_cfg
+
     if [ ! -d "$logpath" ]
     then
-        err "logpath '$logpath' not found!"
+        wrn "logpath '$logpath' not found!"
         echo ""
         log "do you want to create this directory? [y/N]"
         read -r -n 1 yn

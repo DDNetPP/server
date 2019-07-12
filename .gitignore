@@ -1,8 +1,5 @@
 srv.txt
-private.cfg
-local.cfg
-passwords.cfg
-password.cfg
+*.cfg
 *.map
 *_srv
 *_srv_old

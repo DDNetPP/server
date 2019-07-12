@@ -1,0 +1,21 @@
+#===============================
+#=       DDraceNetwork++       =
+#===============================
+#
+# Official template config
+#
+# SERVERNAME: SERVER_NAME
+
+exec ../ddpp_database/cfg/SERVER_NAME.cfg
+
+sv_wrong_rcon_file "../git/TeeworldsLogs/SERVER_NAME/wrong_rcon.txt"
+sv_wrong_login_file "../git/TeeworldsLogs/SERVER_NAME/wrong_login.txt"
+
+sv_rcon_password "XXX"
+sv_rcon_mod_password "XXX"
+ec_port "XXX"
+ec_password "XXX"
+
+exec passwords.cfg
+exec local.cfg
+
