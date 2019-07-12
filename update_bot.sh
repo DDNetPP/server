@@ -40,9 +40,9 @@ then
     exit
 fi
 
-if [ ! -f ../bam/bam ]
+if [ ! -f /home/$USER/git/bam/bam ]
 then
-    echo "Path not found: ../bam/bam"
+    echo "Path not found: /home/$USER/bam/bam"
     echo "make sure to install bam into the /home/$USER/git directory"
     echo "$ cd"
     echo "$ cd git"
