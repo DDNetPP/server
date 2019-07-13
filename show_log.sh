@@ -9,11 +9,4 @@ fi
 
 source lib/lib.sh
 
-check_deps
-check_running
-
-logfile="$gitpath/TeeworldsLogs/$srv/logs/${srv}_$(date +%F_%H-%M-%S).log"
-
-gdb --args ./$srv_bin "logfile $logfile"
-
-show_log
+show_latest_logs

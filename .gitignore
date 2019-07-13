@@ -1,4 +1,5 @@
 srv.txt
+*.db
 *.cfg
 *.map
 *_srv

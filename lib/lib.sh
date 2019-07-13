@@ -25,6 +25,49 @@ function suc() {
   echo -e "[${Green}+${Reset}] $1"
 }
 
+function show_latest_logs() {
+    check_srvtxt
+    logpath="$gitpath/TeeworldsLogs/$srv/logs/"
+    if [ ! -d $logpath ]
+    then
+        err "logpath not found '$logpath'"
+        exit
+    fi
+    latest_log=$(ls $logpath | tail -n1)
+    latest_log="$logpath$latest_log"
+    log "latest log is '$latest_log'"
+    less $latest_log
+}
+
+function show_logs() {
+    log "do you want to show logs? [y/N]"
+    read -r -n 1 yn
+    echo ""
+    if [[ ! "$yn" =~ [yY] ]]
+    then
+        return
+    fi
+    if [ "$logfile" == "" ]
+    then
+        log "logfile not found."
+        log "do you want to show latest logs? [y/N]"
+        read -r -n 1 yn
+        echo ""
+        if [[ "$yn" =~ [yY] ]]
+        then
+            show_latest_logs
+            return
+        fi
+        exit
+    fi
+    if [ ! -f "$logfile" ]
+    then
+        err "logfile not found '$logfile'"
+        exit
+    fi
+    cat "$logfile"
+}
+
 function check_running() {
     if [ "$srv" == "" ]
     then
@@ -36,7 +79,6 @@ function check_running() {
         wrn "process with the same name is running already!"
         echo ""
         log "do you want to start anyways? [y/N]"
-        yn=""
         read -r -n 1 yn
         echo ""
         if [[ "$yn" =~ [yY] ]]
@@ -46,6 +88,55 @@ function check_running() {
         fi
         log "stopping..."
         exit
+    fi
+}
+
+function check_cfg() {
+    if [ ! -f autoexec.cfg ]
+    then
+        wrn "autoexec.cfg not found!"
+        echo ""
+        log "do you want to create one from template? [y/N]"
+        yn=""
+        read -r -n 1 yn
+        echo ""
+        if [[ ! "$yn" =~ [yY] ]]
+        then
+            log "skipping config..."
+            return
+        fi
+        log "editing template cfg..."
+        sed "s/SERVER_NAME/$srv/g" lib/autoexec.txt > autoexec.cfg
+        vi autoexec.cfg # TODO: make sure vi is installed
+    fi
+}
+
+function check_srvtxt() {
+    if [ ! -f srv.txt ]
+    then
+        err "srv.txt not found."
+        err "make sure you are in the server directory and created a srv.txt with the name of the server."
+        exit
+    fi
+    srv=$(cat srv.txt)
+}
+
+function check_gitpath() {
+    if [ ! -d "$gitpath" ]
+    then
+        err "git directory not found '$gitpath'"
+        echo ""
+        log "do you want to create one? [y/N]"
+        read -r -n 1 yn
+        echo ""
+        if [[ "$yn" =~ [yY] ]]
+        then
+            log "creating git directory..."
+            mkdir -p "$gitpath"
+        else
+            err "no git folder found. stopping..."
+            exit
+        fi
     fi
 }
 
@@ -82,57 +173,13 @@ function check_logdir() {
     fi
 }
 
-function check_cfg() {
-    if [ ! -f autoexec.cfg ]
-    then
-        wrn "autoexec.cfg not found!"
-        echo ""
-        log "do you want to create one from template? [y/N]"
-        yn=""
-        read -r -n 1 yn
-        echo ""
-        if [[ ! "$yn" =~ [yY] ]]
-        then
-            log "skipping config..."
-            return
-        fi
-        log "editing template cfg..."
-        sed "s/SERVER_NAME/$srv/g" lib/autoexec.txt > autoexec.cfg
-        vi autoexec.cfg # TODO: make sure vi is installed
-    fi
-}
-
 function check_deps() {
-    if [ ! -f srv.txt ]
-    then
-        err "srv.txt not found."
-        err "make sure you are in the server directory and created a srv.txt with the name of the server."
-        exit
-    fi
-
-    if [ ! -d "$gitpath" ]
-    then
-        err "git directory not found '$gitpath'"
-        echo ""
-        log "do you want to create one? [y/N]"
-        yn=""
-        read -r -n 1 yn
-        echo ""
-        if [[ "$yn" =~ [yY] ]]
-        then
-            log "creating git directory..."
-            mkdir -p "$gitpath"
-        else
-            err "no git folder found. stopping..."
-            exit
-        fi
-    fi
-
+    check_srvtxt
+    check_gitpath
     check_logdir
 
-    srv=$(cat srv.txt)
-    srv_bin="${srv}_srv_d"
     logpath="$gitpath/TeeworldsLogs/$srv/logs/"
+    srv_bin="${srv}_srv_d"
 
     if [ ! -f "$srv_bin" ]
     then
@@ -149,7 +196,6 @@ function check_deps() {
         wrn "logpath '$logpath' not found!"
         echo ""
         log "do you want to create this directory? [y/N]"
-        yn=""
         read -r -n 1 yn
         echo ""
         if [[ ! "$yn" =~ [yY] ]]
