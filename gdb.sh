@@ -12,8 +12,8 @@ source lib/lib.sh
 check_deps
 check_running
 
-logfile="$gitpath/TeeworldsLogs/$srv/logs/${srv}_$(date +%F_%H-%M-%S).log"
+logfile="$gitpath/TeeworldsLogs/$srv_name/logs/${srv_name}_$(date +%F_%H-%M-%S).log"
 
-gdb --args ./$srv_bin "logfile $logfile"
+gdb --args ./${srv}_srv_d "logfile $logfile"
 
 show_log

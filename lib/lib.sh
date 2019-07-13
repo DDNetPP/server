@@ -27,7 +27,7 @@ function suc() {
 
 function show_latest_logs() {
     check_srvtxt
-    logpath="$gitpath/TeeworldsLogs/$srv/logs/"
+    logpath="$gitpath/TeeworldsLogs/$srv_name/logs/"
     if [ ! -d $logpath ]
     then
         err "logpath not found '$logpath'"
@@ -69,12 +69,12 @@ function show_logs() {
 }
 
 function check_running() {
-    if [ "$srv" == "" ]
+    if [ "$srv_name" == "" ]
     then
         err "server name is empty"
         exit
     fi
-    if echo $psaux | grep $srv | grep -qv grep;
+    if echo $psaux | grep $srv_name | grep -qv grep;
     then
         wrn "process with the same name is running already!"
         echo ""
@@ -106,7 +106,7 @@ function check_cfg() {
             return
         fi
         log "editing template cfg..."
-        sed "s/SERVER_NAME/$srv/g" lib/autoexec.txt > autoexec.cfg
+        sed "s/SERVER_NAME/$srv_name/g" lib/autoexec.txt > autoexec.cfg
         vi autoexec.cfg # TODO: make sure vi is installed
     fi
 }
@@ -118,7 +118,8 @@ function check_srvtxt() {
         err "make sure you are in the server directory and created a srv.txt with the name of the server."
         exit
     fi
-    srv=$(cat srv.txt)
+    srv_name=$(cat srv.txt)
+    srv=bin/$srv_name
 }
 
 function check_gitpath() {
@@ -178,7 +179,7 @@ function check_deps() {
     check_gitpath
     check_logdir
 
-    logpath="$gitpath/TeeworldsLogs/$srv/logs/"
+    logpath="$gitpath/TeeworldsLogs/$srv_name/logs/"
     srv_bin="${srv}_srv_d"
 
     if [ ! -f "$srv_bin" ]

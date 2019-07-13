@@ -9,19 +9,12 @@ fi
 
 source lib/lib.sh
 
-if [ ! -f srv.txt ]
-then
-    err "srv.txt not found."
-    err "make sure you are in the server directory and created a srv.txt with the name of the server."
-    exit
-fi
-
-srv=$(cat srv.txt)
+check_srvtxt
 src_dir=$gitpath/DDNetPP;
 srv_dir=$(pwd)
 
 echo "]============== === == ="
-figlet $srv
+figlet $srv_name
 echo "]============== === == ="
 
 log "This script updates the ddnet++ repo and then moves the binary to the server dir."
@@ -59,9 +52,10 @@ git submodule update
 ./bam server_debug;
 
 cd $srv_dir
+mkdir -p bin
 if [ -f "${srv}_srv_d" ]
 then
-    echo "backup server..."
+    log "backup server..."
     mv ${srv}_srv_d ${srv}_srv_d_old;
 fi
 log "updating server..."

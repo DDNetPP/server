@@ -1,13 +1,16 @@
 #!/bin/bash
 
-if [ ! -f srv.txt ]
+if [ ! -f lib/lib.sh ]
 then
-    echo "Error: srv.txt not found."
-    echo "make sure you are in the server directory and created a srv.txt with the name of the server."
+    echo "Error: lib/lib.sh not found!"
+    echo "make sure you are in the root of the server repo"
     exit
 fi
 
-srv=$(cat srv.txt)
+source lib/lib.sh
+
+check_srvtxt
+
 
 pkill -f ./${srv}_srv_d
 
