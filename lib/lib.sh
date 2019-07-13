@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source lib/port.sh
+
 Reset='\033[0m'
 Red='\033[0;31m'
 Green='\033[0;32m'
@@ -206,5 +208,6 @@ function check_deps() {
         fi
         mkdir -p "$logpath" && suc "starting server..."
     fi
+    # check_port
 }
 
