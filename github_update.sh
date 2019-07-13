@@ -17,7 +17,7 @@ then
 fi
 
 srv=$(cat srv.txt)
-src_dir=/home/$USER/git/DDNetPP;
+src_dir=$gitpath/DDNetPP;
 srv_dir=$(pwd)
 
 echo "]============== === == ="
@@ -43,8 +43,7 @@ if [ ! -d $src_dir ]
 then
     err "Path not found: $src_dir"
     err "make sure to clone the repo to this path"
-    err "$ cd"
-    err "$ mkdir git && cd git"
+    err "$ cd $gitpath"
     err "$ git clone --recursive https://github.com/DDNetPP/DDNetPP"
     exit
 fi

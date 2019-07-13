@@ -7,6 +7,8 @@ Yellow='\033[0;33m'
 
 psaux=$(ps aux)
 
+gitpath=/home/$USER/git
+
 function err() {
   echo -e "[${Red}error${Reset}] $1"
 }
@@ -37,7 +39,7 @@ function check_running() {
         yn=""
         read -r -n 1 yn
         echo ""
-        if [[ ! "$yn" =~ [yY] ]]
+        if [[ "$yn" =~ [yY] ]]
         then
             log "ignoring duplicated process..."
             return
@@ -75,16 +77,34 @@ function check_deps() {
         exit
     fi
 
-    if [ ! -d /home/$USER/git/TeeworldsLogs ]
+    if [ ! -d "$gitpath" ]
     then
-        err "log path not found /home/$USER/git/TeeworldsLogs"
+        err "git directory not found '$gitpath'"
+        echo ""
+        log "do you want to create one? [y/N]"
+        yn=""
+        read -r -n 1 yn
+        echo ""
+        if [[ "$yn" =~ [yY] ]]
+        then
+            log "creating git directory..."
+            mkdir -p "$gitpath"
+        else
+            err "no git folder found. stopping..."
+            exit
+        fi
+    fi
+
+    if [ ! -d "$gitpath/TeeworldsLogs" ]
+    then
+        err "log path not found '$gitpath/TeeworldsLogs'"
         err "make sure to create this folder"
         exit
     fi
 
     srv=$(cat srv.txt)
     srv_bin="${srv}_srv_d"
-    logpath="/home/$USER/git/TeeworldsLogs/$srv/logs/"
+    logpath="$gitpath/TeeworldsLogs/$srv/logs/"
 
     if [ ! -f "$srv_bin" ]
     then
