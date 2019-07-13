@@ -3,6 +3,7 @@
 source lib/logger.sh
 source lib/port.sh
 source lib/sid.sh
+source lib/deps.sh
 
 psaux=$(ps aux)
 gitpath=/home/$USER/git
