@@ -10,6 +10,7 @@ fi
 source lib/lib.sh
 
 check_deps
+check_running
 
 gdb --args ./$srv_bin "logfile /home/$USER/git/TeeworldsLogs/$srv/logs/${srv}_$(date +%F_%H-%M-%S).log"
 

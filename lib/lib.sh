@@ -5,6 +5,8 @@ Red='\033[0;31m'
 Green='\033[0;32m'
 Yellow='\033[0;33m'
 
+psaux=$(ps aux)
+
 function err() {
   echo -e "[${Red}error${Reset}] $1"
 }
@@ -21,12 +23,37 @@ function suc() {
   echo -e "[${Green}+${Reset}] $1"
 }
 
+function check_running() {
+    if [ "$srv" == "" ]
+    then
+        err "server name is empty"
+        exit
+    fi
+    if echo $psaux | grep $srv | grep -qv grep;
+    then
+        wrn "process with the same name is running already!"
+        echo ""
+        log "do you want to start anyways? [y/N]"
+        yn=""
+        read -r -n 1 yn
+        echo ""
+        if [[ ! "$yn" =~ [yY] ]]
+        then
+            log "ignoring duplicated process..."
+            return
+        fi
+        log "stopping..."
+        exit
+    fi
+}
+
 function check_cfg() {
     if [ ! -f autoexec.cfg ]
     then
         wrn "autoexec.cfg not found!"
         echo ""
         log "do you want to create one from template? [y/N]"
+        yn=""
         read -r -n 1 yn
         echo ""
         if [[ ! "$yn" =~ [yY] ]]
@@ -74,6 +101,7 @@ function check_deps() {
         wrn "logpath '$logpath' not found!"
         echo ""
         log "do you want to create this directory? [y/N]"
+        yn=""
         read -r -n 1 yn
         echo ""
         if [[ ! "$yn" =~ [yY] ]]
