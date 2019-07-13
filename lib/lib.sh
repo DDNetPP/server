@@ -49,6 +49,39 @@ function check_running() {
     fi
 }
 
+function check_logdir() {
+    if [ -d "$gitpath/TeeworldsLogs" ]
+    then
+        return # log path found all fine
+    fi
+    err "log path not found '$gitpath/TeeworldsLogs'"
+    log "do you want to create this directory? [y/N]"
+    yn=""
+    read -r -n 1 yn
+    echo ""
+    if [[ "$yn" =~ [yY] ]]
+    then
+        mkdir "$gitpath/TeeworldsLogs"
+    else
+        log "Are you ChillerDragon?"
+        log "Then you can clone https://github.com/ChillerDragon/TeeworldsLogs"
+        log "do you want to clone logs repo? [y/N]"
+        yn=""
+        read -r -n 1 yn
+        echo ""
+        if [[ "$yn" =~ [yY] ]]
+        then
+            git clone https://github.com/ChillerDragon/TeeworldsLogs $gitpath/TeeworldsLogs
+        fi
+    fi
+    # make sure the cloning worked
+    if [ ! -d "$gitpath/TeeworldsLogs" ]
+    then
+        err "logs path not found."
+        exit
+    fi
+}
+
 function check_cfg() {
     if [ ! -f autoexec.cfg ]
     then
@@ -95,12 +128,7 @@ function check_deps() {
         fi
     fi
 
-    if [ ! -d "$gitpath/TeeworldsLogs" ]
-    then
-        err "log path not found '$gitpath/TeeworldsLogs'"
-        err "make sure to create this folder"
-        exit
-    fi
+    check_logdir
 
     srv=$(cat srv.txt)
     srv_bin="${srv}_srv_d"

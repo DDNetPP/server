@@ -42,10 +42,15 @@ fi
 if [ ! -d $src_dir ]
 then
     err "Path not found: $src_dir"
-    err "make sure to clone the repo to this path"
-    err "$ cd $gitpath"
-    err "$ git clone --recursive https://github.com/DDNetPP/DDNetPP"
-    exit
+    log "do you want to fetch a fresh source? [y/N]"
+    read -r -n 1 yn
+    echo ""
+    if [[ ! "$yn" =~ [yY] ]]
+    then
+        err "Source path not found. Stopping..."
+        exit
+    fi
+    git clone --recursive https://github.com/DDNetPP/DDNetPP $gitpath/DDNetPP
 fi
 
 cd $src_dir
