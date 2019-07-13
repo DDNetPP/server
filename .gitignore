@@ -1,7 +1,9 @@
 srv.txt
+server_id.txt
 *.db
 *.cfg
 *.map
+*.log
 *_srv
 *_srv_old
 *_srv_d

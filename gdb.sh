@@ -11,9 +11,9 @@ source lib/lib.sh
 
 check_deps
 check_running
+get_sid
 
 logfile="$gitpath/TeeworldsLogs/$srv_name/logs/${srv_name}_$(date +%F_%H-%M-%S).log"
 
-gdb --args ./${srv}_srv_d "logfile $logfile"
+gdb --args ./${srv}_srv_d "logfile $logfile;#sid:$server_id"
 
-show_log
