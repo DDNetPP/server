@@ -1,6 +1,7 @@
 srv.txt
 server_id.txt
 *.db
+*.dtb
 *.cfg
 *.map
 *.log
@@ -10,4 +11,5 @@ server_id.txt
 *_srv_d_old
 chillerbotFC_*
 bin/
+records/
 
