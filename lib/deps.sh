@@ -1,5 +1,47 @@
 #!/bin/bash
 
+bam_bin=""
+
+function install_bam() {
+    if [ ! -d $gitpath/bam ]
+    then
+        err "Path not found: $gitpath/bam"
+        log "do you want to fetch a fresh source? [y/N]"
+        read -r -n 1 yn
+        echo ""
+        if [[ ! "$yn" =~ [yY] ]]
+        then
+            err "Bam path not found. Stopping..."
+            exit
+        fi
+        git clone https://github.com/matricks/bam $gitpath/bam
+    fi
+    if [ ! -f $gitpath/bam/bam ]
+    then
+        wrn "Executable not found: $gitpath/bam/bam"
+        log "building bam from source..."
+        cd $gitpath/bam
+        ./make_unix.sh
+        r=$?;
+        log "build finished with exit code $r"
+        if [ $r -ne 0 ]
+        then
+            err "bam build failed!"
+            err "stopping."
+            exit
+        fi
+    fi
+    bam_bin="$gitpath/bam/bam"
+}
+
+function check_bam() {
+    command -v bam >/dev/null 2>&1 || {
+        install_bam
+        return;
+    }
+    bam_bin=bam # bam in path
+}
+
 function install_brew() {
     command -v brew >/dev/null 2>&1 || {
         wrn "to install figlet you need brew"

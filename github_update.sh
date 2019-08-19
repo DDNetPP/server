@@ -46,10 +46,12 @@ then
     git clone --recursive https://github.com/DDNetPP/DDNetPP $gitpath/DDNetPP
 fi
 
+check_bam
+
 cd $src_dir
 git pull;
 git submodule update
-./bam server_debug;
+$bam_bin server_debug;
 
 cd $srv_dir
 mkdir -p bin

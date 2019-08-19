@@ -1,12 +1,12 @@
 #!/bin/bash
 
+psaux=$(ps aux)
+gitpath=/home/$USER/git
+
 source lib/logger.sh
 source lib/port.sh
 source lib/sid.sh
 source lib/deps.sh
-
-psaux=$(ps aux)
-gitpath=/home/$USER/git
 
 function show_latest_logs() {
     check_srvtxt
