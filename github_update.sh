@@ -13,6 +13,12 @@ check_srvtxt
 src_dir=$gitpath/DDNetPP;
 srv_dir=$(pwd)
 
+yes_flag=0
+if [ "$1" == "-y" ] || [ "$1" == "-yes" ]
+then
+    yes_flag=1
+fi
+
 echo "]============== === == ="
 figlet $srv_name
 echo "]============== === == ="
@@ -23,7 +29,11 @@ log "server: $srv_dir/${srv}_srv_d"
 log "Server keeps running."
 echo ""
 log "do you want to update? [y/N]"
-read -r -n 1 yn
+yn=Y
+if [ $yes_flag -eq 0 ]
+then
+    read -r -n 1 yn
+fi
 echo ""
 
 if [[ ! "$yn" =~ [yY] ]]
@@ -36,7 +46,11 @@ if [ ! -d $src_dir ]
 then
     err "Path not found: $src_dir"
     log "do you want to fetch a fresh source? [y/N]"
-    read -r -n 1 yn
+    yn=Y
+    if [ $yes_flag -eq 0 ]
+    then
+        read -r -n 1 yn
+    fi
     echo ""
     if [[ ! "$yn" =~ [yY] ]]
     then
@@ -65,7 +79,11 @@ cp $src_dir/DDNetPP_d ${srv}_srv_d;
 
 echo ""
 log "do you also want to update maps? [y/N]"
-read -r -n 1 yn
+yn=Y
+if [ $yes_flag -eq 0 ]
+then
+    read -r -n 1 yn
+fi
 echo ""
 
 if [[ ! "$yn" =~ [yY] ]]
