@@ -1,5 +1,6 @@
 srv.txt
 server_id.txt
+*_playerdata.dat
 *.db
 *.dtb
 *.cfg
