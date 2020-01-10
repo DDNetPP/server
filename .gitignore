@@ -1,5 +1,13 @@
 srv.txt
 server_id.txt
+announcements.txt
+bt.txt
+build.txt
+crashes.txt
+log_gdb.txt
+paste.txt
+raw_build.txt
+raw_gdb.txt
 *_playerdata.dat
 *.db
 *.dtb
@@ -15,3 +23,4 @@ bin/
 data/
 maps/
 records/
+tags
