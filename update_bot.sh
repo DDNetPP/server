@@ -6,8 +6,14 @@ then
     echo "make sure you are in the server directory and created a srv.txt with the name of the server."
     exit
 fi
-
-srv=$(cat srv.txt)
+srvlines="$(wc -l srv.txt | cut -d ' ' -f1)"
+if [ "$srvlines" != "2" ]
+then
+    err "srv.txt invalid line amount '$srvlines' != '2'"
+    err "make sure first line is server name and second git path"
+    exit 1
+fi
+srv="$(head -n1 srv.txt)"
 src_dir=/home/$USER/git/chillerbot-fc;
 srv_dir=$(pwd)
 

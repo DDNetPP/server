@@ -99,9 +99,17 @@ function check_srvtxt() {
     then
         err "srv.txt not found."
         err "make sure you are in the server directory and created a srv.txt with the name of the server."
-        exit
+        exit 1
     fi
-    srv_name=$(cat srv.txt)
+    srvlines="$(wc -l srv.txt | cut -d ' ' -f1)"
+    if [ "$srvlines" != "2" ]
+    then
+        err "srv.txt invalid line amount '$srvlines' != '2'"
+        err "make sure first line is server name and second git path"
+        exit 1
+    fi
+    srv_name="$(head -n1 srv.txt)"
+    gitpath="$(tail -n1 srv.txt)"
     srv=bin/$srv_name
 }
 
