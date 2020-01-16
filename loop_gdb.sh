@@ -19,14 +19,14 @@ do
     # filter out the thread spam
     grep -v '^\[New Thread' raw_gdb.txt | grep -v '^\[Thread' > tmp_gdb.txt
     mv tmp_gdb.txt raw_gdb.txt
-    cat raw_gdb.txt | ./echo_pipe.sh >> bt.txt
+    cat raw_gdb.txt | ./lib/echo_pipe.sh >> bt.txt
     cat raw_gdb.txt >> log_gdb.txt
     rm raw_gdb.txt
     echo "echo 'crash or shutdown $ts'" >> crashes.txt
-    ./update.sh 2>&1 > raw_build.txt
+    ./cmake_update.sh 2>&1 > raw_build.txt
     url="$(cstd raw_build.txt)"
     echo "echo $url" > paste.txt
-    cat raw_build.txt | ./echo_pipe.sh > build.txt
+    cat raw_build.txt | ./lib/echo_pipe.sh > build.txt
     echo "git status - $(date)" > status.txt
     git status 2>&1 >> status.txt
     sleep 5
