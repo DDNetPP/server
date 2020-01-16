@@ -8,6 +8,7 @@ log_gdb.txt
 paste.txt
 raw_build.txt
 raw_gdb.txt
+status.txt
 *_playerdata.dat
 *.db
 *.dtb
