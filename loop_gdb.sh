@@ -1,5 +1,27 @@
 #!/bin/bash
 
+function del_file() {
+    local file="$1"
+    if [ -f "$file" ]
+    then
+        echo "[!] deleting file '$file' ..."
+        rm "$file"
+    fi
+}
+
+if [ "$1" == "--clear" ]
+then
+    echo "clearing data ..."
+    del_file crashes.txt
+    del_file tmp_gdb.txt
+    del_file paste.txt
+    del_file build.txt
+    del_file log_gdb.txt
+    del_file status.txt
+    del_file raw_build.txt
+    exit
+fi
+
 srv_name=fddrace
 
 logfile=TeeworldsLogs/$srv_name/logs/${srv_name}_$(date +%F_%H-%M-%S).log
