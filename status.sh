@@ -9,9 +9,7 @@ fi
 
 source lib/lib.sh
 
-check_srvtxt
 get_sid
-
 
 if echo $psaux | grep $server_id | grep -qv grep;
 then

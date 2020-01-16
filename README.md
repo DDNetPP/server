@@ -1,10 +1,6 @@
 # server
 A template repo for the actual server.
 
-Create a srv.txt file in the root if this repository and write the name of your server there.
-
-Only 1 line no spaces or special characters. It will be used for filenames and other stuff.
-
 ## Setup
 
 ```
@@ -24,7 +20,19 @@ git clone https://github.com/chillerbot/chillerbot-fc
 cd
 git clone https://github.com/DDNetPP/server my_server
 cd my_server
-echo "my_server" > srv.txt
+```
+
+## config
+
+during the setup you will be asked to create a ``server.cnf``
+
+```
+# DDNet++ server config by ChillerDragon
+# https://github.com/DDNetPP/server
+gitpath_src=/home/chiller/git
+gitpath_mod=/home/chiller/git/teeworlds
+gitpath_log=/home/chiller/.teeworlds/dumps
+server_name=fly
 ```
 
 ## Run with debugger

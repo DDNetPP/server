@@ -7,10 +7,10 @@ source lib/logger.sh
 source lib/port.sh
 source lib/sid.sh
 source lib/deps.sh
+source lib/settings.sh
 
 function show_latest_logs() {
-    check_srvtxt
-    logpath="$gitpath/TeeworldsLogs/$srv_name/logs/"
+    logpath="$gitpath_log/TeeworldsLogs/$srv_name/logs/"
     if [ ! -d $logpath ]
     then
         err "logpath not found '$logpath'"
@@ -94,57 +94,53 @@ function check_cfg() {
     fi
 }
 
-function check_srvtxt() {
-    if [ ! -f srv.txt ]
+function check_directory() {
+    local dir="$1"
+    if [ ! -d "$dir" ]
     then
-        err "srv.txt not found."
-        err "make sure you are in the server directory and created a srv.txt with the name of the server."
-        exit 1
-    fi
-    srvlines="$(wc -l srv.txt | cut -d ' ' -f1)"
-    if [ "$srvlines" != "2" ]
-    then
-        err "srv.txt invalid line amount '$srvlines' != '2'"
-        err "make sure first line is server name and second git path"
-        exit 1
-    fi
-    srv_name="$(head -n1 srv.txt)"
-    gitpath="$(tail -n1 srv.txt)"
-    srv=bin/$srv_name
-}
-
-function check_gitpath() {
-    if [ ! -d "$gitpath" ]
-    then
-        err "git directory not found '$gitpath'"
+        err "directory not found '$dir'"
         echo ""
         log "do you want to create one? [y/N]"
         read -r -n 1 yn
         echo ""
         if [[ "$yn" =~ [yY] ]]
         then
-            log "creating git directory..."
-            mkdir -p "$gitpath"
+            log "creating '$dir' directory..."
+            mkdir -p "$dir"
         else
-            err "no git folder found. stopping..."
-            exit
+            err "no '$dir' folder found. stopping..."
+            exit 1
         fi
     fi
 }
 
+function check_gitpath() {
+    if [ "$gitpath_mod" == "" ]
+    then
+        err "gitpath mod is empty"
+        exit 1
+    elif [ "$gitpath_log" == "" ]
+    then
+        err "gitpath log is empty"
+        exit 1
+    fi
+    check_directory "$gitpath_mod"
+    check_directory "$gitpath_log"
+}
+
 function check_logdir() {
-    if [ -d "$gitpath/TeeworldsLogs" ]
+    if [ -d "$gitpath_log/TeeworldsLogs" ]
     then
         return # log path found all fine
     fi
-    err "log path not found '$gitpath/TeeworldsLogs'"
+    err "log path not found '$gitpath_log/TeeworldsLogs'"
     log "do you want to create this directory? [y/N]"
     yn=""
     read -r -n 1 yn
     echo ""
     if [[ "$yn" =~ [yY] ]]
     then
-        mkdir "$gitpath/TeeworldsLogs"
+        mkdir "$gitpath_log/TeeworldsLogs"
     else
         log "Are you ChillerDragon?"
         log "Then you can clone https://github.com/ChillerDragon/TeeworldsLogs"
@@ -154,11 +150,11 @@ function check_logdir() {
         echo ""
         if [[ "$yn" =~ [yY] ]]
         then
-            git clone https://github.com/ChillerDragon/TeeworldsLogs $gitpath/TeeworldsLogs
+            git clone https://github.com/ChillerDragon/TeeworldsLogs $gitpath_log/TeeworldsLogs
         fi
     fi
     # make sure the cloning worked
-    if [ ! -d "$gitpath/TeeworldsLogs" ]
+    if [ ! -d "$gitpath_log/TeeworldsLogs" ]
     then
         err "logs path not found."
         exit
@@ -166,11 +162,10 @@ function check_logdir() {
 }
 
 function check_deps() {
-    check_srvtxt
     check_gitpath
     check_logdir
 
-    logpath="$gitpath/TeeworldsLogs/$srv_name/logs/"
+    logpath="$gitpath_log/TeeworldsLogs/$srv_name/logs/"
     srv_bin="${srv}_srv_d"
 
     if [ ! -f "$srv_bin" ]

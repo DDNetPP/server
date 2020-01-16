@@ -13,6 +13,7 @@ status.txt
 *.db
 *.dtb
 *.cfg
+*.cnf
 *.map
 *.log
 *_srv

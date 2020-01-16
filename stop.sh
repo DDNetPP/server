@@ -9,7 +9,6 @@ fi
 
 source lib/lib.sh
 
-check_srvtxt
 get_sid
 
 
@@ -35,7 +34,7 @@ then
     echo ""
     if [[ "$yn" =~ [yY] ]]
     then
-        pkill -f ./${srv_name}_srv_d
+        pkill -f "./${srv_name}_srv_d"
         log "stopped all proccesses."
     else
         log "aborting stop script."

@@ -9,9 +9,8 @@ fi
 
 source lib/lib.sh
 
-check_srvtxt
-src_dir=$gitpath/DDNetPP;
-srv_dir=$(pwd)
+src_dir="$gitpath_src/DDNetPP"
+srv_dir="$(pwd)"
 
 yes_flag=0
 if [ "$1" == "-y" ] || [ "$1" == "-yes" ]
@@ -20,7 +19,7 @@ then
 fi
 
 echo "]============== === == ="
-figlet $srv_name
+figlet "$srv_name"
 echo "]============== === == ="
 
 log "This script updates the ddnet++ repo and then moves the binary to the server dir."
@@ -42,7 +41,7 @@ then
     exit
 fi
 
-if [ ! -d $src_dir ]
+if [ ! -d "$src_dir" ]
 then
     err "Path not found: $src_dir"
     log "do you want to fetch a fresh source? [y/N]"
@@ -57,17 +56,17 @@ then
         err "Source path not found. Stopping..."
         exit
     fi
-    git clone --recursive https://github.com/DDNetPP/DDNetPP $gitpath/DDNetPP
+    git clone --recursive https://github.com/DDNetPP/DDNetPP "$gitpath_src/DDNetPP"
 fi
 
 check_bam
 
-cd $src_dir
+cd "$src_dir" || exit 1
 git pull;
 git submodule update
 $bam_bin server_debug;
 
-cd $srv_dir
+cd "$srv_dir" || exit 1
 mkdir -p bin
 if [ -f "${srv}_srv_d" ]
 then
