@@ -49,8 +49,8 @@ do
     url="$(cstd raw_build.txt)"
     echo "echo $url" > paste.txt
     cat raw_build.txt | ./lib/echo_pipe.sh > build.txt
-    echo "git status - $(date)" > status.txt
-    git status 2>&1 >> status.txt
+    echo "git status - $(date)" | ./lib/echo_pipe.sh > status.txt
+    git status 2>&1 | ./lib/echo_pipe.sh >> status.txt
     sleep 5
 done
 
