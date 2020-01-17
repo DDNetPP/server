@@ -23,3 +23,11 @@ make -j6
 mv teeworlds_srv $cwd/bin/${srv_name}_srv_d
 cp data/maps/*.map $cwd/maps
 
+cd "$cwd" || exit 1
+if [[ -d cfg/ ]] && [[ -d cfg/.git ]]
+then
+    log "found config directory cfg/"
+    log "updating configs ..."
+    cd cfg || exit 1
+    git pull
+fi
