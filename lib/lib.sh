@@ -18,7 +18,13 @@ function show_latest_logs() {
     fi
     latest_log=$(ls $logpath | tail -n1)
     latest_log="$logpath$latest_log"
-    log "latest log is '$latest_log'"
+    if [ ! -f $latest_log ]
+    then
+        wrn "there are no logfiles yet."
+        exit 1
+    fi
+    log "showing latest logfile:"
+    echo $latest_log
     less $latest_log
 }
 
