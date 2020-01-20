@@ -19,8 +19,16 @@ git pull
 mkdir -p build || { echo "Error: creating dir build/"; exit 1; }
 cd build
 cmake .. -DCMAKE_BUILD_TYPE=Debug
-make -j6
-mv teeworlds_srv $cwd/bin/${srv_name}_srv_d
+make -j6 || { err "build failed."; exit 1; }
+if [ ! -f "$binary_name" ]
+then
+    err "Binary not found is your config correct?"
+    err "Expected binary name '$binary_name'"
+    err "and only found those files:"
+    ls
+    exit 1
+fi
+mv "$binary_name" $cwd/bin/${srv_name}_srv_d
 cp data/maps/*.map $cwd/maps
 
 cd "$cwd" || exit 1
@@ -31,3 +39,4 @@ then
     cd cfg || exit 1
     git pull
 fi
+

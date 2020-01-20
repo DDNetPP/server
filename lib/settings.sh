@@ -7,6 +7,7 @@ aSettStr+=("gitpath_src");aSettVal+=("/home/chiller/git")
 aSettStr+=("gitpath_mod");aSettVal+=("/home/chiller/git/mod")
 aSettStr+=("gitpath_log");aSettVal+=("/home/chiller/.teeworlds/dumps")
 aSettStr+=("server_name");aSettVal+=("teeworlds")
+aSettStr+=("binary_name");aSettVal+=("teeworlds_srv")
 
 function create_settings() {
     if [ -f $settings_file ];
@@ -92,10 +93,12 @@ read_settings_file
 # - gitpath mod     1
 # - gitpath log     2
 # - server name     3
+# - binary name     4
 
 export gitpath_src="${aSettVal[0]}"
 export gitpath_mod="${aSettVal[1]}"
 export gitpath_log="${aSettVal[2]}"
 export srv_name="${aSettVal[3]}"
+export binary_name="${aSettVal[4]}"
 export srv=bin/$srv_name
 
