@@ -61,6 +61,9 @@ function check_running() {
     then
         wrn "process with the same name is running already!"
         echo ""
+        log "+-------] running proccesses [--------+"
+        ps axo cmd | grep $srv_name | grep -v "grep"
+        log "+-------------------------------------+"
         log "do you want to start anyways? [y/N]"
         read -r -n 1 yn
         echo ""

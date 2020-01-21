@@ -26,7 +26,7 @@ then
     log "other proccesses containing '$srv_name' were found."
     log "you can stop them all."
     log "but keep it mind it could stop any application on your server not only tw server"
-    log "+-------] running proccesses[--------+"
+    log "+-------] running proccesses [--------+"
     ps axo cmd | grep $srv_name | grep -v "grep"
     log "+------------------------------------+"
     log "do you want to stop them all? [y/N]"
