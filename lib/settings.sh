@@ -1,4 +1,5 @@
 #!/bin/bash
+shopt -s extglob # used for trailing slashes globbing
 
 # init variables
 settings_file="server.cnf"
@@ -39,7 +40,7 @@ function parse_settings_line() {
         do
             if  [ "$sett" == "${aSettStr[$i]}" ]
             then
-                printf "[setting] (%s)%-16s=  %s\n" "$i" "$sett" "$val"
+                printf "[setting] (%s)%-16s=  %s\\n" "$i" "$sett" "$val"
                 if [[ "${aSettStr[$i]}" =~ path ]]
                 then
                     val="${val%%+(/)}" # strip trailing slash
@@ -101,4 +102,20 @@ export gitpath_log="${aSettVal[2]}"
 export srv_name="${aSettVal[3]}"
 export binary_name="${aSettVal[4]}"
 export srv=bin/$srv_name
+
+gitpath_log="${gitpath_log%%+(/)}" # strip trailing slash
+logroot="$gitpath_log/TeeworldsLogs"
+is_dumps_logpath=0
+
+if [[ $gitpath_log =~ \.teeworlds/dumps ]]
+then
+    log "detected 0.7 logpath"
+    logroot="TeeworldsLogs"
+    is_dumps_logpath=1
+    # only use the relative part starting from dumps dir
+    # gitpath_log_tw="${gitpath_log_tw##*.teeworlds/dumps/}"
+fi
+
+export is_dumps_logpath
+export logroot
 

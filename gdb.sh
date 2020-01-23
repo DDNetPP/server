@@ -13,7 +13,7 @@ check_deps
 check_running
 get_sid
 
-logfile="$gitpath_log/TeeworldsLogs/$srv_name/logs/${srv_name}_$(date +%F_%H-%M-%S).log"
+logfile="$logroot/$srv_name/logs/${srv_name}_$(date +%F_%H-%M-%S).log"
 
 gdb --args ./${srv}_srv_d "logfile $logfile;#sid:$server_id"
 
