@@ -9,7 +9,16 @@ function del_file() {
     fi
 }
 
-if [ "$1" == "--clear" ]
+if [ "$1" == "--help" ] || [ "$1" == "-h" ]
+then
+    echo "usage: $(basename "$0")"
+    echo "parameters:"
+    echo "--clear       deletes all tmp txt files"
+    echo "description:"
+    echo "runs server with gdb"
+    echo "on crash saves backtrace to file and restarts"
+    exit
+elif [ "$1" == "--clear" ]
 then
     echo "clearing data ..."
     del_file crashes.txt
