@@ -10,7 +10,7 @@ source lib/include/deps.sh
 source lib/include/settings.sh
 
 function show_latest_logs() {
-    logpath="$gitpath_log/TeeworldsLogs/$srv_name/logs/"
+    logpath="$gitpath_log/$srv_name/logs/"
     if [ ! -d $logpath ]
     then
         err "logpath not found '$logpath'"
@@ -138,35 +138,24 @@ function check_gitpath() {
 }
 
 function check_logdir() {
-    if [ -d "$gitpath_log/TeeworldsLogs" ]
+    if [ -d "$gitpath_log" ]
     then
         return # log path found all fine
     fi
-    err "log path not found '$gitpath_log/TeeworldsLogs'"
+    err "log path not found '$gitpath_log'"
     log "do you want to create this directory? [y/N]"
     yn=""
     read -r -n 1 yn
     echo ""
     if [[ "$yn" =~ [yY] ]]
     then
-        mkdir "$gitpath_log/TeeworldsLogs"
-    else
-        log "Are you ChillerDragon?"
-        log "Then you can clone https://github.com/ChillerDragon/TeeworldsLogs"
-        log "do you want to clone logs repo? [y/N]"
-        yn=""
-        read -r -n 1 yn
-        echo ""
-        if [[ "$yn" =~ [yY] ]]
-        then
-            git clone https://github.com/ChillerDragon/TeeworldsLogs $gitpath_log/TeeworldsLogs
-        fi
+        mkdir "$gitpath_log/"
     fi
-    # make sure the cloning worked
-    if [ ! -d "$gitpath_log/TeeworldsLogs" ]
+    # make sure everything
+    if [ ! -d "$gitpath_log/" ]
     then
         err "logs path not found."
-        exit
+        exit 1
     fi
 }
 
@@ -174,7 +163,7 @@ function check_deps() {
     check_gitpath
     check_logdir
 
-    logpath="$gitpath_log/TeeworldsLogs/$srv_name/logs/"
+    logpath="$gitpath_log/$srv_name/logs/"
     srv_bin="${srv}_srv_d"
 
     if [ ! -f "$srv_bin" ]

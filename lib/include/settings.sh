@@ -6,7 +6,7 @@ settings_file="server.cnf"
 aSettStr=();aSettVal=()
 aSettStr+=("gitpath_src");aSettVal+=("/home/chiller/git")
 aSettStr+=("gitpath_mod");aSettVal+=("/home/chiller/git/mod")
-aSettStr+=("gitpath_log");aSettVal+=("/home/chiller/.teeworlds/dumps")
+aSettStr+=("gitpath_log");aSettVal+=("/home/chiller/.teeworlds/dumps/TeeworldsLogs")
 aSettStr+=("server_name");aSettVal+=("teeworlds")
 aSettStr+=("binary_name");aSettVal+=("teeworlds_srv")
 
@@ -104,16 +104,32 @@ export binary_name="${aSettVal[4]}"
 export srv=bin/$srv_name
 
 gitpath_log="${gitpath_log%%+(/)}" # strip trailing slash
-logroot="$gitpath_log/TeeworldsLogs"
+logroot="$gitpath_log"
 is_dumps_logpath=0
+
+if [ "$gitpath_log" == "" ]
+then
+    err "[setting] gitpath_log can not be empty"
+    exit 1
+fi
 
 if [[ $gitpath_log =~ \.teeworlds/dumps ]]
 then
     log "detected 0.7 logpath"
-    logroot="TeeworldsLogs"
-    is_dumps_logpath=1
     # only use the relative part starting from dumps dir
-    # gitpath_log_tw="${gitpath_log_tw##*.teeworlds/dumps/}"
+    logroot="${gitpath_log##*.teeworlds/dumps/}"
+    is_dumps_logpath=1
+    if [ "$logroot" == "" ]
+    then
+        wrn "WARNING log root path is empty"
+        read -p "Do you want to proceed? [y/N]" -n 1 -r
+        echo ""
+        if ! [[ $REPLY =~ ^[Yy]$ ]]
+        then
+            log "aborting ..."
+            exit 1
+        fi
+    fi
 fi
 
 export is_dumps_logpath
