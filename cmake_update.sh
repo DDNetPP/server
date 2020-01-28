@@ -9,16 +9,18 @@ fi
 
 source lib/lib.sh
 
-cwd=$(pwd)
+cwd="$(pwd)"
 
 mkdir -p maps || { echo "Error: creating dir maps/"; exit 1; }
 mkdir -p logs || { echo "Error: creating dir logs/"; exit 1; }
 mkdir -p bin || { echo "Error: creating dir bin/"; exit 1; }
-cd "$gitpath_mod"
+cd "$gitpath_mod" || { err "Could not enter git directory"; exit 1; }
 git pull
 mkdir -p build || { echo "Error: creating dir build/"; exit 1; }
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Debug
+cd build || { err "Could not enter build/ directory"; exit 1; }
+# TODO:
+# https://github.com/koalaman/shellcheck/wiki/Sc2086#exceptions
+cmake .. $cmake_flags
 make -j6 || { err "build failed."; exit 1; }
 if [ ! -f "$binary_name" ]
 then
@@ -29,7 +31,7 @@ then
     exit 1
 fi
 mv "$binary_name" $cwd/bin/${srv_name}_srv_d
-cp data/maps/*.map $cwd/maps
+cp data/maps/*.map "$cwd/maps"
 
 cd "$cwd" || exit 1
 if [[ -d cfg/ ]] && [[ -d cfg/.git ]]
