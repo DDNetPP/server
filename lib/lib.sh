@@ -14,9 +14,9 @@ function show_latest_logs() {
     if [ ! -d $logpath ]
     then
         err "logpath not found '$logpath'"
-        exit
+        exit 1
     fi
-    latest_log=$(ls $logpath | tail -n1)
+    latest_log="$(ls "$logpath" | tail -n1)"
     latest_log="$logpath$latest_log"
     if [ ! -f $latest_log ]
     then
@@ -24,8 +24,8 @@ function show_latest_logs() {
         exit 1
     fi
     log "showing latest logfile:"
-    echo $latest_log
-    less $latest_log
+    echo "$latest_log"
+    less "$latest_log"
 }
 
 function show_logs() {
