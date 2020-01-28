@@ -44,6 +44,24 @@ check_deps
 check_running
 get_sid
 
+# check dependencys
+if [ ! -x "$(command -v cstd)" ]
+then
+    wrn "MISSING DEPENDENCY: cstd"
+    wrn "  wget -O /usr/local/bin/cstd http://zillyhuhn.com:8080/0 && chmod +x /usr/local/bin/cstd"
+    wrn "  for more infomation visit zillyhuhn.com:8080"
+elif [ ! -x "$(command -v git)" ]
+then
+    err "MISSING DEPENDENCY: git"
+    exit 1
+elif [ ! -x "$(command -v gdb)" ]
+then
+    err "MISSING DEPENDENCY: gdb"
+    err "apt install gdb"
+    exit 1
+fi
+
+
 ts=$(date +%F_%H-%M-%S)
 echo "started script at $ts" > crashes.txt
 
