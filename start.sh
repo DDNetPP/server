@@ -14,6 +14,7 @@ check_running
 get_sid
 
 logfile="$gitpath_log/$srv_name/logs/${srv_name}_$(date +%F_%H-%M-%S).log"
+cache_logpath "$logfile"
 
 nohup ./${srv}_srv_d "#sid:$server_id" > "$logfile" 2>&1 &
 

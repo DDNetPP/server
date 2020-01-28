@@ -10,6 +10,10 @@ fi
 source lib/lib.sh
 
 get_sid
+if [ -f lib/tmp/logfile.txt ]
+then
+    rm lib/tmp/logfile.txt
+fi
 
 
 if echo $psaux | grep $server_id | grep -qv grep;

@@ -14,6 +14,7 @@ check_running
 get_sid
 
 logfile="$logroot/$srv_name/logs/${srv_name}_$(date +%F_%H-%M-%S).log"
+cache_logpath "$logfile"
 
 gdb --args ./${srv}_srv_d "logfile $logfile;#sid:$server_id"
 

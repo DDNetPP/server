@@ -14,6 +14,7 @@ get_sid
 if echo $psaux | grep $server_id | grep -qv grep;
 then
     suc "server is up and running '$server_id'"
+    check_logpath
     exit
 else
     wrn "no server with this id found '$server_id'"

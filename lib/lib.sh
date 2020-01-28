@@ -9,6 +9,41 @@ source lib/include/sid.sh
 source lib/include/deps.sh
 source lib/include/settings.sh
 
+function check_logpath() {
+    local logpath
+    if [ ! -d lib/ ] || [ ! -f lib/tmp/logpath.txt ]
+    then
+        return
+    fi
+    logpath="$(cat lib/tmp/logpath.txt)"
+    if [ "$logpath" == "" ]
+    then
+        return
+    fi
+    if [ ! -f "$logpath" ] && [ ! -f "$logpath.txt" ]
+    then
+        wrn "WARNING: did not find logfile:"
+        echo "$logpath"
+    fi
+}
+
+function cache_logpath() {
+    local logpath="$1"
+    if [ ! -d lib/ ]
+    then
+        return
+    fi
+    mkdir -p lib/tmp
+    if [ "$is_dumps_logpath" == "1" ]
+    then
+        if ! [[ "$logpath" =~ ^/home/$USER/.teeworlds/dumps/ ]]
+        then
+            logpath="/home/$USER/.teeworlds/dumps/$logpath"
+        fi
+    fi
+    echo "$logpath" > lib/tmp/logpath.txt
+}
+
 function show_latest_logs() {
     logpath="$gitpath_log/$srv_name/logs/"
     if [ ! -d $logpath ]
