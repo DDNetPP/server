@@ -61,7 +61,7 @@ function check_running() {
     if [ "$srv_name" == "" ]
     then
         err "server name is empty"
-        exit
+        exit 1
     fi
     if echo $psaux | grep $srv_name | grep -qv grep;
     then
@@ -73,14 +73,14 @@ function check_running() {
         log "do you want to start anyways? [y/N]"
         read -r -n 1 yn
         echo ""
-        if [[ "$yn" =~ [yY] ]]
+        if ! [[ "$yn" =~ [yY] ]]
         then
-            log "ignoring duplicated process..."
-            return
+            log "stopping..."
+            exit
         fi
-        log "stopping..."
-        exit
+        log "ignoring duplicated process..."
     fi
+    check_port
 }
 
 function check_cfg() {
@@ -201,6 +201,5 @@ function check_deps() {
         fi
         mkdir -p "$logpath" && suc "starting server..."
     fi
-    # check_port
 }
 
