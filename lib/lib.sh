@@ -3,11 +3,11 @@
 psaux=$(ps aux)
 gitpath=/home/$USER/git
 
-source lib/logger.sh
-source lib/port.sh
-source lib/sid.sh
-source lib/deps.sh
-source lib/settings.sh
+source lib/include/logger.sh
+source lib/include/port.sh
+source lib/include/sid.sh
+source lib/include/deps.sh
+source lib/include/settings.sh
 
 function show_latest_logs() {
     logpath="$gitpath_log/TeeworldsLogs/$srv_name/logs/"
