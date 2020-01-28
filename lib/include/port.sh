@@ -28,17 +28,16 @@ function get_port_used() {
     mkdir -p lib/tmp
     include_exec "autoexec.cfg" > lib/tmp/compiled.cfg
     port="$(grep '^sv_port' lib/tmp/compiled.cfg | tail -n1 | cut -d' ' -f2 | xargs)"
+    port_used="$port"
     if [ "$port" == "" ]
     then
         # log "no port found in autoexec.cfg fallback to 8303"
         port_used=8303
-    fi
-    if ! [[ $port =~ ^[0-9]+$ ]]
+    elif ! [[ $port =~ ^[0-9]+$ ]]
     then
         err "Invalid non numeric value for sv_port '$port'"
         exit 1
     fi
-    port_used="$port"
     log -n "checking port '$port_used' ... "
 }
 
