@@ -58,7 +58,8 @@ function show_latest_logs() {
         wrn "there are no logfiles yet."
         exit 1
     fi
-    log "showing latest logfile:"
+    num_logs="$(ls "$logpath" | wc -l)"
+    log "showing latest logfile out of $num_logs logs:"
     echo "$latest_log"
     less "$latest_log"
 }
