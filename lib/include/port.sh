@@ -1,17 +1,28 @@
 #!/bin/bash
 
 port_used=8303
+twcfg_line=0
+twcfg_last_line="firstline"
 
 function include_exec() {
     local config="$1"
+    if [ ! -f "$config" ]
+    then
+        err "Error: parsing teeworlds config" >&2
+        err "  $twcfg_line:$twcfg_last_line" >&2
+        err "  file not found: $config" >&2
+        exit 1
+    fi
     while read -r line
     do
-        if [[ "$line" =~ exec\ (.*\.cfg) ]]
+        twcfg_last_line="$line"
+        if [[ "$line" =~ ^exec\ \"?(.*\.cfg) ]]
         then
             include_exec "${BASH_REMATCH[1]}"
         else
             echo "$line"
         fi
+        twcfg_line="$((twcfg_line + 1))"
     done < "$config"
 }
 
@@ -26,6 +37,7 @@ function get_port_used() {
         return
     fi
     mkdir -p lib/tmp
+    twcfg_line=0
     include_exec "autoexec.cfg" > lib/tmp/compiled.cfg
     port="$(grep '^sv_port' lib/tmp/compiled.cfg | tail -n1 | cut -d' ' -f2 | xargs)"
     port_used="$port"
