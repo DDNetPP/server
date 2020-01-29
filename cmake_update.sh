@@ -49,4 +49,5 @@ then
     cd votes || exit 1
     git pull
 fi
+git_save_pull
 

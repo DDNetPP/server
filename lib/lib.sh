@@ -8,6 +8,7 @@ source lib/include/port.sh
 source lib/include/sid.sh
 source lib/include/deps.sh
 source lib/include/settings.sh
+source lib/include/git.sh
 
 function check_logpath() {
     local logpath
