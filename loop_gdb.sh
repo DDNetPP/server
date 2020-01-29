@@ -67,6 +67,6 @@ echo "started script at $ts" > crashes.txt
 while true;
 do
     ./lib/include/gdb_loop.sh "$logroot" \
-        "$srv_name" "$srv" "$server_id"
+        "$srv_name" "$srv" "$server_id" || exit 1
 done
 
