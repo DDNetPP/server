@@ -9,8 +9,6 @@ fi
 
 source lib/lib.sh
 
-get_sid
-
 if echo $psaux | grep $server_id | grep -qv grep;
 then
     suc "server is up and running '$server_id'"

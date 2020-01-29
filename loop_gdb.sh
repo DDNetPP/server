@@ -29,20 +29,21 @@ then
     exit
 elif [ "$1" == "--clear" ]
 then
+    p=logs/crashes
     echo "clearing data ..."
     del_file crashes.txt
-    del_file tmp_gdb.txt
     del_file paste.txt
-    del_file build.txt
-    del_file log_gdb.txt
-    del_file status.txt
-    del_file raw_build.txt
+    del_file "$p/status.txt"
+    del_file "$p/build.txt"
+    del_file "$p/log_gdb.txt"
+    del_file "$p/tmp_gdb.txt"
+    del_file "$p/raw_build.txt"
+    del_file "$p/raw_gdb.txt"
     exit
 fi
 
 check_deps
 check_running
-get_sid
 
 # check dependencys
 if [ ! -x "$(command -v cstd)" ]
@@ -66,7 +67,6 @@ echo "started script at $ts" > crashes.txt
 
 while true;
 do
-    ./lib/include/gdb_loop.sh "$logroot" \
-        "$srv_name" "$srv" "$server_id" || exit 1
+    ./lib/include/gdb_loop.sh --loop || exit 1
 done
 

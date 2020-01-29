@@ -33,3 +33,6 @@ function get_sid() {
         wrn "exptected 32 got $len"
     fi
 }
+
+get_sid
+
