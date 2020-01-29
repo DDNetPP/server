@@ -39,6 +39,9 @@ function cache_logpath() {
         if ! [[ "$logpath" =~ ^/home/$USER/.teeworlds/dumps/ ]]
         then
             logpath="/home/$USER/.teeworlds/dumps/$logpath"
+        elif ! [[ "$logpath" =~ ^/root/.teeworlds/dumps/ ]]
+        then
+            logpath="/root/.teeworlds/dumps/$logpath"
         fi
     fi
     echo "$logpath" > lib/tmp/logpath.txt
