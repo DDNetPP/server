@@ -37,12 +37,15 @@ function cache_logpath() {
     mkdir -p lib/tmp
     if [ "$is_dumps_logpath" == "1" ]
     then
-        if ! [[ "$logpath" =~ ^/home/$USER/.teeworlds/dumps/ ]]
+        if [ "$HOME" == "" ]
         then
-            logpath="/home/$USER/.teeworlds/dumps/$logpath"
-        elif ! [[ "$logpath" =~ ^/root/.teeworlds/dumps/ ]]
+            err "Error: \$HOME is not set"
+            exit 1
+        fi
+        dumpsdir="^$HOME/.teeworlds/dumps/"
+        if [[ ! "$logpath" =~ $dumpsdir ]]
         then
-            logpath="/root/.teeworlds/dumps/$logpath"
+            logpath="$HOME/.teeworlds/dumps/$logpath"
         fi
     fi
     echo "$logpath" > lib/tmp/logpath.txt
