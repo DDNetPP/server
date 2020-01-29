@@ -41,4 +41,11 @@ then
     cd cfg || exit 1
     git pull
 fi
+if [[ -d votes/ ]] && [[ -d votes/.git ]]
+then
+    log "found config directory votes/"
+    log "updating configs ..."
+    cd cfg || exit 1
+    git pull
+fi
 

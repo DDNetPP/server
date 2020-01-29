@@ -25,6 +25,7 @@ chillerbotFC_*
 lib/tmp
 bin/
 cfg/
+votes/
 data/
 maps/
 records/
