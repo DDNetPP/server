@@ -49,5 +49,6 @@ then
     cd votes || exit 1
     git pull
 fi
+cd "$cwd" || exit 1
 git_save_pull
 
