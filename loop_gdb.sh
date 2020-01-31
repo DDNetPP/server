@@ -75,11 +75,13 @@ then
     then
         install_cstd
     fi
-elif [ ! -x "$(command -v git)" ]
+fi
+if [ ! -x "$(command -v git)" ]
 then
     err "MISSING DEPENDENCY: git"
     exit 1
-elif [ ! -x "$(command -v gdb)" ]
+fi
+if [ ! -x "$(command -v gdb)" ]
 then
     err "MISSING DEPENDENCY: gdb"
     err "apt install gdb"
