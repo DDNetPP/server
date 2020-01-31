@@ -15,7 +15,7 @@ get_sid
 
 while true;
 do
-    logfile="$logroot/$srv_name/logs/${srv_name}_$(date +%F_%H-%M-%S).log"
+    logfile="$gitpath_log/$srv_name/logs/${srv_name}_$(date +%F_%H-%M-%S).log"
     ts_start=$(date +%F_%H-%M-%S)
     ./${srv}_srv_d "#sid:$server_id" > "$logfile"
     ts_end=$(date +%F_%H-%M-%S)
