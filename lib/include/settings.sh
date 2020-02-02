@@ -10,6 +10,7 @@ aSettStr+=("gitpath_log");aSettVal+=("/home/chiller/.teeworlds/dumps/TeeworldsLo
 aSettStr+=("server_name");aSettVal+=("teeworlds")
 aSettStr+=("binary_name");aSettVal+=("teeworlds_srv")
 aSettStr+=("cmake_flags");aSettVal+=("-DCMAKE_BUILD_TYPE=Debug")
+aSettStr+=("error_logs");aSettVal+=("1")
 
 function create_settings() {
     if [ -f $settings_file ];
@@ -97,6 +98,7 @@ read_settings_file
 # - server name     3
 # - binary name     4
 # - cmake flags     5
+# - error logs      6
 
 export gitpath_src="${aSettVal[0]}"
 export gitpath_mod="${aSettVal[1]}"
@@ -104,6 +106,7 @@ export gitpath_log="${aSettVal[2]}"
 export srv_name="${aSettVal[3]}"
 export binary_name="${aSettVal[4]}"
 export cmake_flags="${aSettVal[5]}"
+export error_logs="${aSettVal[6]}" # 0=off 1=no duplicated 2=duplicates
 export srv=bin/$srv_name
 
 gitpath_log="${gitpath_log%%+(/)}" # strip trailing slash

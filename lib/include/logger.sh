@@ -32,17 +32,40 @@ function suc() {
       echo -e "[${Green}+${Reset}] $1"
 }
 
+ERR_LOGFILE=logs/error_log.txt
+
+function is_err_log() {
+    if [ "$error_logs" == "0" ]
+    then
+        return 1;
+    elif [ "$error_logs" == "1" ] # 1=no duplicates 2=duplicates
+    then
+        if [ ! -f "$ERR_LOGFILE" ]
+        then
+            return 0;
+        fi
+        last_line="$(tail -n 1 "$ERR_LOGFILE")"
+        last_line="${last_line:22}"
+        if [ "$last_line" == "$1" ]
+        then
+            wrn "LOGS ARE EQUAL"
+            return 1
+        fi
+        return 0
+    fi
+}
+
 function check_cwd() {
     if [ "$cwd" == "" ]
     then
         return;
     fi
     if [ ! -d .git/ ]; then
-        cd "$cwd"
+        cd "$cwd" || { err "log_err: cd '$cwd' failed."; return; }
     elif [ ! -d lib/ ]; then
-        cd "$cwd"
+        cd "$cwd" || { err "log_err: cd '$cwd' failed."; return; }
     elif [ ! -f server.cnf ]; then
-        cd "$cwd"
+        cd "$cwd" || { err "log_err: cd '$cwd' failed."; return; }
     fi
 }
 
@@ -57,6 +80,9 @@ function log_err() {
         err "log_err: server.cnf not found are you in the server dir?"; return;
     fi
     mkdir -p logs/ || { err "log_err: failed to create logs/ directory"; return; }
-    echo "[$(date '+%Y-%m-%d %H:%M:%S')] $err" >> logs/error_log.txt || err "log_err: failed to write log"
+    if is_err_log "$err"
+    then
+        echo "[$(date '+%Y-%m-%d %H:%M:%S')] $err" >> "$ERR_LOGFILE" || err "log_err: failed to write log"
+    fi
 }
 
