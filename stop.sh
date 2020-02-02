@@ -24,22 +24,18 @@ else
     wrn "no server with this id found '$server_id'"
 fi
 sleep 0.5 # give server time to shutdown
-psaux=$(ps aux)
-if echo $psaux | grep $srv_name | grep -qv grep;
+if show_procs
 then
-    log "other proccesses containing '$srv_name' were found."
+    log "other processes containing '$srv_name' were found."
     log "you can stop them all."
     log "but keep it mind it could stop any application on your server not only tw server"
-    log "+-------] running proccesses [--------+"
-    ps axo cmd | grep $srv_name | grep -v "grep"
-    log "+------------------------------------+"
     log "do you want to stop them all? [y/N]"
     read -r -n 1 yn
     echo ""
     if [[ "$yn" =~ [yY] ]]
     then
         pkill -f "./${srv_name}_srv_d"
-        log "stopped all proccesses."
+        log "stopped all processes."
     else
         log "aborting stop script."
     fi

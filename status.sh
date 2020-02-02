@@ -17,11 +17,6 @@ then
 else
     wrn "no server with this id found '$server_id'"
 fi
-if echo $psaux | grep $srv_name | grep -qv grep;
-then
-    log "other proccesses containing '$srv_name' were found."
-    log "+-------] running proccesses[--------+"
-    ps axo cmd | grep $srv_name | grep -v "grep"
-    log "+------------------------------------+"
-fi
+
+show_procs
 

@@ -11,19 +11,27 @@ source lib/include/settings.sh
 source lib/include/git.sh
 source lib/include/logs.sh
 
+function show_procs() {
+    if pgrep "$srv_name"
+    then
+        wrn "process with the same name is running already!"
+        echo ""
+        log "+--------] running processes [---------+"
+        ps o cmd -p "$(pgrep "$srv_name")" | tail -n1
+        log "+--------------------------------------+"
+        return 0
+    fi
+    return 1
+}
+
 function check_running() {
     if [ "$srv_name" == "" ]
     then
         err "server name is empty"
         exit 1
     fi
-    if echo $psaux | grep $srv_name | grep -qv grep;
+    if show_procs
     then
-        wrn "process with the same name is running already!"
-        echo ""
-        log "+-------] running proccesses [--------+"
-        ps axo cmd | grep $srv_name | grep -v "grep"
-        log "+-------------------------------------+"
         log "do you want to start anyways? [y/N]"
         read -r -n 1 yn
         echo ""
