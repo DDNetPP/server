@@ -29,15 +29,20 @@ gdb -ex='set confirm off' \
     -ex='set pagination off' \
     -ex="set logging file $p/raw_gdb.txt" \
     -ex='set logging on' \
-    -ex=run -ex=bt -ex=quit --args \
+    -ex=run -ex=bt -ex='quit $_exitcode' --args \
     ./${srv}_srv_d "logfile $logfile;#sid:$server_id"
-# filter out the thread spam
-grep -v '^\[New Thread' "$p/raw_gdb.txt" | grep -v '^\[Thread' > "$p/tmp_gdb.txt"
-mv "$p/tmp_gdb.txt" "$p/raw_gdb.txt"
-cat "$p/raw_gdb.txt" | ./lib/echo_pipe.sh >> bt.txt
-cat "$p/raw_gdb.txt" >> "$p/log_gdb.txt"
-rm "$p/raw_gdb.txt"
-echo "echo 'crash or shutdown $ts'" >> crashes.txt
+if [ "$?" != "0" ]
+then
+    # filter out the thread spam
+    grep -v '^\[New Thread' "$p/raw_gdb.txt" | grep -v '^\[Thread' > "$p/tmp_gdb.txt"
+    mv "$p/tmp_gdb.txt" "$p/raw_gdb.txt"
+    cat "$p/raw_gdb.txt" | ./lib/echo_pipe.sh >> bt.txt
+    cat "$p/raw_gdb.txt" >> "$p/log_gdb.txt"
+    rm "$p/raw_gdb.txt"
+    echo "echo 'crash $ts'" >> crashes.txt
+else
+    echo "echo 'shutdown $ts'" >> crashes.txt
+fi
 ./cmake_update.sh > "$p/raw_build.txt"
 url="$(cstd "$p/raw_build.txt")"
 echo "echo $url" > paste.txt

@@ -80,7 +80,7 @@ install_dep git
 install_dep gdb
 
 ts="$(date +%F_%H-%M-%S)"
-echo "started script at $ts" > crashes.txt
+echo "echo started script at $ts" > crashes.txt
 
 while true;
 do
