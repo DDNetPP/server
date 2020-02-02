@@ -48,7 +48,6 @@ function is_err_log() {
         last_line="${last_line:22}"
         if [ "$last_line" == "$1" ]
         then
-            wrn "LOGS ARE EQUAL"
             return 1
         fi
         return 0
@@ -83,6 +82,10 @@ function log_err() {
     if is_err_log "$err"
     then
         echo "[$(date '+%Y-%m-%d %H:%M:%S')] $err" >> "$ERR_LOGFILE" || err "log_err: failed to write log"
+    fi
+    if [ "$error_logs_api" != "" ]
+    then
+        $error_logs_api
     fi
 }
 

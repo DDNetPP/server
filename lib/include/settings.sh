@@ -11,6 +11,7 @@ aSettStr+=("server_name");aSettVal+=("teeworlds")
 aSettStr+=("binary_name");aSettVal+=("teeworlds_srv")
 aSettStr+=("cmake_flags");aSettVal+=("-DCMAKE_BUILD_TYPE=Debug")
 aSettStr+=("error_logs");aSettVal+=("1")
+aSettStr+=("error_logs_api");aSettVal+=("curl -d \"{\\\"err\\\":\\\"\$err\\\"}\" -H 'Content-Type: application/json' http://localhost:80/api")
 
 function create_settings() {
     if [ -f $settings_file ];
@@ -99,6 +100,7 @@ read_settings_file
 # - binary name     4
 # - cmake flags     5
 # - error logs      6
+# - error logs api  7
 
 export gitpath_src="${aSettVal[0]}"
 export gitpath_mod="${aSettVal[1]}"
@@ -107,6 +109,7 @@ export srv_name="${aSettVal[3]}"
 export binary_name="${aSettVal[4]}"
 export cmake_flags="${aSettVal[5]}"
 export error_logs="${aSettVal[6]}" # 0=off 1=no duplicated 2=duplicates
+export error_logs_api="${aSettVal[7]}" # shell command that gets executed on error
 export srv=bin/$srv_name
 
 gitpath_log="${gitpath_log%%+(/)}" # strip trailing slash
