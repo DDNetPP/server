@@ -15,17 +15,18 @@ install_dep git
 
 cwd="$(pwd)"
 
-mkdir -p maps || { echo "Error: creating dir maps/"; exit 1; }
-mkdir -p logs || { echo "Error: creating dir logs/"; exit 1; }
-mkdir -p bin || { echo "Error: creating dir bin/"; exit 1; }
+mkdir -p maps || { err "Error: creating dir maps/"; exit 1; }
+mkdir -p logs || { err "Error: creating dir logs/"; exit 1; }
+mkdir -p bin || { err "Error: creating dir bin/"; exit 1; }
 cd "$gitpath_mod" || { err "Could not enter git directory"; exit 1; }
-git pull
-mkdir -p build || { echo "Error: creating dir build/"; exit 1; }
+git pull || { err --log "git pull failed"; exit 1; }
+mkdir -p build || { err "Error: creating dir build/"; exit 1; }
 cd build || { err "Could not enter build/ directory"; exit 1; }
+branch="$(git branch | sed -n '/\* /s///p')"
 # TODO:
 # https://github.com/koalaman/shellcheck/wiki/Sc2086#exceptions
-cmake .. $cmake_flags
-make -j6 || { err "build failed."; exit 1; }
+cmake .. $cmake_flags || { err --log "build failed at $branch $(git rev-parse HEAD) (cmake)"; exit 1; }
+make -j6 || { err --log "build failed at $branch $(git rev-parse HEAD) (make)"; exit 1; }
 if [ ! -f "$binary_name" ]
 then
     err "Binary not found is your config correct?"
