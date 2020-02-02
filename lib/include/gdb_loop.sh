@@ -39,9 +39,10 @@ then
     cat "$p/raw_gdb.txt" | ./lib/echo_pipe.sh >> bt.txt
     cat "$p/raw_gdb.txt" >> "$p/log_gdb.txt"
     rm "$p/raw_gdb.txt"
-    echo "echo 'crash $ts'" >> crashes.txt
+    log_err "gdb_loop.sh server $srv_name crashed at $ts"
+    echo "echo \"crash $ts\"" >> crashes.txt
 else
-    echo "echo 'shutdown $ts'" >> crashes.txt
+    echo "echo \"shutdown $ts\"" >> crashes.txt
 fi
 ./cmake_update.sh > "$p/raw_build.txt"
 url="$(cstd "$p/raw_build.txt")"
