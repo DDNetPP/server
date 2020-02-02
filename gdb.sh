@@ -11,6 +11,7 @@ source lib/lib.sh
 
 check_deps
 check_running
+install_dep gdb
 
 logfile="$logroot/$srv_name/logs/${srv_name}_$(date +%F_%H-%M-%S).log"
 cache_logpath "$logfile"

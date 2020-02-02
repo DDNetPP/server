@@ -11,6 +11,51 @@ source lib/include/settings.sh
 source lib/include/git.sh
 source lib/include/logs.sh
 
+function install_apt() {
+    if [ "$#" != "1" ]
+    then
+        err "Error: install_dep invalid amount of arguments given"
+        err "       expected 1 got $#"
+        exit 1
+    fi
+    local dep="$1"
+    if [ -x "$(command -v "$dep")" ]
+    then
+        return
+    fi
+    if [ ! -x "$(command -v apt)" ]
+    then
+        err "Error: package manager apt not found"
+        err "       you have to install '$dep' manually"
+        exit 1
+    fi
+
+    if [ "$UID" == "0" ]
+    then
+        apt install "$dep" || exit 1
+    else
+        if [ -x "$(command -v sudo)" ]
+        then
+            sudo apt install "$dep" || exit 1
+        else
+            err "Install sudo or switch to root user"
+            exit 1
+        fi
+    fi
+    if [ -x "$(command -v "$dep")" ]
+    then
+        log "Successfully installed dependency '$dep'"
+    else
+        err "Failed to install dependency '$dep'"
+        err "please install it manually"
+        exit 1
+    fi
+}
+
+function install_dep() {
+    install_apt "$1"
+}
+
 function show_procs() {
     if pgrep "$srv_name"
     then

@@ -76,17 +76,8 @@ then
         install_cstd
     fi
 fi
-if [ ! -x "$(command -v git)" ]
-then
-    err "MISSING DEPENDENCY: git"
-    exit 1
-fi
-if [ ! -x "$(command -v gdb)" ]
-then
-    err "MISSING DEPENDENCY: gdb"
-    err "apt install gdb"
-    exit 1
-fi
+install_dep git
+install_dep gdb
 
 ts="$(date +%F_%H-%M-%S)"
 echo "started script at $ts" > crashes.txt

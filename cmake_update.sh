@@ -9,6 +9,10 @@ fi
 
 source lib/lib.sh
 
+install_dep make
+install_dep cmake
+install_dep git
+
 cwd="$(pwd)"
 
 mkdir -p maps || { echo "Error: creating dir maps/"; exit 1; }
