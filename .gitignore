@@ -33,4 +33,5 @@ maps/
 records/
 logs/
 stats/
+stats_failed/
 tags
