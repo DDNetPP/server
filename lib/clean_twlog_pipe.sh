@@ -40,10 +40,13 @@ fi
 
 if [ "$PICKUPS" == "0" ]
 then
+    # tw 0.6
     # [game]: pickup player='0:nameless tee' item=1/0
+    # tw 0.7
+    # [game]: pickup player='8:nameless tee' item=1
     egrep -v "^\[.{$TS_LEN}\]\[register\]" |
         egrep -v "^\[.{$TS_LEN}\]\[engine/mastersrv\]" |
-        egrep -v "^\[.{$TS_LEN}\]\[game\]: pickup player='.*' item=[0-9]/[0-9]$"
+        egrep -v "^\[.{$TS_LEN}\]\[game\]: pickup player='.*' item=[0-9](/[0-9])?$"
 else
     egrep -v "^\[.{$TS_LEN}\]\[register\]" |
         egrep -v "^\[.{$TS_LEN}\]\[engine/mastersrv\]"
