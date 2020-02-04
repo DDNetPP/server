@@ -11,6 +11,7 @@ paste.txt
 raw_build.txt
 raw_gdb.txt
 status.txt
+*.acc
 *_playerdata.dat
 *.db
 *.dtb
@@ -31,4 +32,5 @@ data/
 maps/
 records/
 logs/
+stats/
 tags
