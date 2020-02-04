@@ -197,7 +197,7 @@ function check_deps() {
         fi
         mkdir -p "$logpath" && suc "starting server..."
     else
-        if [ ! -d "$logpath/.git" ]
+        if [ ! -d "$gitpath_log/.git" ]
         then
             wrn "WARNING: logpath is not a git repository"
         fi
