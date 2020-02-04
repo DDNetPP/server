@@ -11,7 +11,8 @@ aSettStr+=("server_name");aSettVal+=("teeworlds")
 aSettStr+=("binary_name");aSettVal+=("teeworlds_srv")
 aSettStr+=("cmake_flags");aSettVal+=("-DCMAKE_BUILD_TYPE=Debug")
 aSettStr+=("error_logs");aSettVal+=("1")
-aSettStr+=("error_logs_api");aSettVal+=("Curl -d \"{\\\"err\\\":\\\"\$err\\\"}\" -H 'Content-Type: application/json' http://localhost:80/api")
+# aSettStr+=("error_logs_api");aSettVal+=("curl -d \"{\\\"err\\\":\\\"\$err\\\"}\" -H 'Content-Type: application/json' http://localhost:80/api")
+aSettStr+=("error_logs_api");aSettVal+=("test")
 
 function create_settings() {
     if [ -f $settings_file ];
