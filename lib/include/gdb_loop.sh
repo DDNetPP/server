@@ -29,7 +29,7 @@ gdb -ex='set confirm off' \
     -ex='set pagination off' \
     -ex="set logging file $p/raw_gdb.txt" \
     -ex='set logging on' \
-    -ex=run -ex=bt -ex='quit' --args \
+    -ex=run -ex=bt -ex=quit --args \
     ./${srv}_srv_d "logfile $logfile;#sid:$server_id"
 # filter out the thread spam
 grep -v '^\[New Thread' "$p/raw_gdb.txt" | grep -v '^\[Thread' > "$p/tmp_gdb.txt"
