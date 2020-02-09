@@ -1,5 +1,8 @@
 #!/bin/bash
 
+tmp_file=/tmp/XXX_exec_all_srv.sh
+is_file=0
+
 function require_dir() {
     local dir="$1"
     local mode="${1:-verbose}"
@@ -36,6 +39,35 @@ function check_server_dir() {
     require_file server.cnf "$mode"
 }
 
+function edit_file() {
+    local file=$1
+    options=()
+    lines=0
+    editors="vim vi nano emacs ne cat"
+    aEditors=($editors);
+    for editor in "${aEditors[@]}"
+    do
+        options+=("$editor")
+        lines=$((lines+1))
+    done
+    if [ $lines -eq 1 ]
+    then
+        exit 0
+    fi
+
+    PS3='Select a text editor: '
+    select opt in "${options[@]}"
+    do
+        if [[ " ${options[@]} " =~ " ${opt} " ]]
+        then
+            $opt $file
+            return
+        else
+            echo "invalid option $REPLY"
+        fi
+    done
+}
+
 trap "exit 1" SIGUSR1
 PROC="$$"
 
@@ -62,6 +94,9 @@ function handle_error() {
 if [ "$#" == "0" ] || [ "$1" == "--help" ] || [ "$1" == "-h" ]
 then
     echo "usage: $(basename "$0") <shell command>"
+    echo "parameters:"
+    echo "  --help      shows this help"
+    echo "  --file      edit command tmp in file"
     echo "description:"
     echo "  it goes one directory up and searches server dirs"
     echo "  if a .git/ lib/ lib/lib.sh and server.cnf is found"
@@ -75,6 +110,15 @@ then
     echo "  $(basename "$0") ./stop.sh;./cmake_update.sh;./start.sh"
     echo "  IGNORE_ERR=1 $(basename "$0") /usr/bin/nonzero.sh"
     exit 0
+elif [ "$1" == "--script" ] || [ "$2" == "--file" ]
+then
+    is_file=1
+    if [ ! -f "$tmp_file" ]
+    then
+        echo "#!/bin/bash" > "$tmp_file"
+    fi
+    edit_file "$tmp_file"
+    chmod +x "$tmp_file"
 fi
 
 check_server_dir
@@ -92,8 +136,15 @@ do
 done
 
 echo ""
-echo -e "shell_command=\\033[1m$shell_command\\033[0m"
-echo "Do you want to execute shell_command in all these directorys? [y/N]"
+if [ "$is_file" == "1" ]
+then
+    echo "script:"
+    cat "$tmp_file"
+    shell_command="$tmp_file"
+else
+    echo -e "shell_command=\\033[1m$shell_command\\033[0m"
+fi
+echo "Do you want to execute it in all these directorys? [y/N]"
 read -n 1 -rp "" inp
 echo ""
 if ! [[ $inp =~ ^[Yy]$ ]]
