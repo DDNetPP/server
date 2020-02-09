@@ -36,7 +36,7 @@ echo "\\============= server stop  $ts =============/" >> "$p/raw_gdb.txt"
 # filter out the thread spam
 grep -v '^\[New Thread' "$p/raw_gdb.txt" | grep -v '^\[Thread' > "$p/tmp_gdb.txt"
 mv "$p/tmp_gdb.txt" "$p/raw_gdb.txt"
-cat "$p/raw_gdb.txt" | ./lib/echo_pipe.sh >> bt.txt
+./lib/echo_pipe.sh "$p/raw_gdb.txt" >> bt.txt
 cat "$p/raw_gdb.txt" >> "$p/log_gdb.txt"
 rm "$p/raw_gdb.txt"
 log_err "gdb_loop.sh server $srv_name crashed at $ts"
@@ -44,7 +44,7 @@ echo "echo \"crash or shutdown$ts\"" >> crashes.txt
 ./cmake_update.sh > "$p/raw_build.txt"
 url="$(cstd "$p/raw_build.txt")"
 echo "echo $url" > paste.txt
-cat "$p/raw_build.txt" | ./lib/echo_pipe.sh > "$p/build.txt"
+./lib/echo_pipe.sh "$p/raw_build.txt" > "$p/build.txt"
 echo "git status - $(date)" | ./lib/echo_pipe.sh > "$p/status.txt"
 git status | ./lib/echo_pipe.sh >> "$p/status.txt"
 sleep 5
