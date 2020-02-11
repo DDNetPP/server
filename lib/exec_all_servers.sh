@@ -1,72 +1,16 @@
 #!/bin/bash
 
+if [ ! -f lib/lib.sh ]
+then
+    echo "Error: lib/lib.sh not found!"
+    echo "make sure you are in the root of the server repo"
+    exit 1
+fi
+
+source lib/lib.sh
+
 tmp_file=/tmp/XXX_exec_all_srv.sh
 is_file=0
-
-function require_dir() {
-    local dir="$1"
-    local mode="${1:-verbose}"
-    if [ ! -d "$dir" ]
-    then
-        if [ "$mode" == "verbose" ]
-        then
-            echo "Error: directory not found '$dir'"
-            echo "  make sure you are in a server repo"
-        fi
-        exit 1
-    fi
-}
-
-function require_file() {
-    local file="$1"
-    local mode="${1:-verbose}"
-    if [ ! -f "$file" ]
-    then
-        if [ "$mode" == "verbose" ]
-        then
-            echo "Error: file not found '$dir'"
-            echo "  make sure you are in a server repo"
-        fi
-        exit 1
-    fi
-}
-
-function check_server_dir() {
-    local mode="${1:-verbose}"
-    require_dir .git/ "$mode"
-    require_dir lib/ "$mode"
-    require_file lib/lib.sh "$mode"
-    require_file server.cnf "$mode"
-}
-
-function edit_file() {
-    local file=$1
-    options=()
-    lines=0
-    editors="vim vi nano emacs ne cat"
-    aEditors=($editors);
-    for editor in "${aEditors[@]}"
-    do
-        options+=("$editor")
-        lines=$((lines+1))
-    done
-    if [ $lines -eq 1 ]
-    then
-        exit 0
-    fi
-
-    PS3='Select a text editor: '
-    select opt in "${options[@]}"
-    do
-        if [[ " ${options[@]} " =~ " ${opt} " ]]
-        then
-            $opt $file
-            return
-        else
-            echo "invalid option $REPLY"
-        fi
-    done
-}
 
 trap "exit 1" SIGUSR1
 PROC="$$"
