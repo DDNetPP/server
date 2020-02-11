@@ -24,7 +24,11 @@ mkdir -p "$p" || exit 1
 ts=$(date +%F_%H-%M-%S)
 logfile="$logroot/$srv_name/logs/${srv_name}_$ts.log"
 cache_logpath "$logfile"
-echo "/============= server start $ts =============\\" >> "$p/raw_gdb.txt"
+if [ -f "$p/raw_gdb.txt" ]
+then
+    rm "$p/raw_gdb.txt"
+fi
+echo "/============= server start $ts =============\\" > "$p/raw_gdb.txt"
 gdb -ex='set confirm off' \
     -ex='set pagination off' \
     -ex="set logging file $p/raw_gdb.txt" \
