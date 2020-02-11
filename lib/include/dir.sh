@@ -2,7 +2,7 @@
 
 function require_dir() {
     local dir="$1"
-    local mode="${1:-verbose}"
+    local mode="${2:-verbose}"
     if [ ! -d "$dir" ]
     then
         if [ "$mode" == "verbose" ]
