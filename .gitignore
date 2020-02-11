@@ -34,4 +34,5 @@ records/
 logs/
 stats/
 stats_failed/
+types/
 tags
