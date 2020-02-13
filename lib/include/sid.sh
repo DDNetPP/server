@@ -15,6 +15,11 @@ function generate_sid() {
 }
 
 function get_sid() {
+    if [ ! -d lib/var/ ]
+    then
+        err "Error: directory not found 'lib/var/'"
+        exit 1
+    fi
     if [ ! -f "$SID_FILE" ]
     then
         if [ -f "$OLD_SID_FILE" ]

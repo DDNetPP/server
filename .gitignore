@@ -25,6 +25,7 @@ status.txt
 *_srv_d_old
 chillerbotFC_*
 lib/tmp
+lib/var
 bin/
 cfg/
 votes/
