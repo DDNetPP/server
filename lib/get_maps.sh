@@ -10,7 +10,7 @@ fi
 
 source lib/lib.sh &>/dev/null
 
-maps_dir="$(pwd)/$maps_dir"
+maps_dir="$(pwd)/maps"
 
 function download_web() {
     local url="$1"
@@ -75,12 +75,30 @@ function download_zip() {
     cd "$cwd" || exit 1
 }
 
+function download_git() {
+    local url="$1"
+    cwd="$(pwd)"
+    mkdir -p "$maps_dir" || exit 1
+    if [ -d /tmp/YYY_maps/ ]
+    then
+        rm -rf /tmp/YYY_maps/ || exit 1
+    fi
+    git clone "$url" /tmp/YYY_maps || exit 1
+    cp -r /tmp/YYY_maps/* "$maps_dir"
+    if [ -d /tmp/YYY_maps/ ]
+    then
+        rm -rf /tmp/YYY_maps/ || exit 1
+    fi
+    cd "$cwd" || exit 1
+}
+
 function menu() {
     check_server_dir
     if [[ -d "$maps_dir" ]] && [[ "$(ls "$maps_dir")" != "" ]]
     then
         num_maps="$(find "$maps_dir" | wc -l)"
-        wrn "You already have $num_maps maps"
+        wrn "You already have $num_maps maps in:"
+        wrn "$maps_dir"
         echo "do you want to overwrite/add to current map pool? [y/N]"
         read -n 1 -rp "" inp
         echo ""
@@ -92,6 +110,7 @@ function menu() {
     fi
     # download_web http://heinrich5991.de/teeworlds/maps/maps/
     # download_zip https://maps.ddnet.tw/compilations/maps7.zip
+    # download_git https://github.com/ZillyFng/solofng-maps
 }
 
 menu
