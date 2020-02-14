@@ -152,7 +152,7 @@ then
         log "no jobs yet"
         exit
     fi
-    tree "$jobs_dir"
+    tree "$JOB_PATH"
 elif [ "$mode" == "edit" ] || [ "$mode" == "create" ]
 then
     edit_job
