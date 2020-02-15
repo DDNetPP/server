@@ -54,7 +54,7 @@ then
     echo "  $(basename "$0") ./stop.sh;./cmake_update.sh;./start.sh"
     echo "  IGNORE_ERR=1 $(basename "$0") /usr/bin/nonzero.sh"
     exit 0
-elif [ "$1" == "--script" ] || [ "$2" == "--file" ]
+elif [ "$1" == "--script" ] || [ "$1" == "--file" ]
 then
     is_file=1
     if [ ! -f "$tmp_file" ]
