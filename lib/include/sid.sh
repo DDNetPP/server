@@ -17,8 +17,9 @@ function generate_sid() {
 function get_sid() {
     if [ ! -d lib/var/ ]
     then
-        err "Error: directory not found 'lib/var/'"
-        exit 1
+        check_server_dir
+        wrn "creating directory 'lib/var' ..."
+        mkdir -p lib/var || { err "failed to create directory 'lib/var'"; exit 1; }
     fi
     if [ ! -f "$SID_FILE" ]
     then
