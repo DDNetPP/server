@@ -85,7 +85,10 @@ function log_err() {
     fi
     if [ "$error_logs_api" != "" ]
     then
-        $error_logs_api
+        log "pwd: $(pwd)"
+        log "executing error api cmd:"
+        echo "eval \"$error_logs_api\""
+        eval "$error_logs_api"
     fi
 }
 
