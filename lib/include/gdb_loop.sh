@@ -65,5 +65,6 @@ echo "echo $url" > paste.txt
 ./lib/echo_pipe.sh "$p/raw_build.txt" > "$p/build.txt"
 echo "git status - $(date)" | ./lib/echo_pipe.sh > "$p/status.txt"
 git status | ./lib/echo_pipe.sh >> "$p/status.txt"
+log "sleeping 5 seconds ... press CTRL-C now to stop the server"
 sleep 5
 
