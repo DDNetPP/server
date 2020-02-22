@@ -36,7 +36,7 @@ then
     del_file "$p/status.txt"
     del_file "$p/build.txt"
     del_file "$p/log_gdb.txt"
-    del_file "$p/tmp_gdb.txt"
+    del_file "$p/raw_gdb.txt"
     del_file "$p/raw_build.txt"
     exit
 fi

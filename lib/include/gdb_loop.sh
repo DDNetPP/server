@@ -22,24 +22,38 @@ p=logs/crashes
 mkdir -p "$p" || exit 1
 
 ts=$(date +%F_%H-%M-%S)
-logfile="$logroot/$srv_name/logs/${srv_name}_$ts.log"
+log_filename="$srv_name/logs/${srv_name}_$ts.log"
+logfile="$logroot/$log_filename"
+logfile_absolute="$gitpath_log/$log_filename"
 cache_logpath "$logfile"
-if [ -f "$p/raw_gdb.txt" ]
+if [ -f "$p/tmp_gdb.txt" ]
 then
-    rm "$p/raw_gdb.txt"
+    rm "$p/tmp_gdb.txt"
 fi
-echo "/============= server start $ts =============\\" > "$p/raw_gdb.txt"
+start_ts=$(date +%F_%H-%M-%S)
 gdb -ex='set confirm off' \
     -ex='set pagination off' \
-    -ex="set logging file $p/raw_gdb.txt" \
+    -ex="set logging file $p/tmp_gdb.txt" \
     -ex='set logging on' \
     -ex=run -ex=bt -ex=quit --args \
     ./${srv}_srv_d "logfile $logfile;#sid:$server_id"
-ts=$(date +%F_%H-%M-%S)
-echo "\\============= server stop  $ts =============/" >> "$p/raw_gdb.txt"
+stop_ts=$(date +%F_%H-%M-%S)
+echo "/============= server start $start_ts =============\\" > "$p/raw_gdb.txt"
+if [ ! -f "$logfile_absolute" ]
+then
+    logfile_absolute="$logfile_absolute.txt"
+fi
+if [ -f "$logfile_absolute" ]
+then
+    tail -n10 "$logfile_absolute" >> "$p/raw_gdb.txt"
+    echo "" >> "$p/raw_gdb.txt"
+else
+    wrn "WARNING! logfile not found:"
+    echo "$logfile_absolute"
+fi
 # filter out the thread spam
-grep -v '^\[New Thread' "$p/raw_gdb.txt" | grep -v '^\[Thread' > "$p/tmp_gdb.txt"
-mv "$p/tmp_gdb.txt" "$p/raw_gdb.txt"
+grep -v '^\[New Thread' "$p/tmp_gdb.txt" | grep -v '^\[Thread' >> "$p/raw_gdb.txt"
+echo "\\============= server stop  $stop_ts =============/" >> "$p/raw_gdb.txt"
 ./lib/echo_pipe.sh "$p/raw_gdb.txt" > bt.txt
 cat "$p/raw_gdb.txt" >> "$p/log_gdb.txt"
 rm "$p/raw_gdb.txt"
