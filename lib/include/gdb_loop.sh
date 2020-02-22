@@ -40,7 +40,7 @@ echo "\\============= server stop  $ts =============/" >> "$p/raw_gdb.txt"
 # filter out the thread spam
 grep -v '^\[New Thread' "$p/raw_gdb.txt" | grep -v '^\[Thread' > "$p/tmp_gdb.txt"
 mv "$p/tmp_gdb.txt" "$p/raw_gdb.txt"
-./lib/echo_pipe.sh "$p/raw_gdb.txt" >> bt.txt
+./lib/echo_pipe.sh "$p/raw_gdb.txt" > bt.txt
 cat "$p/raw_gdb.txt" >> "$p/log_gdb.txt"
 rm "$p/raw_gdb.txt"
 log_err "gdb_loop.sh server $srv_name crashed at $ts"
