@@ -31,13 +31,19 @@ then
     rm "$p/tmp_gdb.txt"
 fi
 start_ts=$(date +%F_%H-%M-%S)
+echo "/============= server start $start_ts =============\\" > "$p/full_gdb.txt"
 gdb -ex='set confirm off' \
     -ex='set pagination off' \
     -ex="set logging file $p/tmp_gdb.txt" \
     -ex='set logging on' \
-    -ex=run -ex=bt -ex=quit --args \
+    -ex=run -ex='bt' \
+    -ex='set logging off' \
+    -ex="set logging file $p/full_gdb.txt" \
+    -ex='set logging on' \
+    -ex='bt full' -ex='info registers' -ex=quit --args \
     ./${srv}_srv_d "logfile $logfile;#sid:$server_id"
 stop_ts=$(date +%F_%H-%M-%S)
+echo "\\============= server stop  $stop_ts =============/" >> "$p/full_gdb.txt"
 echo "/============= server start $start_ts =============\\" > "$p/raw_gdb.txt"
 if [ ! -f "$logfile_absolute" ]
 then
