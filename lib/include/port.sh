@@ -39,7 +39,7 @@ function get_port_used() {
     mkdir -p lib/tmp
     twcfg_line=0
     include_exec "autoexec.cfg" > lib/tmp/compiled.cfg
-    port="$(grep '^sv_port' lib/tmp/compiled.cfg | tail -n1 | cut -d' ' -f2 | xargs)"
+    port="$(grep '^sv_port ' lib/tmp/compiled.cfg | tail -n1 | cut -d' ' -f2 | xargs)"
     port_used="$port"
     if [ "$port" == "" ]
     then

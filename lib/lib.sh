@@ -23,7 +23,7 @@ function check_warnings() {
         wrn "         add these records manually to the database"
     fi
     include_exec "autoexec.cfg" > lib/tmp/compiled.cfg
-    port="$(wc -l < <(grep '^sv_port' lib/tmp/compiled.cfg))"
+    port="$(wc -l < <(grep '^sv_port ' lib/tmp/compiled.cfg))"
     if [ "$port" != "" ] && [ "$port" -gt "1" ]
     then
         wrn "WARNING: found sv_port $port times in your config"
