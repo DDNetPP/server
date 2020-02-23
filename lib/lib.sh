@@ -12,6 +12,10 @@ source lib/include/git.sh
 source lib/include/logs.sh
 source lib/include/dir.sh
 
+function is_cmd() {
+    [ -x "$(command -v $1)" ] && return 0
+}
+
 function check_warnings() {
     local port
     check_server_dir
