@@ -7,7 +7,7 @@ then
     exit 1
 fi
 
-source lib/lib.sh &>/dev/null
+source lib/lib.sh
 
 tmp_file=/tmp/XXX_exec_all_srv.sh
 is_file=0

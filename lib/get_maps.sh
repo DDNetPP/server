@@ -8,7 +8,7 @@ then
     exit 1
 fi
 
-source lib/lib.sh &>/dev/null
+source lib/lib.sh
 
 maps_dir="$(pwd)/maps"
 

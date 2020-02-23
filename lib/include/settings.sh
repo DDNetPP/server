@@ -44,7 +44,7 @@ function parse_settings_line() {
         do
             if  [ "$sett" == "${aSettStr[$i]}" ]
             then
-                printf "[setting] (%s)%-16s=  %s\\n" "$i" "$sett" "$val"
+                # printf "[setting] (%s)%-16s=  %s\\n" "$i" "$sett" "$val"
                 if [[ "${aSettStr[$i]}" =~ path ]]
                 then
                     val="${val%%+(/)}" # strip trailing slash
@@ -53,7 +53,7 @@ function parse_settings_line() {
                 return
             fi
         done
-        log "SettingsError: unkown setting $sett"
+        err "SettingsError: unkown setting $sett"
         exit 1
 }
 
