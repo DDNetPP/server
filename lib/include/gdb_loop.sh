@@ -38,7 +38,8 @@ function check_logsize() {
     then
         return
     fi
-    local lines="$(wc -l < "$logf")"
+    local lines
+    lines="$(wc -l < "$logf")"
     if [ "$?" != "0" ] || [ "$lines" == "" ]
     then
         err "ERROR: failed to compute logsize of file '$logf'"
