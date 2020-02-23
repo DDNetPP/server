@@ -12,6 +12,11 @@ MAX_LOG_SIZE=5000
 # WARNING: using something other than seconds might need some changes in the script
 RESTART_DELAY=5
 
+# max failed starts - do not continue restarting the server
+# when it failed to start x times.
+# Failed starts are crashes during the first 5 seconds after server start.
+MAX_FAILED_STARTS=3
+
 if [ "$1" != "--loop" ]
 then
     echo "do not call this script manually!"
@@ -62,7 +67,7 @@ if [ -f "$p/tmp_gdb.txt" ]
 then
     rm "$p/tmp_gdb.txt"
 fi
-start_ts=$(date +%F_%H-%M-%S)
+start_ts=$(date '+%Y-%m-%d %H:%M:%S')
 echo "/============= server start $start_ts =============\\" >> "$p/full_gdb.txt"
 gdb -ex='set confirm off' \
     -ex='set pagination off' \
@@ -75,7 +80,7 @@ gdb -ex='set confirm off' \
     -ex='set logging on' \
     -ex='bt full' -ex='info registers' -ex=quit --args \
     ./${srv}_srv_d "logfile $logfile;#sid:$server_id"
-stop_ts=$(date +%F_%H-%M-%S)
+stop_ts=$(date '+%Y-%m-%d %H:%M:%S')
 echo "\\============= server stop  $stop_ts =============/" >> "$p/full_gdb.txt"
 echo "/============= server start $start_ts =============\\" > "$p/raw_gdb.txt"
 if [ ! -f "$logfile_absolute" ]
@@ -103,6 +108,34 @@ echo "echo $url" > paste.txt
 ./lib/echo_pipe.sh "$p/raw_build.txt" > "$p/build.txt"
 echo "git status - $(date)" | ./lib/echo_pipe.sh > "$p/status.txt"
 git status | ./lib/echo_pipe.sh >> "$p/status.txt"
+
+start_secs="$(date --date "$start_ts" +%s)"
+stop_secs="$(date --date "$stop_ts" +%s)"
+runtime="$((stop_secs - start_secs))"
+
+log "server runtime: $runtime seconds"
+if [ "$runtime" -lt "5" ]
+then
+    mkdir -p lib/tmp
+    failed_starts=0
+    if [ -f lib/tmp/failed_starts.txt ]
+    then
+        failed_starts="$(cat lib/tmp/failed_starts.txt)"
+    fi
+    failed_starts="$((failed_starts + 1))"
+    echo "$failed_starts" > lib/tmp/failed_starts.txt
+    wrn "WARNING: Server runtime too short!"
+    wrn "         if the server crashes during first 5 seconds"
+    wrn "         this gets tracked as failed start."
+    wrn "failed starts $failed_starts/$MAX_FAILED_STARTS"
+    if [ "$failed_starts" -ge "$MAX_FAILED_STARTS" ]
+    then
+        err "ERROR: Reached failed starts threshold!"
+        err "       You have to manually restart the server"
+        err "       when it crashed after start too often."
+        exit 1
+    fi
+fi
 log "sleeping $RESTART_DELAY seconds ... press CTRL-C now to stop the server"
 sleep $RESTART_DELAY
 

@@ -42,6 +42,8 @@ then
     exit
 fi
 
+del_file "lib/tmp/failed_starts.txt"
+
 check_deps
 check_running
 
