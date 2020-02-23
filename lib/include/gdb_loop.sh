@@ -66,9 +66,10 @@ start_ts=$(date +%F_%H-%M-%S)
 echo "/============= server start $start_ts =============\\" >> "$p/full_gdb.txt"
 gdb -ex='set confirm off' \
     -ex='set pagination off' \
+    -ex=run \
     -ex="set logging file $p/tmp_gdb.txt" \
     -ex='set logging on' \
-    -ex=run -ex='bt' \
+    -ex=bt \
     -ex='set logging off' \
     -ex="set logging file $p/full_gdb.txt" \
     -ex='set logging on' \
@@ -89,8 +90,7 @@ else
     wrn "WARNING! logfile not found:"
     echo "$logfile_absolute"
 fi
-# filter out the thread spam
-grep -v '^\[New Thread' "$p/tmp_gdb.txt" | grep -v '^\[Thread' >> "$p/raw_gdb.txt"
+cat "$p/tmp_gdb.txt" >> "$p/raw_gdb.txt"
 echo "\\============= server stop  $stop_ts =============/" >> "$p/raw_gdb.txt"
 ./lib/echo_pipe.sh "$p/raw_gdb.txt" > bt.txt
 cat "$p/raw_gdb.txt" >> "$p/log_gdb.txt"
