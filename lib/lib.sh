@@ -13,10 +13,21 @@ source lib/include/logs.sh
 source lib/include/dir.sh
 
 function check_warnings() {
+    local port
+    check_server_dir
+    mkdir -p lib/tmp
+    mkdir -p lib/var
     if [ -f failed_sql.sql ]
     then
         wrn "WARNING: file found 'failed_sql.sql'"
         wrn "         add these records manually to the database"
+    fi
+    include_exec "autoexec.cfg" > lib/tmp/compiled.cfg
+    port="$(wc -l < <(grep '^sv_port' lib/tmp/compiled.cfg))"
+    if [ "$port" != "" ] && [ "$port" -gt "1" ]
+    then
+        wrn "WARNING: found sv_port $port times in your config"
+        wrn "         avoid duplicates in config to avoid confusion."
     fi
 }
 
