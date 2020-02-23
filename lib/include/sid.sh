@@ -39,10 +39,10 @@ function get_sid() {
         return
     fi
     len="${#server_id}"
-    if [ $((len)) -ne 32 ]
+    if [ $((len)) -ne 36 ]
     then
-        wrn "unexpected sid length found"
-        wrn "exptected 32 got $len"
+        wrn "unexpected UID length found"
+        wrn "exptected 36 got $len"
     fi
 }
 
