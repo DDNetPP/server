@@ -3,8 +3,14 @@
 # this is called in loop_gdb.sh
 # so updating the script without restarting it is possible
 
-# delete logfile and start writing a new one when line count is reached
+# max log size - delete logfile and start writing a new one when line count is reached
 MAX_LOG_SIZE=5000
+
+# restart delay - sleep time after server crash/shutdown
+# recommended is '5' which is 5 seconds
+# could also be '1m' for 1 minute (passed to sleep command)
+# WARNING: using something other than seconds might need some changes in the script
+RESTART_DELAY=5
 
 if [ "$1" != "--loop" ]
 then
@@ -97,6 +103,6 @@ echo "echo $url" > paste.txt
 ./lib/echo_pipe.sh "$p/raw_build.txt" > "$p/build.txt"
 echo "git status - $(date)" | ./lib/echo_pipe.sh > "$p/status.txt"
 git status | ./lib/echo_pipe.sh >> "$p/status.txt"
-log "sleeping 5 seconds ... press CTRL-C now to stop the server"
-sleep 5
+log "sleeping $RESTART_DELAY seconds ... press CTRL-C now to stop the server"
+sleep $RESTART_DELAY
 
