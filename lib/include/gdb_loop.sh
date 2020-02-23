@@ -3,6 +3,9 @@
 # this is called in loop_gdb.sh
 # so updating the script without restarting it is possible
 
+# delete logfile and start writing a new one when line count is reached
+MAX_LOG_SIZE=5000
+
 if [ "$1" != "--loop" ]
 then
     echo "do not call this script manually!"
@@ -18,8 +21,31 @@ fi
 
 source lib/lib.sh
 
+function check_logsize() {
+    local logf="$1"
+    if [ ! -f "$logf" ]
+    then
+        return
+    fi
+    local lines="$(wc -l < "$logf")"
+    if [ "$?" != "0" ] || [ "$lines" == "" ]
+    then
+        err "ERROR: failed to compute logsize of file '$logf'"
+    elif [ "$lines" -gt "$MAX_LOG_SIZE" ]
+    then
+        wrn "WARNING: logfile reached maximum size lines $lines/$MAX_LOG_SIZE"
+        wrn "         deleting logfile '$logf' ..."
+        rm "$logf"
+    else
+        log "log '$logf' lines $lines/$MAX_LOG_SIZE"
+    fi
+}
+
 p=logs/crashes
 mkdir -p "$p" || exit 1
+
+check_logsize "$p/full_gdb.txt"
+check_logsize "$p/log_gdb.txt"
 
 ts=$(date +%F_%H-%M-%S)
 log_filename="$srv_name/logs/${srv_name}_$ts.log"
@@ -31,7 +57,7 @@ then
     rm "$p/tmp_gdb.txt"
 fi
 start_ts=$(date +%F_%H-%M-%S)
-echo "/============= server start $start_ts =============\\" > "$p/full_gdb.txt"
+echo "/============= server start $start_ts =============\\" >> "$p/full_gdb.txt"
 gdb -ex='set confirm off' \
     -ex='set pagination off' \
     -ex="set logging file $p/tmp_gdb.txt" \
