@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# each server directory has its own server UID
+# each server directory has its own server UUID
 # and they are generated once and then stored into lib/var/.server_id
 # they are used to kill the process and make sure not to kill the wrong server
 
@@ -10,7 +10,7 @@ OLD_SID_FILE=lib/.server_id # backwards compability
 function generate_sid() {
     server_id="$(od -x /dev/urandom | head -1 | awk '{OFS="-"; print $2$3,$4,$5,$6,$7$8$9}')"
     echo "$server_id" > "$SID_FILE"
-    log "generated new server UID '$server_id'"
+    log "generated new server UUID '$server_id'"
 }
 
 function get_sid() {
@@ -41,7 +41,7 @@ function get_sid() {
     len="${#server_id}"
     if [ $((len)) -ne 36 ]
     then
-        wrn "unexpected UID length found"
+        wrn "unexpected UUID length found"
         wrn "exptected 36 got $len"
     fi
 }
