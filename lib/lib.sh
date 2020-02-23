@@ -12,6 +12,14 @@ source lib/include/git.sh
 source lib/include/logs.sh
 source lib/include/dir.sh
 
+function check_warnings() {
+    if [ -f failed_sql.sql ]
+    then
+        wrn "WARNING: file found 'failed_sql.sql'"
+        wrn "         add these records manually to the database"
+    fi
+}
+
 function edit_file() {
     local file=$1
     options=()
@@ -199,6 +207,7 @@ function check_logdir() {
 function check_deps() {
     check_gitpath
     check_logdir
+    check_warnings
 
     logpath="$gitpath_log/$srv_name/logs/"
     srv_bin="${srv}_srv_d"

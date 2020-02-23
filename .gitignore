@@ -37,3 +37,4 @@ stats/
 stats_failed/
 types/
 tags
+failed_sql.sql
