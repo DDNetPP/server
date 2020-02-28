@@ -36,7 +36,12 @@ then
     exit 1
 fi
 mv "$binary_name" $cwd/bin/${srv_name}_srv_d
-cp data/maps/*.map "$cwd/maps"
+num_maps="$(find . -name -maxdepth 1 '*.map' 2>/dev/null | wc -l)"
+if [ "$num_maps" != 0 ]
+then
+    log "copying $num_maps from source directory ..."
+    cp data/maps/*.map "$cwd/maps"
+fi
 
 cd "$cwd" || exit 1
 if [[ -d cfg/ ]] && [[ -d cfg/.git ]]
