@@ -79,7 +79,9 @@ gdb -ex='set confirm off' \
     -ex='set logging off' \
     -ex="set logging file $p/full_gdb.txt" \
     -ex='set logging on' \
-    -ex='bt full' -ex='info registers' -ex=quit --args \
+    -ex='echo (gdb) bt full\n' -ex='bt full' \
+    -ex='echo (gdb) info registers\n' -ex='info registers' \
+    -ex=quit --args \
     ./${srv}_srv_d "logfile $logfile;#sid:$server_id"
 stop_ts=$(date '+%Y-%m-%d %H:%M:%S')
 echo "\\============= server stop  $stop_ts =============/" >> "$p/full_gdb.txt"
