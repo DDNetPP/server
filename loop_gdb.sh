@@ -33,6 +33,7 @@ then
     echo "clearing data ..."
     del_file crashes.txt
     del_file paste.txt
+    del_file bt.txt
     del_file "$p/status.txt"
     del_file "$p/build.txt"
     del_file "$p/log_gdb.txt"
