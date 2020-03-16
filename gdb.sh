@@ -13,7 +13,7 @@ check_deps
 check_running
 install_dep gdb
 
-logfile="$logroot/$srv_name/logs/${srv_name}_$(date +%F_%H-%M-%S).log"
+logfile="$logroot/$CFG_SRV_NAME/logs/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S).log"
 cache_logpath "$logfile"
 
 gdb --args ./${srv}_srv_d "logfile $logfile;#sid:$server_id"

@@ -42,7 +42,7 @@ function cache_logpath() {
 }
 
 function show_latest_logs() {
-    logpath="$gitpath_log/$srv_name/logs/"
+    logpath="$gitpath_log/$CFG_SRV_NAME/logs/"
     if [ ! -d $logpath ]
     then
         err "logpath not found '$logpath'"

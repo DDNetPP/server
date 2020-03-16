@@ -82,12 +82,12 @@ function install_dep() {
 }
 
 function show_procs() {
-    if pgrep "$srv_name"
+    if pgrep "$CFG_SRV_NAME"
     then
         wrn "process with the same name is running already!"
         echo ""
         log "+--------] running processes [---------+"
-        ps o cmd -p "$(pgrep "$srv_name")" | tail -n1
+        ps o cmd -p "$(pgrep "$CFG_SRV_NAME")" | tail -n1
         log "+--------------------------------------+"
         return 0
     fi
@@ -95,7 +95,7 @@ function show_procs() {
 }
 
 function check_running() {
-    if [ "$srv_name" == "" ]
+    if [ "$CFG_SRV_NAME" == "" ]
     then
         err "server name is empty"
         exit 1
@@ -130,7 +130,7 @@ function check_cfg() {
             return
         fi
         log "editing template cfg..."
-        sed "s/SERVER_NAME/$srv_name/g" lib/autoexec.txt > autoexec.cfg
+        sed "s/SERVER_NAME/$CFG_SRV_NAME/g" lib/autoexec.txt > autoexec.cfg
         vi autoexec.cfg # TODO: make sure vi is installed
     fi
 }
@@ -196,7 +196,7 @@ function check_deps() {
     check_logdir
     check_warnings
 
-    logpath="$gitpath_log/$srv_name/logs/"
+    logpath="$gitpath_log/$CFG_SRV_NAME/logs/"
     srv_bin="${srv}_srv_d"
 
     if [ ! -f "$srv_bin" ]

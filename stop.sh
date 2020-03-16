@@ -26,7 +26,7 @@ fi
 sleep 0.5 # give server time to shutdown
 if show_procs
 then
-    log "other processes containing '$srv_name' were found."
+    log "other processes containing '$CFG_SRV_NAME' were found."
     log "you can stop them all."
     log "but keep it mind it could stop any application on your server not only tw server"
     log "do you want to stop them all? [y/N]"
@@ -34,7 +34,7 @@ then
     echo ""
     if [[ "$yn" =~ [yY] ]]
     then
-        pkill -f "./${srv_name}_srv_d"
+        pkill -f "./${CFG_SRV_NAME}_srv_d"
         log "stopped all processes."
     else
         log "aborting stop script."

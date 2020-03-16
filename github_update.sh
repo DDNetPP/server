@@ -19,7 +19,7 @@ then
 fi
 
 echo "]============== === == ="
-figlet "$srv_name"
+figlet "$CFG_SRV_NAME"
 echo "]============== === == ="
 
 log "This script updates the ddnet++ repo and then moves the binary to the server dir."

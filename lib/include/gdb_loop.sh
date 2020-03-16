@@ -60,7 +60,7 @@ check_logsize "$p/full_gdb.txt"
 check_logsize "$p/log_gdb.txt"
 
 ts=$(date +%F_%H-%M-%S)
-log_filename="$srv_name/logs/${srv_name}_$ts.log"
+log_filename="$CFG_SRV_NAME/logs/${CFG_SRV_NAME}_$ts.log"
 logfile="$logroot/$log_filename"
 logfile_absolute="$gitpath_log/$log_filename"
 cache_logpath "$logfile"
@@ -103,7 +103,7 @@ echo "\\============= server stop  $stop_ts =============/" >> "$p/raw_gdb.txt"
 ./lib/echo_pipe.sh "$p/raw_gdb.txt" > bt.txt
 cat "$p/raw_gdb.txt" >> "$p/log_gdb.txt"
 rm "$p/raw_gdb.txt"
-log_err "gdb_loop.sh server $srv_name crashed at $ts"
+log_err "gdb_loop.sh server $CFG_SRV_NAME crashed at $ts"
 echo "echo \"crash or shutdown$ts\"" >> crashes.txt
 ./cmake_update.sh > "$p/raw_build.txt"
 url="$(cstd "$p/raw_build.txt")"

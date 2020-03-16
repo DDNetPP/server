@@ -33,7 +33,7 @@ then
     ls
     exit 1
 fi
-mv "$binary_name" "$cwd/bin/${srv_name}_srv_d"
+mv "$binary_name" "$cwd/bin/${CFG_SRV_NAME}_srv_d"
 num_maps="$(find . -name -maxdepth 1 '*.map' 2>/dev/null | wc -l)"
 if [ "$num_maps" != 0 ]
 then

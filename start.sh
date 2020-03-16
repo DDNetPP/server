@@ -59,7 +59,7 @@ then
     exit 0
 fi
 
-logfile="$gitpath_log/$srv_name/logs/${srv_name}_$(date +%F_%H-%M-%S).log"
+logfile="$gitpath_log/$CFG_SRV_NAME/logs/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S).log"
 cache_logpath "$logfile"
 
 nohup ./${srv}_srv_d "#sid:$server_id" > "$logfile" 2>&1 &
