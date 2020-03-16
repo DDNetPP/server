@@ -108,9 +108,64 @@ function menu() {
             exit
         fi
     fi
-    # download_web http://heinrich5991.de/teeworlds/maps/maps/
-    # download_zip https://maps.ddnet.tw/compilations/maps7.zip
-    # download_git https://github.com/ZillyFng/solofng-maps
+    PS3='Please enter your choice: '
+    options=(
+        "vanilla"
+        "heinrich5991 [BIG]"
+        "ddnet [BIG]"
+        "ddnet7 [BIG]"
+        "KoG [BIG]"
+        "ddnet++"
+        "chiller"
+        "zillyfng"
+        "zillyfly"
+        "Quit"
+    )
+    select opt in "${options[@]}"
+    do
+        case $opt in
+            "vanilla")
+                download_git https://github.com/teeworlds/teeworlds-maps
+                break
+                ;;
+            "heinrich5991 [BIG]")
+                download_web http://heinrich5991.de/teeworlds/maps/maps/
+                break
+                ;;
+            "ddnet [BIG]")
+                download_git https://github.com/ddnet/ddnet-maps
+                break
+                ;;
+            "ddnet7 [BIG]")
+                download_zip https://maps.ddnet.tw/compilations/maps7.zip
+                break
+                ;;
+            "KoG [BIG]")
+                download_zip https://qshar.com/maps.tar.gz
+                break
+                ;;
+            "ddnet++")
+                download_git https://github.com/DDNetPP/maps
+                break
+                ;;
+            "chiller")
+                download_git https://github.com/ChillerTW/GitMaps
+                break
+                ;;
+            "zillyfng")
+                download_git https://github.com/ZillyFng/solofng-maps
+                break
+                ;;
+            "zillyfly")
+                download_git https://github.com/ZillyFly/fly-maps
+                break
+                ;;
+            "Quit")
+                break
+                ;;
+            *) echo "invalid option $REPLY";;
+        esac
+    done
 }
 
 menu
