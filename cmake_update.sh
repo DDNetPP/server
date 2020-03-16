@@ -25,15 +25,15 @@ cd build || { err "Could not enter build/ directory"; exit 1; }
 branch="$(git branch | sed -n '/\* /s///p')"
 cmake .. "${CFG_CMAKE_FLAGS[@]}" || { err --log "build failed at $branch $(git rev-parse HEAD) (cmake)"; exit 1; }
 make -j6 || { err --log "build failed at $branch $(git rev-parse HEAD) (make)"; exit 1; }
-if [ ! -f "$binary_name" ]
+if [ ! -f "$CFG_COMPILED_BIN" ]
 then
     err "Binary not found is your config correct?"
-    err "Expected binary name '$binary_name'"
+    err "Expected binary name '$CFG_COMPILED_BIN'"
     err "and only found those files:"
     ls
     exit 1
 fi
-mv "$binary_name" "$cwd/bin/${CFG_SRV_NAME}_srv_d"
+mv "$CFG_COMPILED_BIN" "$cwd/bin/${CFG_SRV_NAME}_srv_d"
 num_maps="$(find . -name -maxdepth 1 '*.map' 2>/dev/null | wc -l)"
 if [ "$num_maps" != 0 ]
 then

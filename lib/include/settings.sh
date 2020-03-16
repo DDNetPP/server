@@ -8,7 +8,7 @@ aSettStr+=("gitpath_src");aSettVal+=("/home/chiller/git")
 aSettStr+=("gitpath_mod");aSettVal+=("/home/chiller/git/mod")
 aSettStr+=("gitpath_log");aSettVal+=("/home/chiller/.teeworlds/dumps/TeeworldsLogs")
 aSettStr+=("server_name");aSettVal+=("teeworlds")
-aSettStr+=("binary_name");aSettVal+=("teeworlds_srv")
+aSettStr+=("compiled_binary_name");aSettVal+=("teeworlds_srv")
 aSettStr+=("cmake_flags");aSettVal+=("-DCMAKE_BUILD_TYPE=Debug")
 aSettStr+=("error_logs");aSettVal+=("1")
 # aSettStr+=("error_logs_api");aSettVal+=("curl -d \"{\\\"err\\\":\\\"\$err\\\"}\" -H 'Content-Type: application/json' http://localhost:80/api")
@@ -95,21 +95,21 @@ create_settings # create fresh if null
 read_settings_file
 
 # Settings:
-# - gitpath src     0
-# - gitpath mod     1
-# - gitpath log     2
-# - server name     3
-# - binary name     4
-# - cmake flags     5
-# - error logs      6
-# - error logs api  7
-# - editor          8
+# - gitpath src         0
+# - gitpath mod         1
+# - gitpath log         2
+# - server name         3
+# - compiled bin name   4
+# - cmake flags         5
+# - error logs          6
+# - error logs api      7
+# - editor              8
 
 export gitpath_src="${aSettVal[0]}"
 export gitpath_mod="${aSettVal[1]}"
 export gitpath_log="${aSettVal[2]}"
 export CFG_SRV_NAME="${aSettVal[3]}"
-export binary_name="${aSettVal[4]}"
+export CFG_COMPILED_BIN="${aSettVal[4]}"
 # https://github.com/koalaman/shellcheck/wiki/Sc2086
 # https://github.com/koalaman/shellcheck/wiki/SC2206
 read -r -a CFG_CMAKE_FLAGS <<< "${aSettVal[5]}"

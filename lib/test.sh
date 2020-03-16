@@ -29,7 +29,7 @@ gitpath_src=~/git
 gitpath_mod=~/git/ddnet7
 gitpath_log=/tmp/TestLogs
 server_name=testsrv-9988
-binary_name=DDNet7-Server
+compiled_binary_name=DDNet7-Server
 error_logs=0
 error_logs_api=curl -d "{\"err\":\"\$err\"}" -H 'Content-Type: application/json' http://localhost:80/api
 EOF
