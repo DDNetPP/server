@@ -4,6 +4,26 @@ port_used=8303
 twcfg_line=0
 twcfg_last_line="firstline"
 
+function check_cfg() {
+    if [ ! -f autoexec.cfg ]
+    then
+        wrn "autoexec.cfg not found!"
+        echo ""
+        log "do you want to create one from template? [y/N]"
+        yn=""
+        read -r -n 1 yn
+        echo ""
+        if [[ ! "$yn" =~ [yY] ]]
+        then
+            log "skipping config..."
+            return
+        fi
+        log "editing template cfg..."
+        sed "s/SERVER_NAME/$CFG_SRV_NAME/g" lib/autoexec.txt > autoexec.cfg
+        vi autoexec.cfg # TODO: make sure vi is installed
+    fi
+}
+
 function include_exec() {
     local config="$1"
     if [ ! -f "$config" ]
@@ -54,6 +74,7 @@ function get_port_used() {
 }
 
 function check_port() {
+    check_cfg
     get_port_used
     if netstat --inet -n -a -p 2>/dev/null | grep "$port_used" | grep -qv grep;
     then

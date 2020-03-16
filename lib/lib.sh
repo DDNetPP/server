@@ -20,6 +20,7 @@ function is_cmd() {
 function check_warnings() {
     local port
     check_server_dir
+    check_cfg
     mkdir -p lib/tmp
     mkdir -p lib/var
     if [ -f failed_sql.sql ]
@@ -113,26 +114,6 @@ function check_running() {
         log "ignoring duplicated process..."
     fi
     check_port
-}
-
-function check_cfg() {
-    if [ ! -f autoexec.cfg ]
-    then
-        wrn "autoexec.cfg not found!"
-        echo ""
-        log "do you want to create one from template? [y/N]"
-        yn=""
-        read -r -n 1 yn
-        echo ""
-        if [[ ! "$yn" =~ [yY] ]]
-        then
-            log "skipping config..."
-            return
-        fi
-        log "editing template cfg..."
-        sed "s/SERVER_NAME/$CFG_SRV_NAME/g" lib/autoexec.txt > autoexec.cfg
-        vi autoexec.cfg # TODO: make sure vi is installed
-    fi
 }
 
 function check_directory() {
