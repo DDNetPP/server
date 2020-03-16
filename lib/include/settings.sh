@@ -31,7 +31,7 @@ function create_settings() {
         do
             echo "${aSettStr[$i]}=${aSettVal[$i]}" >> "$settings_file"
         done
-        nano $settings_file
+        edit_file "$settings_file"
     fi
     exit 1
 }

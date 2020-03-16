@@ -4,6 +4,7 @@ psaux=$(ps aux)
 gitpath=/home/$USER/git
 
 source lib/include/logger.sh
+source lib/include/editor.sh
 source lib/include/port.sh
 source lib/include/dir.sh
 source lib/include/sid.sh
@@ -33,35 +34,6 @@ function check_warnings() {
         wrn "WARNING: found sv_port $port times in your config"
         wrn "         avoid duplicates in config to avoid confusion."
     fi
-}
-
-function edit_file() {
-    local file=$1
-    options=()
-    lines=0
-    editors="vim vi nano emacs ne cat"
-    aEditors=($editors);
-    for editor in "${aEditors[@]}"
-    do
-        options+=("$editor")
-        lines=$((lines+1))
-    done
-    if [ $lines -eq 1 ]
-    then
-        exit 0
-    fi
-
-    PS3='Select a text editor: '
-    select opt in "${options[@]}"
-    do
-        if [[ " ${options[@]} " =~ " ${opt} " ]]
-        then
-            $opt $file
-            return
-        else
-            echo "invalid option $REPLY"
-        fi
-    done
 }
 
 function install_apt() {
