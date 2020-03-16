@@ -16,12 +16,12 @@ function require_dir() {
 
 function require_file() {
     local file="$1"
-    local mode="${1:-verbose}"
+    local mode="${2:-verbose}"
     if [ ! -f "$file" ]
     then
         if [ "$mode" == "verbose" ]
         then
-            echo "Error: file not found '$dir'"
+            echo "Error: file not found '$file'"
             echo "  make sure you are in a server repo"
         fi
         exit 1
