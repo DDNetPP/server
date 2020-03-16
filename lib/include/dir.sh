@@ -33,6 +33,7 @@ function check_server_dir() {
     require_dir .git/ "$mode"
     require_dir lib/ "$mode"
     require_file lib/lib.sh "$mode"
-    require_file server.cnf "$mode"
+    # do not require server.cnf or it will fail before creating server.cnf
+    # require_file server.cnf "$mode"
 }
 
