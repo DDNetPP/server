@@ -110,7 +110,10 @@ export gitpath_mod="${aSettVal[1]}"
 export gitpath_log="${aSettVal[2]}"
 export srv_name="${aSettVal[3]}"
 export binary_name="${aSettVal[4]}"
-export cmake_flags="${aSettVal[5]}"
+# https://github.com/koalaman/shellcheck/wiki/Sc2086
+# https://github.com/koalaman/shellcheck/wiki/SC2206
+read -r -a CFG_CMAKE_FLAGS <<< "${aSettVal[5]}"
+export CFG_CMAKE_FLAGS # usage: "${CFG_CMAKE_FLAGS[@]}"
 export CFG_ERROR_LOGS="${aSettVal[6]}" # 0=off 1=no duplicated 2=duplicates
 export CFG_ERROR_LOGS_API="${aSettVal[7]}" # shell command that gets executed on error
 export CFG_EDITOR="${aSettVal[8]}"

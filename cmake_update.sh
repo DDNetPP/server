@@ -23,9 +23,7 @@ git pull || { err --log "git pull failed"; exit 1; }
 mkdir -p build || { err "Error: creating dir build/"; exit 1; }
 cd build || { err "Could not enter build/ directory"; exit 1; }
 branch="$(git branch | sed -n '/\* /s///p')"
-# TODO:
-# https://github.com/koalaman/shellcheck/wiki/Sc2086#exceptions
-cmake .. $cmake_flags || { err --log "build failed at $branch $(git rev-parse HEAD) (cmake)"; exit 1; }
+cmake .. "${CFG_CMAKE_FLAGS[@]}" || { err --log "build failed at $branch $(git rev-parse HEAD) (cmake)"; exit 1; }
 make -j6 || { err --log "build failed at $branch $(git rev-parse HEAD) (make)"; exit 1; }
 if [ ! -f "$binary_name" ]
 then
@@ -35,7 +33,7 @@ then
     ls
     exit 1
 fi
-mv "$binary_name" $cwd/bin/${srv_name}_srv_d
+mv "$binary_name" "$cwd/bin/${srv_name}_srv_d"
 num_maps="$(find . -name -maxdepth 1 '*.map' 2>/dev/null | wc -l)"
 if [ "$num_maps" != 0 ]
 then
