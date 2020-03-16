@@ -35,10 +35,10 @@ function suc() {
 ERR_LOGFILE=logs/error_log.txt
 
 function is_err_log() {
-    if [ "$error_logs" == "0" ]
+    if [ "$CFG_ERROR_LOGS" == "0" ]
     then
         return 1;
-    elif [ "$error_logs" == "1" ] # 1=no duplicates 2=duplicates
+    elif [ "$CFG_ERROR_LOGS" == "1" ] # 1=no duplicates 2=duplicates
     then
         if [ ! -f "$ERR_LOGFILE" ]
         then
@@ -83,12 +83,12 @@ function log_err() {
     then
         echo "[$(date '+%Y-%m-%d %H:%M:%S')] $err" >> "$ERR_LOGFILE" || err "log_err: failed to write log"
     fi
-    if [ "$error_logs_api" != "" ]
+    if [ "$CFG_ERROR_LOGS_API" != "" ]
     then
         log "pwd: $(pwd)"
         log "executing error api cmd:"
-        echo "eval \"$error_logs_api\""
-        eval "$error_logs_api"
+        echo "eval \"$CFG_ERROR_LOGS_API\""
+        eval "$CFG_ERROR_LOGS_API"
     fi
 }
 
