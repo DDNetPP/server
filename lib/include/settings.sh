@@ -3,6 +3,7 @@ shopt -s extglob # used for trailing slashes globbing
 
 # init variables
 settings_file="server.cnf"
+line_num=0
 aSettStr=();aSettVal=()
 aSettStr+=("gitpath_src");aSettVal+=("/home/chiller/git")
 aSettStr+=("gitpath_mod");aSettVal+=("/home/chiller/git/mod")
@@ -40,6 +41,12 @@ function create_settings() {
 function parse_settings_line() {
         local sett=$1
         local val=$2
+        if [ "$sett" == "binary_name" ]
+        then
+            wrn "WARNING: 'binary_name' is deprecated by 'compiled_binary_name'"
+            wrn "         please fix at $settings_file:$line_num"
+            sett=compiled_binary_name
+        fi
         local i
         for i in "${!aSettStr[@]}"
         do
@@ -62,6 +69,7 @@ function read_settings_file() {
     local i
     while read -r line
     do
+        line_num="$((line_num + 1))"
         if [ "${line:0:1}" == "#" ]
         then
             continue # ignore comments
