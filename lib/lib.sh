@@ -197,7 +197,7 @@ function check_deps() {
     check_warnings
 
     logpath="$gitpath_log/$CFG_SRV_NAME/logs/"
-    srv_bin="${srv}_srv_d"
+    srv_bin="${CFG_BIN}_srv_d"
 
     if [ ! -f "$srv_bin" ]
     then

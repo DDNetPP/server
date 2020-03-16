@@ -117,7 +117,7 @@ export CFG_CMAKE_FLAGS # usage: "${CFG_CMAKE_FLAGS[@]}"
 export CFG_ERROR_LOGS="${aSettVal[6]}" # 0=off 1=no duplicated 2=duplicates
 export CFG_ERROR_LOGS_API="${aSettVal[7]}" # shell command that gets executed on error
 export CFG_EDITOR="${aSettVal[8]}"
-export srv=bin/$CFG_SRV_NAME
+export CFG_BIN=bin/$CFG_SRV_NAME
 
 gitpath_log="${gitpath_log%%+(/)}" # strip trailing slash
 logroot="$gitpath_log"

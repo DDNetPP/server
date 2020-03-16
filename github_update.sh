@@ -24,7 +24,7 @@ echo "]============== === == ="
 
 log "This script updates the ddnet++ repo and then moves the binary to the server dir."
 log "repo:   $src_dir/DDNetPP_d"
-log "server: $srv_dir/${srv}_srv_d"
+log "server: $srv_dir/${CFG_BIN}_srv_d"
 log "Server keeps running."
 echo ""
 log "do you want to update? [y/N]"
@@ -68,13 +68,13 @@ $bam_bin server_debug;
 
 cd "$srv_dir" || exit 1
 mkdir -p bin
-if [ -f "${srv}_srv_d" ]
+if [ -f "${CFG_BIN}_srv_d" ]
 then
     log "backup server..."
-    mv ${srv}_srv_d ${srv}_srv_d_old;
+    mv ${CFG_BIN}_srv_d ${CFG_BIN}_srv_d_old;
 fi
 log "updating server..."
-cp $src_dir/DDNetPP_d ${srv}_srv_d;
+cp $src_dir/DDNetPP_d ${CFG_BIN}_srv_d;
 
 echo ""
 log "do you also want to update maps? [y/N]"

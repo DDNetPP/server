@@ -55,14 +55,14 @@ then
     cd ../../
     read -rp 'password: ' pass
     log "starting server with password '$pass' ..."
-    ./${srv}_srv_d "sv_map tmp/$mapname;password $pass"
+    ./${CFG_BIN}_srv_d "sv_map tmp/$mapname;password $pass"
     exit 0
 fi
 
 logfile="$gitpath_log/$CFG_SRV_NAME/logs/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S).log"
 cache_logpath "$logfile"
 
-nohup ./${srv}_srv_d "#sid:$server_id" > "$logfile" 2>&1 &
+nohup ./${CFG_BIN}_srv_d "#sid:$server_id" > "$logfile" 2>&1 &
 
 show_logs
 
