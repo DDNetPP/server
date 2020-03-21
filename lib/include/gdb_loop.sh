@@ -53,6 +53,12 @@ function check_logsize() {
     fi
 }
 
+if [[ "$CFG_DUMP_CORE" == "1" ]] || [[ "$CFG_DUMP_CORE" == "yes" ]] || [[ "$CFG_DUMP_CORE" == "on" ]] || [[ "$CFG_DUMP_CORE" == "true" ]]
+then
+    log "dumping core is turned on (ulimit -c unlimited)"
+    ulimit -c unlimited
+fi
+
 p=logs/crashes
 mkdir -p "$p" || exit 1
 
