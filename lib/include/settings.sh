@@ -15,6 +15,7 @@ aSettStr+=("error_logs");aSettVal+=("1")
 # aSettStr+=("error_logs_api");aSettVal+=("curl -d \"{\\\"err\\\":\\\"\$err\\\"}\" -H 'Content-Type: application/json' http://localhost:80/api")
 aSettStr+=("error_logs_api");aSettVal+=("test")
 aSettStr+=("editor");aSettVal+=("")
+aSettStr+=("gdb_cmds");aSettVal+=("")
 
 function create_settings() {
     if [ -f $settings_file ];
@@ -112,6 +113,7 @@ read_settings_file
 # - error logs          6
 # - error logs api      7
 # - editor              8
+# - gdb commands        9
 
 export gitpath_src="${aSettVal[0]}"
 export gitpath_mod="${aSettVal[1]}"
@@ -124,6 +126,7 @@ read -r -a CFG_CMAKE_FLAGS <<< "${aSettVal[5]}"
 export CFG_ERROR_LOGS="${aSettVal[6]}" # 0=off 1=no duplicated 2=duplicates
 export CFG_ERROR_LOGS_API="${aSettVal[7]}" # shell command that gets executed on error
 export CFG_EDITOR="${aSettVal[8]}"
+export CFG_GDB_CMDS="${aSettVal[9]}"
 
 gitpath_log="${gitpath_log%%+(/)}" # strip trailing slash
 logroot="$gitpath_log"

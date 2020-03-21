@@ -68,8 +68,15 @@ if [ -f "$p/tmp_gdb.txt" ]
 then
     rm "$p/tmp_gdb.txt"
 fi
-start_ts=$(date '+%Y-%m-%d %H:%M:%S')
-echo "/============= server start $start_ts =============\\" >> "$p/full_gdb.txt"
+
+custom_gdb=""
+if [ "$CFG_GDB_CMDS" != "" ]
+then
+    custom_gdb="-ex='echo (gdb) $CFG_GDB_CMDS\n' -ex='$CFG_GDB_CMDS'"
+    log "custom gdb command '$custom_gdb'"
+fi
+
+read -rd '' GDB_CMD << EOF
 gdb -ex='set confirm off' \
     -ex='set pagination off' \
     -ex=run \
@@ -81,8 +88,16 @@ gdb -ex='set confirm off' \
     -ex='set logging on' \
     -ex='echo (gdb) bt full\n' -ex='bt full' \
     -ex='echo (gdb) info registers\n' -ex='info registers' \
+    $custom_gdb \
     -ex=quit --args \
     ./${CFG_BIN}_srv_d "logfile $logfile;#sid:$server_id"
+EOF
+start_ts=$(date '+%Y-%m-%d %H:%M:%S')
+echo "/============= server start $start_ts =============\\" >> "$p/full_gdb.txt"
+echo ""
+eval "$GDB_CMD"
+echo ""
+log "executed: '$GDB_CMD'"
 stop_ts=$(date '+%Y-%m-%d %H:%M:%S')
 echo "\\============= server stop  $stop_ts =============/" >> "$p/full_gdb.txt"
 echo "/============= server start $start_ts =============\\" > "$p/raw_gdb.txt"
