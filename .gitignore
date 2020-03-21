@@ -38,4 +38,5 @@ stats/
 stats_failed/
 types/
 tags
+.gdb_history
 failed_sql.sql
