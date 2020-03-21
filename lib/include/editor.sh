@@ -9,7 +9,11 @@ function edit_file() {
     options=()
     lines=0
     selected_editor=""
-    aEditors=("vim" "vi" "nano" "emacs" "ne" "cat" "$EDITOR");
+    aEditors=("vim" "vi" "nano" "emacs" "ne" "cat");
+    if [ -z "$EDITOR" ] && [ "$EDIROR" != "" ]
+    then
+        aEditors+=("$EDITOR")
+    fi
     for editor in "${aEditors[@]}"
     do
         options+=("$editor")
@@ -27,20 +31,22 @@ function edit_file() {
     then
         selected_editor="$EDITOR"
     fi
-    if [ "$selected_editor" == "" ]
+    if [ "$selected_editor" != "" ]
     then
-        PS3='Select a text editor: '
-        select opt in "${options[@]}"
-        do
-            if [[ " ${options[@]} " =~ " ${opt} " ]]
-            then
-                selected_editor="$opt"
-                return
-            else
-                echo "invalid option $REPLY"
-            fi
-        done
+        eval "$selected_editor $file"
+        exit 0
     fi
-    eval "$selected_editor $file"
+    PS3='Select a text editor: '
+    select opt in "${options[@]}"
+    do
+        if [[ " ${options[@]} " =~ " ${opt} " ]]
+        then
+            selected_editor="$opt"
+            eval "$selected_editor $file"
+            exit 0
+        else
+            echo "invalid option $REPLY"
+        fi
+    done
 }
 
