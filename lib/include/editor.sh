@@ -34,7 +34,7 @@ function edit_file() {
     if [ "$selected_editor" != "" ]
     then
         eval "$selected_editor $file"
-        exit 0
+        return
     fi
     PS3='Select a text editor: '
     select opt in "${options[@]}"
@@ -43,7 +43,7 @@ function edit_file() {
         then
             selected_editor="$opt"
             eval "$selected_editor $file"
-            exit 0
+            return
         else
             echo "invalid option $REPLY"
         fi
