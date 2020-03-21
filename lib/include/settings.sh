@@ -16,7 +16,7 @@ aSettStr+=("error_logs");aSettVal+=("1")
 aSettStr+=("error_logs_api");aSettVal+=("test")
 aSettStr+=("editor");aSettVal+=("")
 aSettStr+=("gdb_cmds");aSettVal+=("")
-aSettStr+=("dump_core");aSettVal+=("0")
+aSettStr+=("gdb_dump_core");aSettVal+=("0")
 
 function create_settings() {
     if [ -f $settings_file ];
@@ -115,7 +115,7 @@ read_settings_file
 # - error logs api      7
 # - editor              8
 # - gdb commands        9
-# - dump core           10
+# - gdb dump core       10
 
 export gitpath_src="${aSettVal[0]}"
 export gitpath_mod="${aSettVal[1]}"
@@ -129,7 +129,7 @@ export CFG_ERROR_LOGS="${aSettVal[6]}" # 0=off 1=no duplicated 2=duplicates
 export CFG_ERROR_LOGS_API="${aSettVal[7]}" # shell command that gets executed on error
 export CFG_EDITOR="${aSettVal[8]}"
 export CFG_GDB_CMDS="${aSettVal[9]}"
-export CFG_DUMP_CORE="${aSettVal[10]}"
+export CFG_GDB_DUMP_CORE="${aSettVal[10]}"
 
 gitpath_log="${gitpath_log%%+(/)}" # strip trailing slash
 logroot="$gitpath_log"

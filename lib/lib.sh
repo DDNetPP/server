@@ -19,6 +19,7 @@ function is_cmd() {
 
 function check_warnings() {
     local port
+    local num_cores
     check_server_dir
     check_cfg
     mkdir -p lib/tmp
@@ -27,6 +28,13 @@ function check_warnings() {
     then
         wrn "WARNING: file found 'failed_sql.sql'"
         wrn "         add these records manually to the database"
+    fi
+    num_cores="$(find core_dumps/ | wc -l)"
+    num_cores="$((num_cores - 1))"
+    if [ "$num_cores" != "" ] && [ "$num_cores" -gt "0" ]
+    then
+        wrn "WARNING: $num_cores core dumps found!"
+        wrn "         ckeck core_dumps/ directory"
     fi
     include_exec "autoexec.cfg" > lib/tmp/compiled.cfg
     port="$(wc -l < <(grep '^sv_port ' lib/tmp/compiled.cfg))"

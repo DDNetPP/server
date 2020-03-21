@@ -53,10 +53,13 @@ function check_logsize() {
     fi
 }
 
-if [[ "$CFG_DUMP_CORE" == "1" ]] || [[ "$CFG_DUMP_CORE" == "yes" ]] || [[ "$CFG_DUMP_CORE" == "on" ]] || [[ "$CFG_DUMP_CORE" == "true" ]]
+start_ts_slug=$(date '+%Y-%m-%d_%H-%M-%S')
+gdb_corefile=""
+if [[ "$CFG_GDB_DUMP_CORE" == "1" ]] || [[ "$CFG_GDB_DUMP_CORE" == "yes" ]] || [[ "$CFG_GDB_DUMP_CORE" == "on" ]] || [[ "$CFG_GDB_DUMP_CORE" == "true" ]]
 then
-    log "dumping core is turned on (ulimit -c unlimited)"
-    ulimit -c unlimited
+    log "dumping core is turned on (generate-core-file)"
+    gdb_corefile="-ex='generate-core-file core_dumps/core_$start_ts_slug'"
+    mkdir -p core_dumps/ || exit 1
 fi
 
 p=logs/crashes
@@ -95,6 +98,7 @@ gdb -ex='set confirm off' \
     -ex='echo (gdb) bt full\n' -ex='bt full' \
     -ex='echo (gdb) info registers\n' -ex='info registers' \
     $custom_gdb \
+    $gdb_corefile \
     -ex=quit --args \
     ./${CFG_BIN}_srv_d "logfile $logfile;#sid:$server_id"
 EOF

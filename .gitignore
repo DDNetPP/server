@@ -33,6 +33,7 @@ data/
 maps/
 records/
 logs/
+core_dumps/
 stats/
 stats_failed/
 types/
