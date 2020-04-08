@@ -56,6 +56,7 @@ function show_latest_logs() {
         exit 1
     fi
     num_logs="$(find "$logpath" | wc -l)"
+    num_logs="$((num_logs - 1))"
     log "showing latest logfile out of $num_logs logs:"
     echo "$latest_log"
     less "$latest_log"
