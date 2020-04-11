@@ -40,3 +40,6 @@ types/
 tags
 .gdb_history
 failed_sql.sql
+votes_raw.txt
+votes_count.txt
+votes_lower.txt
