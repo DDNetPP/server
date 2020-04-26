@@ -131,7 +131,7 @@ export CFG_ERROR_LOGS_API="${aSettVal[7]}" # shell command that gets executed on
 export CFG_EDITOR="${aSettVal[8]}"
 export CFG_GDB_CMDS="${aSettVal[9]}"
 export CFG_GDB_DUMP_CORE="${aSettVal[10]}"
-export CFG_DEBUG="${aSettVal[11]}"
+# export CFG_DEBUG="${aSettVal[11]}" # debug depends on cmake flags
 
 gitpath_log="${gitpath_log%%+(/)}" # strip trailing slash
 logroot="$gitpath_log"
@@ -165,8 +165,11 @@ export CFG_CMAKE_FLAGS # usage: "${CFG_CMAKE_FLAGS[@]}"
 export is_dumps_logpath
 export logroot
 export CFG_BIN=bin/$CFG_SRV_NAME
-if [ "$CFG_DEBUG" == "1" ]
+if [[ "${CFG_CMAKE_FLAGS,,}" =~ debug ]]
 then
-    CFG_BIN="${CFG_BIN}_d"
+    export CFG_DEBUG=1
+    export CFG_BIN="${CFG_BIN}_d"
+else
+    export CFG_DEBUG=0
 fi
 
