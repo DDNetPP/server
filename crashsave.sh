@@ -15,19 +15,6 @@ get_sid
 
 while true;
 do
-    logfile="$gitpath_log/$CFG_SRV_NAME/logs/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S).log"
-    ts_start=$(date +%F_%H-%M-%S)
-    ./$CFG_BIN "#sid:$server_id" > "$logfile"
-    ts_end=$(date +%F_%H-%M-%S)
-    echo "+----------------------------------------+"
-    echo ""
-    figlet crash
-    date
-    echo ""
-    echo "+----------------------------------------+"
-    echo "echo crash or shutdown" >> crashes.txt
-    echo "echo start: $ts_start" >> crashes.txt
-    echo "echo crash: $ts_end" >> crashes.txt
-    echo "echo ------------------" >> crashes.txt
+    ./lib/include/crashsave_loop.sh --loop || exit 1
 done
 
