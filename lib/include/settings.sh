@@ -17,6 +17,7 @@ aSettStr+=("error_logs_api");aSettVal+=("test")
 aSettStr+=("editor");aSettVal+=("")
 aSettStr+=("gdb_cmds");aSettVal+=("")
 aSettStr+=("gdb_dump_core");aSettVal+=("0")
+aSettStr+=("is_debug");aSettVal+=("1")
 
 function create_settings() {
     if [ -f $settings_file ];
@@ -130,6 +131,7 @@ export CFG_ERROR_LOGS_API="${aSettVal[7]}" # shell command that gets executed on
 export CFG_EDITOR="${aSettVal[8]}"
 export CFG_GDB_CMDS="${aSettVal[9]}"
 export CFG_GDB_DUMP_CORE="${aSettVal[10]}"
+export CFG_DEBUG="${aSettVal[11]}"
 
 gitpath_log="${gitpath_log%%+(/)}" # strip trailing slash
 logroot="$gitpath_log"
@@ -160,7 +162,11 @@ then
 fi
 
 export CFG_CMAKE_FLAGS # usage: "${CFG_CMAKE_FLAGS[@]}"
-export CFG_BIN=bin/$CFG_SRV_NAME
 export is_dumps_logpath
 export logroot
+export CFG_BIN=bin/$CFG_SRV_NAME
+if [ "$CFG_DEBUG" == "1" ]
+then
+    CFG_BIN="${CFG_BIN}_d"
+fi
 

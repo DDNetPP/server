@@ -33,7 +33,7 @@ then
     ls
     exit 1
 fi
-mv "$CFG_COMPILED_BIN" "$cwd/bin/${CFG_SRV_NAME}_srv_d"
+mv "$CFG_COMPILED_BIN" "$cwd/${CFG_BIN}"
 num_maps="$(find . -name -maxdepth 1 '*.map' 2>/dev/null | wc -l)"
 if [ "$num_maps" != 0 ]
 then

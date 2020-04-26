@@ -17,7 +17,7 @@ while true;
 do
     logfile="$gitpath_log/$CFG_SRV_NAME/logs/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S).log"
     ts_start=$(date +%F_%H-%M-%S)
-    ./${CFG_BIN}_srv_d "#sid:$server_id" > "$logfile"
+    ./$CFG_BIN "#sid:$server_id" > "$logfile"
     ts_end=$(date +%F_%H-%M-%S)
     echo "+----------------------------------------+"
     echo ""

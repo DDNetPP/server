@@ -189,11 +189,10 @@ function check_deps() {
     check_warnings
 
     logpath="$gitpath_log/$CFG_SRV_NAME/logs/"
-    srv_bin="${CFG_BIN}_srv_d"
 
-    if [ ! -f "$srv_bin" ]
+    if [ ! -f "$CFG_BIN" ]
     then
-        err "server binary '$srv_bin' not found!"
+        err "server binary '$CFG_BIN' not found!"
         err "make sure the binary and your current path match"
         err "try ./github_update.sh to fetch the new binary"
     exit

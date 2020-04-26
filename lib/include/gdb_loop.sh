@@ -100,7 +100,7 @@ gdb -ex='set confirm off' \
     $custom_gdb \
     $gdb_corefile \
     -ex=quit --args \
-    ./${CFG_BIN}_srv_d "logfile $logfile;#sid:$server_id"
+    ./$CFG_BIN "logfile $logfile;#sid:$server_id"
 EOF
 start_ts=$(date '+%Y-%m-%d %H:%M:%S')
 echo "/============= server start $start_ts =============\\" >> "$p/full_gdb.txt"
