@@ -16,5 +16,5 @@ install_dep gdb
 logfile="$logroot/$CFG_SRV_NAME/logs/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S).log"
 cache_logpath "$logfile"
 
-gdb --args ./$CFG_BIN "logfile $logfile;#sid:$server_id"
+gdb -ex=run --args ./$CFG_BIN "logfile $logfile;#sid:$server_id"
 
