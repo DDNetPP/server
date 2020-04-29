@@ -14,7 +14,23 @@ source lib/include/git.sh
 source lib/include/logs.sh
 
 function is_cmd() {
-    [ -x "$(command -v $1)" ] && return 0
+    [ -x "$(command -v "$1")" ] && return 0
+}
+
+function get_cores() {
+    local cores
+    if is_cmd nproc
+    then
+        cores="$(($(nproc) - 2))"
+    elif is_cmd sysctl
+    then
+        cores="$(($(sysctl -n hw.ncpu) - 2))"
+    fi
+    if [ "$cores" -lt "1" ]
+    then
+        cores=1
+    fi
+    echo "$cores"
 }
 
 function check_warnings() {

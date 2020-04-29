@@ -24,7 +24,7 @@ mkdir -p build || { err "Error: creating dir build/"; exit 1; }
 cd build || { err "Could not enter build/ directory"; exit 1; }
 branch="$(git branch | sed -n '/\* /s///p')"
 cmake .. "${CFG_CMAKE_FLAGS[@]}" || { err --log "build failed at $branch $(git rev-parse HEAD) (cmake)"; exit 1; }
-make -j6 || { err --log "build failed at $branch $(git rev-parse HEAD) (make)"; exit 1; }
+make "-j$(get_cores)" || { err --log "build failed at $branch $(git rev-parse HEAD) (make)"; exit 1; }
 if [ ! -f "$CFG_COMPILED_BIN" ]
 then
     err "Binary not found is your config correct?"
