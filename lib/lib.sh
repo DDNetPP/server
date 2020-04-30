@@ -141,12 +141,12 @@ function install_dep() {
 }
 
 function show_procs() {
-    if pgrep "$CFG_SRV_NAME"
+    if pgrep -f "$CFG_SRV_NAME"
     then
         wrn "process with the same name is running already!"
         echo ""
         log "+--------] running processes [---------+"
-        ps o cmd -p "$(pgrep "$CFG_SRV_NAME")" | tail -n1
+        ps o cmd -p "$(pgrep -f "$CFG_SRV_NAME")" | tail -n1
         log "+--------------------------------------+"
         return 0
     fi
