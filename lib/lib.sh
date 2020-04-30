@@ -33,6 +33,37 @@ function get_cores() {
     echo "$cores"
 }
 
+function save_copy() {
+    if [[ ! -f "$1" ]]
+    then
+        return
+    elif [[ "$1" == "$2" ]]
+    then
+        wrn "tried to copy '$1' -> '$2'"
+        return
+    elif [[ ! -d "$2" ]]
+    then
+        err "Error: save copy failed"
+        err "       destination '$2' is not a directory"
+        return
+    fi
+    cp "$1" "$2"
+}
+
+function post_logs() {
+    if [ "$CFG_POST_LOGS_DIR" == "" ]
+    then
+        return
+    fi
+    log "copying logs to $CFG_POST_LOGS_DIR"
+    p=logs/crashes
+    save_copy "$p/status.txt" "$CFG_POST_LOGS_DIR"
+    save_copy "$p/raw_build.txt" "$CFG_POST_LOGS_DIR"
+    save_copy "$p/log_gdb.txt" "$CFG_POST_LOGS_DIR"
+    save_copy "$p/full_gdb.txt" "$CFG_POST_LOGS_DIR"
+    save_copy crashes.txt "$CFG_POST_LOGS_DIR"
+}
+
 function check_warnings() {
     local port
     local num_cores

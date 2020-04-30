@@ -19,6 +19,7 @@ aSettStr+=("gdb_cmds");aSettVal+=("")
 aSettStr+=("gdb_dump_core");aSettVal+=("0")
 # aSettStr+=("is_debug");aSettVal+=("1")
 aSettStr+=("cstd");aSettVal+=("1")
+aSettStr+=("post_logs_dir");aSettVal+=("")
 
 function create_settings() {
     if [ -f $settings_file ];
@@ -119,6 +120,7 @@ read_settings_file
 # - gdb commands        9
 # - gdb dump core       10
 # - use cstd paste      11
+# - post logs dir       12
 
 export gitpath_src="${aSettVal[0]}"
 export gitpath_mod="${aSettVal[1]}"
@@ -135,6 +137,7 @@ export CFG_GDB_CMDS="${aSettVal[9]}"
 export CFG_GDB_DUMP_CORE="${aSettVal[10]}"
 # export CFG_DEBUG="${aSettVal[11]}" # debug depends on cmake flags
 export CFG_CSTD="${aSettVal[11]}"
+export CFG_POST_LOGS_DIR="${aSettVal[12]}"
 
 gitpath_log="${gitpath_log%%+(/)}" # strip trailing slash
 logroot="$gitpath_log"

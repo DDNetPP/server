@@ -61,6 +61,8 @@ fi
 echo "git status - $(date)" | ./lib/echo_pipe.sh > "$p/status.txt"
 git status | ./lib/echo_pipe.sh >> "$p/status.txt"
 
+post_logs
+
 start_secs="$(date --date "$start_ts" +%s)"
 stop_secs="$(date --date "$stop_ts" +%s)"
 runtime="$((stop_secs - start_secs))"
