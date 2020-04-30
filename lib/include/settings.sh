@@ -17,7 +17,7 @@ aSettStr+=("error_logs_api");aSettVal+=("test")
 aSettStr+=("editor");aSettVal+=("")
 aSettStr+=("gdb_cmds");aSettVal+=("")
 aSettStr+=("gdb_dump_core");aSettVal+=("0")
-aSettStr+=("is_debug");aSettVal+=("1")
+# aSettStr+=("is_debug");aSettVal+=("1")
 
 function create_settings() {
     if [ -f $settings_file ];
