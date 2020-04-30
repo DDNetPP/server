@@ -18,6 +18,7 @@ aSettStr+=("editor");aSettVal+=("")
 aSettStr+=("gdb_cmds");aSettVal+=("")
 aSettStr+=("gdb_dump_core");aSettVal+=("0")
 # aSettStr+=("is_debug");aSettVal+=("1")
+aSettStr+=("cstd");aSettVal+=("1")
 
 function create_settings() {
     if [ -f $settings_file ];
@@ -117,6 +118,7 @@ read_settings_file
 # - editor              8
 # - gdb commands        9
 # - gdb dump core       10
+# - use cstd paste      11
 
 export gitpath_src="${aSettVal[0]}"
 export gitpath_mod="${aSettVal[1]}"
@@ -132,6 +134,7 @@ export CFG_EDITOR="${aSettVal[8]}"
 export CFG_GDB_CMDS="${aSettVal[9]}"
 export CFG_GDB_DUMP_CORE="${aSettVal[10]}"
 # export CFG_DEBUG="${aSettVal[11]}" # debug depends on cmake flags
+export CFG_CSTD="${aSettVal[11]}"
 
 gitpath_log="${gitpath_log%%+(/)}" # strip trailing slash
 logroot="$gitpath_log"

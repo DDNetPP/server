@@ -52,8 +52,11 @@ echo "+----------------------------------------+"
 } >> crashes.txt
 
 ./cmake_update.sh > "$p/raw_build.txt"
-url="$(cstd "$p/raw_build.txt")"
-echo "echo $url" > paste.txt
+if [ "$CFG_CSTD" == "1" ]
+then
+    url="$(cstd "$p/raw_build.txt")"
+    echo "echo $url" > paste.txt
+fi
 ./lib/echo_pipe.sh "$p/raw_build.txt" > "$p/build.txt"
 echo "git status - $(date)" | ./lib/echo_pipe.sh > "$p/status.txt"
 git status | ./lib/echo_pipe.sh >> "$p/status.txt"
