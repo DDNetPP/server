@@ -105,5 +105,5 @@ then
     FDDR_ACC_PATH="$2"
 fi
 
-fddr.parse_account "$1"
+fddr.parse_account "$FDDR_ACC_PATH/$1"
 
