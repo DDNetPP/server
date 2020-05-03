@@ -19,7 +19,25 @@ mkdir -p maps || { err "Error: creating dir maps/"; exit 1; }
 mkdir -p logs || { err "Error: creating dir logs/"; exit 1; }
 mkdir -p bin || { err "Error: creating dir bin/"; exit 1; }
 cd "$gitpath_mod" || { err "Could not enter git directory"; exit 1; }
-git pull || { err --log "git pull failed"; exit 1; }
+git pull || { git_pull=fail; }
+if [[ ! -z $(git status -s) ]] || [[ "$git_pull" == "fail" ]]
+then
+    git submodule update
+    if [ "$CFG_GIT_FORCE_PULL" == "1" ]
+    then
+        upstream="$(git for-each-ref --format='%(upstream:short)' "$(git symbolic-ref -q HEAD)")"
+        wrn "Warning: git status not clean after pull"
+        wrn "         forcing a hard reset to '$upstream'"
+        git reset --hard "$upstream"
+    fi
+fi
+if [[ ! -z $(git status -s) ]]
+then
+    err --log "Error: updating the git repo failed"
+    err       "       cd $gitpath_mod"
+    err       "       git status"
+    exit 1
+fi
 mkdir -p build || { err "Error: creating dir build/"; exit 1; }
 cd build || { err "Could not enter build/ directory"; exit 1; }
 branch="$(git branch | sed -n '/\* /s///p')"
