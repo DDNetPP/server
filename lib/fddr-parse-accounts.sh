@@ -2,9 +2,9 @@
 # F-DDrace accounts parser
 # https://github.com/fokkonaut/F-DDrace/blob/3a41550df2502ca304d79465706e6fd52b951b5f/src/game/server/gamecontext.cpp#L3826-L3862
 
-PURGE_FILE=/tmp/fddr-purge.txt
+FDDR_PURGE_FILE=/tmp/fddr-purge.txt
 
-function parse_account() {
+function fddr.parse_account() {
     account=$1
     if [ ! -f "$account" ]
     then
@@ -53,9 +53,9 @@ function parse_account() {
     done < "$account"
 }
 
-function print_account() {
+function fddr.print_account() {
     path="$1"
-    parse_account "$path"
+    fddr.parse_account "$path"
     echo "[ === '$username' === ]"
     echo "file: $path"
     echo "password: $password"
@@ -66,26 +66,26 @@ function print_account() {
     echo "kills: $kills deaths: $deaths"
 }
 
-function read_database() {
-    :>"$PURGE_FILE"
+function fddr.read_database() {
+    :>"$FDDR_PURGE_FILE"
     for acc in ./accounts/*.acc
     do
-        parse_account "$acc" || exit 1
+        fddr.parse_account "$acc" || exit 1
         if [[ "$money" == "0" ]] && [[ "$xp" == "0" ]]
         then
-            echo "$acc" >> "$PURGE_FILE"
-            print_account "$acc"
+            echo "$acc" >> "$FDDR_PURGE_FILE"
+            fddr.print_account "$acc"
         fi
     done
 }
 
-function read_purgefile() {
+function fddr.read_purgefile() {
     while IFS= read -r line
     do
-        print_account "$line"
-    done < "$PURGE_FILE"
+        fddr.print_account "$line"
+    done < "$FDDRtPURGE_FILE"
 }
 
-read_database
-read_purgefile
+fdrr.read_database
+fdrr.read_purgefile
 
