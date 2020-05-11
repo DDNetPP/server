@@ -49,6 +49,46 @@ function fddr.parse_account() {
             acc_money0="$line"
         elif [ "$linenum" == "16" ]; then
             acc_money1="$line"
+        elif [ "$linenum" == "17" ]; then
+            acc_money2="$line"
+        elif [ "$linenum" == "18" ]; then
+            acc_money3="$line"
+        elif [ "$linenum" == "19" ]; then
+            acc_money4="$line"
+        elif [ "$linenum" == "20" ]; then
+            acc_vip="$line"
+        elif [ "$linenum" == "21" ]; then
+            acc_block_points="$line"
+        elif [ "$linenum" == "22" ]; then
+            acc_instagib_kills="$line"
+        elif [ "$linenum" == "23" ]; then
+            acc_instagib_wins="$line"
+        elif [ "$linenum" == "24" ]; then
+            acc_spawn_weapon0="$line"
+        elif [ "$linenum" == "25" ]; then
+            acc_spawn_weapon1="$line"
+        elif [ "$linenum" == "26" ]; then
+            acc_spawn_weapon2="$line"
+        elif [ "$linenum" == "27" ]; then
+            acc_ninjajetpack="$line"
+        elif [ "$linenum" == "28" ]; then
+            acc_last_playername="$line"
+        elif [ "$linenum" == "29" ]; then
+            acc_survival_deaths="$line"
+        elif [ "$linenum" == "30" ]; then
+            acc_instagib_deaths="$line"
+        elif [ "$linenum" == "31" ]; then
+            acc_taser_level="$line"
+        elif [ "$linenum" == "32" ]; then
+            acc_killingspree_record="$line"
+        elif [ "$linenum" == "33" ]; then
+            acc_euros="$line"
+        elif [ "$linenum" == "34" ]; then
+            acc_expiredate_vip="$line"
+        elif [ "$linenum" == "35" ]; then
+            acc_tele_rifle="$line"
+        elif [ "$linenum" == "36" ]; then
+            acc_expiredate_telerifle="$line"
         fi
         linenum="$((linenum+1))"
     done < "$account"
@@ -58,17 +98,33 @@ function fddr.print_account() {
     path="$1"
     fddr.parse_account "$path"
     echo "[ === '$acc_username' === ]"
-    echo "file: $path"
-    echo "password: $acc_password"
-    echo "port: $acc_port loggedin: $acc_logged_in"
-    echo "clientID: $acc_client_id disabled: $acc_disabled"
-    echo "level: $acc_level xp: $acc_xp"
-    echo "money: $acc_money police: $acc_police"
-    echo "spooky ghost: $acc_spooky_ghost"
-    echo "$acc_money0"
-    echo "$acc_money1"
-    echo "kills: $acc_kills deaths: $acc_deaths"
-    echo "survival kills=$acc_survival_kills wins=$acc_survival_wins"
+    echo "essential:"
+    echo "  file: $path"
+    echo "  last playername: $acc_last_playername"
+    echo "  password: $acc_password"
+    echo "  port: $acc_port loggedin: $acc_logged_in"
+    echo "  clientID: $acc_client_id disabled: $acc_disabled"
+    echo "  euros: $acc_euros vip: $acc_vip vip-expire: $acc_expiredate_vip"
+    echo "  telerifle: $acc_tele_rifle telerifle-expire: $acc_expiredate_telerifle"
+    echo "stats:"
+    echo "  level: $acc_level xp: $acc_xp"
+    echo "  money: $acc_money police: $acc_police"
+    echo "  $acc_money0"
+    echo "  $acc_money1"
+    echo "  $acc_money2"
+    echo "  $acc_money3"
+    echo "  $acc_money4"
+    echo "  taserlevel: $acc_taser_level"
+    echo "  spwanweapon0: $acc_spawn_weapon0"
+    echo "  spwanweapon1: $acc_spawn_weapon1"
+    echo "  spwanweapon2: $acc_spawn_weapon2"
+    echo "  spooky ghost: $acc_spooky_ghost"
+    echo "  ninjajetpack: $acc_ninjajetpack"
+    echo "  kills: $acc_kills deaths: $acc_deaths"
+    echo "  blockpoints: $acc_block_points spree: $acc_killingspree_record"
+    echo "  survival k=$acc_survival_kills d=$acc_survival_deaths wins=$acc_survival_wins"
+    echo "  insta k=$acc_instagib_kills d=$acc_instagib_deaths wins=$acc_instagib_wins"
+
 }
 
 function fddr.read_database() {
@@ -98,7 +154,7 @@ function fddr.read_purgefile() {
 
 if [ "$#" == "0" ] || [ "$1" == "--help" ] || [ "$1" == "-h" ]
 then
-    echo "Usage: $(basename "$0") <account>"
+    echo "Usage: $(basename "$0") <account> [accounts path]"
     exit 0
 elif [ "$2" != "" ]
 then
