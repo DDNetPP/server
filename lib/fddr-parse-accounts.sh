@@ -16,6 +16,9 @@ FDDR_ACC_PATH="${FDDR_ACC_PATH:-./accounts}"
 FDDR_NUM_LINES=36
 
 fddr_warnings=0
+fddr_cmd=error
+fddr_arg=error
+fddr_is_verbose=0
 
 # https://github.com/fokkonaut/F-DDrace/blob/F-DDrace/src/game/server/gamecontext.cpp#L3717-L3760
 function fddr.reset_vars() {
@@ -152,8 +155,11 @@ function fddr.parse_account() {
     done < "$account"
     if [ "$linenum" != "$FDDR_NUM_LINES" ]
     then
-        wrn "Warning: invalid line number $linenum/$FDDR_NUM_LINES"
-        wrn "       $account"
+        if [ "$fddr_is_verbose" == "1" ]
+        then
+            wrn "Warning: invalid line number $linenum/$FDDR_NUM_LINES"
+            wrn "       $account"
+        fi
         fddr_warnings="$((fddr_warnings+1))"
     fi
 }
@@ -277,16 +283,56 @@ function fddr.read_purgefile() {
 
 if [ "$#" == "0" ] || [ "$1" == "--help" ] || [ "$1" == "-h" ]
 then
-    echo "Usage: $(basename "$0") <account> [accounts path]"
+    echo "Usage: $(basename "$0") [-v] <CMD> [args] [accounts path]"
+    echo "Flags: -v - verbose"
+    echo "CMD:  show <account>"
+    echo "      parse"
+    echo "Example: $(basename "$0") show ChillerDragon.acc"
+    echo "Example: $(basename "$0") -v show ChillerDragon.acc ../accounts"
+    echo "Example: $(basename "$0") parse ../accounts"
     exit 0
-elif [ "$2" != "" ]
-then
-    FDDR_ACC_PATH="$2"
 fi
 
-fddr.print_account "$FDDR_ACC_PATH/$1"
+if [ "$1" == "-v" ] || [ "$1" == "--verbose" ]
+then
+    shift
+    fddr_is_verbose=1
+fi
 
-if [ "$fddr_warnings" != "0" ]
+if [ "$1" == "show" ]
+then
+    shift
+    fddr_cmd=show
+    if [ "$1" == "" ]
+    then
+        echo "Usage: $(basename "$0") show <account>"
+        exit 1
+    fi
+    fddr_arg="$1"
+    shift
+elif [ "$1" == "parse" ]
+then
+    shift
+    fddr_cmd=parse
+else
+    echo "Error: invalid cmd '$1'"
+    exit 1
+fi
+
+if [ "$1" != "" ]
+then
+    FDDR_ACC_PATH="$1"
+fi
+
+if [ "$fddr_cmd" == "show" ]
+then
+    fddr.print_account "$FDDR_ACC_PATH/$fddr_arg"
+elif [ "$fddr_cmd" == "parse" ]
+then
+    fddr.read_database
+fi
+
+if [ "$fddr_warnings" != "0" ] && [ "$fddr_is_verbose" == "1" ]
 then
     wrn "finished with $fddr_warnings warnings."
 fi
