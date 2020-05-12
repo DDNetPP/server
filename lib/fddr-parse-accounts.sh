@@ -19,6 +19,7 @@ fddr_warnings=0
 fddr_cmd=error
 fddr_arg=error
 fddr_is_verbose=0
+fddr_show_password=0
 
 # https://github.com/fokkonaut/F-DDrace/blob/F-DDrace/src/game/server/gamecontext.cpp#L3717-L3760
 function fddr.reset_vars() {
@@ -231,7 +232,12 @@ function fddr.print_account() {
     echo "essential:"
     echo "  file: $path"
     echo "  last playername: $acc_last_playername"
-    echo "  password: $acc_password"
+    if [ "$fddr_show_password" == "1" ]
+    then
+        echo "  password: $acc_password"
+    else
+        echo "  password: **"
+    fi
     echo "  port: $acc_port loggedin: $acc_logged_in"
     echo "  clientID: $acc_client_id disabled: $acc_disabled"
     echo "  euros: $acc_euros vip: $acc_vip vip-expire: $acc_expiredate_vip"
@@ -283,8 +289,9 @@ function fddr.read_purgefile() {
 
 if [ "$#" == "0" ] || [ "$1" == "--help" ] || [ "$1" == "-h" ]
 then
-    echo "Usage: $(basename "$0") [-v] <CMD> [args] [accounts path]"
+    echo "Usage: $(basename "$0") [Flags] <CMD> [args] [accounts path]"
     echo "Flags: -v - verbose"
+    echo "       -p - password"
     echo "CMD:  show <account>"
     echo "      parse"
     echo "Example: $(basename "$0") show ChillerDragon.acc"
@@ -293,11 +300,18 @@ then
     exit 0
 fi
 
-if [ "$1" == "-v" ] || [ "$1" == "--verbose" ]
-then
-    shift
-    fddr_is_verbose=1
-fi
+for arg in "$@"
+do
+    if [ "$arg" == "-v" ] || [ "$arg" == "--verbose" ]
+    then
+        shift
+        fddr_is_verbose=1
+    elif [ "$arg" == "-p" ] || [ "$arg" == "--password" ]
+    then
+        shift
+        fddr_show_password=1
+    fi
+done
 
 if [ "$1" == "show" ]
 then
