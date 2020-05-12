@@ -2,17 +2,69 @@
 # F-DDrace accounts parser
 # https://github.com/fokkonaut/F-DDrace/blob/3a41550df2502ca304d79465706e6fd52b951b5f/src/game/server/gamecontext.cpp#L3826-L3862
 
+if [ ! -f lib/lib.sh ]
+then
+    echo "Error: lib/lib.sh not found!"
+    echo "make sure you are in the root of the server repo"
+    exit 1
+fi
+
+source lib/lib.sh
+
 FDDR_PURGE_FILE=/tmp/fddr-purge.txt
 FDDR_ACC_PATH=./accounts
 FDDR_NUM_LINES=36
+
+fddr_warnings=0
+
+function fddr.reset_vars() {
+    acc_port=""
+    acc_logged_in=""
+    acc_disabled=""
+    acc_password=""
+    acc_username=""
+    acc_client_id=""
+    acc_level=""
+    acc_xp=""
+    acc_money=""
+    acc_kills=""
+    acc_deaths=""
+    acc_police=""
+    acc_survival_kills=""
+    acc_survival_wins=""
+    acc_spooky_ghost=""
+    acc_money0=""
+    acc_money1=""
+    acc_money2=""
+    acc_money3=""
+    acc_money4=""
+    acc_vip=""
+    acc_block_points=""
+    acc_instagib_kills=""
+    acc_instagib_wins=""
+    acc_spawn_weapon0=""
+    acc_spawn_weapon1=""
+    acc_spawn_weapon2=""
+    acc_ninjajetpack=""
+    acc_last_playername=""
+    acc_survival_deaths=""
+    acc_instagib_deaths=""
+    acc_taser_level=""
+    acc_killingspree_record=""
+    acc_euros=""
+    acc_expiredate_vip=""
+    acc_tele_rifle=""
+    acc_expiredate_telerifle=""
+}
 
 function fddr.parse_account() {
     account=$1
     if [ ! -f "$account" ]
     then
-        echo "Error file not found '$account'"
+        err "Error: file not found '$account'"
         exit 1
     fi
+    fddr.reset_vars
     linenum=-1
     while IFS= read -r line
     do
@@ -92,16 +144,16 @@ function fddr.parse_account() {
         elif [ "$linenum" == "36" ]; then
             acc_expiredate_telerifle="$line"
         else
-            echo "Error: too many lines $linenum/$FDDR_NUM_LINES"
-            echo "       $account"
+            err "Error: too many lines $linenum/$FDDR_NUM_LINES"
+            err "       $account"
             exit 1
         fi
     done < "$account"
     if [ "$linenum" != "$FDDR_NUM_LINES" ]
     then
-        echo "Error: invalid line number $linenum/$FDDR_NUM_LINES"
-        echo "       $account"
-        exit 1
+        wrn "Warning: invalid line number $linenum/$FDDR_NUM_LINES"
+        wrn "       $account"
+        fddr_warnings="$((fddr_warnings+1))"
     fi
 }
 
@@ -110,11 +162,11 @@ function fddr.write_account() {
     file_path="$1"
     if [ "$file_path" == "" ]
     then
-        echo "Error: file path can not be empty"
+        err "Error: file path can not be empty"
         exit 1
     elif ! [[ "$file_path" =~ \.acc$ ]]
     then
-        echo "Error: account file has to end in .acc"
+        err "Error: account file has to end in .acc"
         exit 1
     fi
     exit 0
@@ -160,7 +212,7 @@ function fddr.write_account() {
     } > "$file_path"
     if [ "$linenum" != "$FDDR_NUM_LINES" ]
     then
-        echo "Error: invalid line number $linenum/$FDDR_NUM_LINES"
+        err "Error: invalid line number $linenum/$FDDR_NUM_LINES"
         exit 1
     fi
 }
@@ -201,7 +253,7 @@ function fddr.read_database() {
     :>"$FDDR_PURGE_FILE"
     if [ ! -d "$FDDR_ACC_PATH" ]
     then
-        echo "Error: '$FDDR_ACC_PATH' is not a directory"
+        err "Error: '$FDDR_ACC_PATH' is not a directory"
         exit 1
     fi
     for acc in "$FDDR_ACC_PATH"/*.acc
@@ -231,6 +283,10 @@ then
     FDDR_ACC_PATH="$2"
 fi
 
-fddr.read_database
 fddr.print_account "$FDDR_ACC_PATH/$1"
+
+if [ "$fddr_warnings" != "0" ]
+then
+    wrn "finished with $fddr_warnings warnings."
+fi
 
