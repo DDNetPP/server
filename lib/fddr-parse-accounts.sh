@@ -11,8 +11,8 @@ fi
 
 source lib/lib.sh
 
-FDDR_PURGE_FILE=/tmp/fddr-purge.txt
-FDDR_ACC_PATH=./accounts
+FDDR_PURGE_FILE="${FDDR_PURGE_FILE:-/tmp/fddr-purge.txt}"
+FDDR_ACC_PATH="${FDDR_ACC_PATH:-./accounts}"
 FDDR_NUM_LINES=36
 
 fddr_warnings=0
