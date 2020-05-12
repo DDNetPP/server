@@ -94,6 +94,46 @@ function fddr.parse_account() {
     done < "$account"
 }
 
+function fddr.write_account() {
+    echo "$acc_port"
+    echo "$acc_logged_in"
+    echo "$acc_disabled"
+    echo "$acc_password"
+    echo "$acc_username"
+    echo "$acc_client_id"
+    echo "$acc_level"
+    echo "$acc_xp"
+    echo "$acc_money"
+    echo "$acc_kills"
+    echo "$acc_deaths"
+    echo "$acc_police"
+    echo "$acc_survival_kills"
+    echo "$acc_survival_wins"
+    echo "$acc_spooky_ghost"
+    echo "$acc_money0"
+    echo "$acc_money1"
+    echo "$acc_money2"
+    echo "$acc_money3"
+    echo "$acc_money4"
+    echo "$acc_vip"
+    echo "$acc_block_points"
+    echo "$acc_instagib_kills"
+    echo "$acc_instagib_wins"
+    echo "$acc_spawn_weapon0"
+    echo "$acc_spawn_weapon1"
+    echo "$acc_spawn_weapon2"
+    echo "$acc_ninjajetpack"
+    echo "$acc_last_playername"
+    echo "$acc_survival_deaths"
+    echo "$acc_instagib_deaths"
+    echo "$acc_taser_level"
+    echo "$acc_killingspree_record"
+    echo "$acc_euros"
+    echo "$acc_expiredate_vip"
+    echo "$acc_tele_rifle"
+    echo "$acc_expiredate_telerifle"
+}
+
 function fddr.print_account() {
     path="$1"
     fddr.parse_account "$path"
@@ -124,7 +164,6 @@ function fddr.print_account() {
     echo "  blockpoints: $acc_block_points spree: $acc_killingspree_record"
     echo "  survival k=$acc_survival_kills d=$acc_survival_deaths wins=$acc_survival_wins"
     echo "  insta k=$acc_instagib_kills d=$acc_instagib_deaths wins=$acc_instagib_wins"
-
 }
 
 function fddr.read_database() {
