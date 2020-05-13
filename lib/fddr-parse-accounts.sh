@@ -177,7 +177,6 @@ function fddr.write_account() {
         err "Error: account file has to end in .acc"
         exit 1
     fi
-    exit 0
     {
         linenum=-1
         linenum="$((linenum+1))"; echo "$acc_port"
@@ -262,6 +261,19 @@ function fddr.print_account() {
     echo "  insta k=$acc_instagib_kills d=$acc_instagib_deaths wins=$acc_instagib_wins"
 }
 
+function fddr.rewrite_database() {
+    if [ ! -d "$FDDR_ACC_PATH" ]
+    then
+        err "Error: '$FDDR_ACC_PATH' is not a directory"
+        exit 1
+    fi
+    for acc in "$FDDR_ACC_PATH"/*.acc
+    do
+        fddr.parse_account "$acc" || exit 1
+        fddr.write_account "$acc"
+    done
+}
+
 function fddr.read_database() {
     :>"$FDDR_PURGE_FILE"
     if [ ! -d "$FDDR_ACC_PATH" ]
@@ -294,6 +306,7 @@ then
     echo "       -p - password"
     echo "CMD:  show <account>"
     echo "      parse"
+    echo "      rewrite [DANGEROUS!!!]"
     echo "Example: $(basename "$0") show ChillerDragon.acc"
     echo "Example: $(basename "$0") -v show ChillerDragon.acc ../accounts"
     echo "Example: $(basename "$0") parse ../accounts"
@@ -328,6 +341,48 @@ elif [ "$1" == "parse" ]
 then
     shift
     fddr_cmd=parse
+elif [ "$1" == "rewrite" ]
+then
+    shift
+    fddr_cmd=rewrite
+    wrn "WARNING THIS CHANGES ACCOUNT DATA"
+    wrn "MAKE SURE THE SERVER IS NOT RUNNING"
+    wrn "MAKE SURE YOU KOWN WHAT YOU ARE DOING"
+    wrn "do you really want to rewrite? [y/N]"
+    read -r -n 1 yn
+    echo ""
+    if ! [[ "$yn" =~ [yY] ]]
+    then
+        log "stopping..."
+        exit
+    fi
+    wrn "rewriting '$FDDR_ACC_PATH'"
+    wrn "do you have a backup of this directory? [y/N]"
+    read -r -n 1 yn
+    echo ""
+    if ! [[ "$yn" =~ [yY] ]]
+    then
+        log "stopping..."
+        exit
+    fi
+    wrn "really? [y/N]"
+    read -r -n 1 yn
+    echo ""
+    if ! [[ "$yn" =~ [yY] ]]
+    then
+        log "stopping..."
+        exit
+    fi
+    wrn "Stop lying I know you have no backups..."
+    wrn "But I can copy your accs to /tmp/xxx_fddr_accbackup"
+    wrn "do you want me to create a backup? [y/N]"
+    read -r -n 1 yn
+    echo ""
+    if [[ "$yn" =~ [yY] ]]
+    then
+        log "writing backup to /tmp/xxx_fddr_accbackup ..."
+        cp -r "$FDDR_ACC_PATH" /tmp/xxx_fddr_accbackup
+    fi
 else
     echo "Error: invalid cmd '$1'"
     exit 1
@@ -344,6 +399,10 @@ then
 elif [ "$fddr_cmd" == "parse" ]
 then
     fddr.read_database
+elif [ "$fddr_cmd" == "rewrite" ]
+then
+    log "rewriting database ..."
+    fddr.rewrite_database
 fi
 
 if [ "$fddr_warnings" != "0" ] && [ "$fddr_is_verbose" == "1" ]
