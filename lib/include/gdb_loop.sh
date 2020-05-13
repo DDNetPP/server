@@ -32,6 +32,8 @@ fi
 
 source lib/lib.sh
 
+restart_side_runner
+
 function check_logsize() {
     local logf="$1"
     if [ ! -f "$logf" ]

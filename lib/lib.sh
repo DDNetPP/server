@@ -153,6 +153,26 @@ function show_procs() {
     return 1
 }
 
+function restart_side_runner() {
+    if [ ! -f "./lib/var/side_runner.sh" ]
+    then
+        wrn "side runner not found"
+        return
+    fi
+    trap "stop_side_runner;exit" EXIT
+    log "restarting side_runner.sh"
+    pkill -f "side_runner.sh $server_id"
+    ./lib/var/side_runner.sh "$server_id" > logs/side_runner.log 2>&1 &
+}
+
+function stop_side_runner() {
+    if pgrep -f "side_runner.sh $server_id"
+    then
+        log "stopping side_runner.sh"
+        pkill -f "side_runner.sh $server_id"
+    fi
+}
+
 function check_running() {
     if [ "$CFG_SRV_NAME" == "" ]
     then

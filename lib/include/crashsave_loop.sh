@@ -29,6 +29,8 @@ fi
 
 source lib/lib.sh
 
+restart_side_runner
+
 p=logs/crashes
 mkdir -p "$p" || exit 1
 
