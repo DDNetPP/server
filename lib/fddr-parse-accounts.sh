@@ -11,10 +11,18 @@ fi
 
 source lib/lib.sh
 
+if [ "${BASH_VERSION::1}" -lt "4" ]
+then
+    err "Error: you need bash version 4 or later."
+    exit 1
+fi
+
 FDDR_PURGE_FILE="${FDDR_PURGE_FILE:-/tmp/fddr-purge.txt}"
 FDDR_ACC_PATH="${FDDR_ACC_PATH:-./accounts}"
 FDDR_NUM_LINES=36
 
+declare -A fddr_a_lines
+declare -A fddr_a_names
 fddr_warnings=0
 fddr_cmd=error
 fddr_arg=error
@@ -63,10 +71,10 @@ function fddr.reset_vars() {
 }
 
 function fddr.parse_account() {
-    account=$1
-    if [ ! -f "$account" ]
+    acc_path=$1
+    if [ ! -f "$acc_path" ]
     then
-        err "Error: file not found '$account'"
+        err "Error: file not found '$acc_path'"
         exit 1
     fi
     fddr.reset_vars
@@ -150,16 +158,16 @@ function fddr.parse_account() {
             acc_expiredate_telerifle="$line"
         else
             err "Error: too many lines $linenum/$FDDR_NUM_LINES"
-            err "       $account"
+            err "       $acc_path"
             exit 1
         fi
-    done < "$account"
+    done < "$acc_path"
     if [ "$linenum" != "$FDDR_NUM_LINES" ]
     then
         if [ "$fddr_is_verbose" == "1" ]
         then
             wrn "Warning: invalid line number $linenum/$FDDR_NUM_LINES"
-            wrn "       $account"
+            wrn "       $acc_path"
         fi
         fddr_warnings="$((fddr_warnings+1))"
     fi
@@ -261,6 +269,45 @@ function fddr.print_account() {
     echo "  insta k=$acc_instagib_kills d=$acc_instagib_deaths wins=$acc_instagib_wins"
 }
 
+function fddr.check_database() {
+    if [ ! -d "$FDDR_ACC_PATH" ]
+    then
+        err "Error: '$FDDR_ACC_PATH' is not a directory"
+        exit 1
+    fi
+    for acc in "$FDDR_ACC_PATH"/*.acc
+    do
+        fddr.parse_account "$acc" || exit 1
+        fddr_a_lines[$linenum]="$((fddr_a_lines[$linenum]+1))"
+        if [ "${fddr_a_lines[$linenum]}" -gt "1" ]
+        then
+            fddr_a_names[$linenum]="${fddr_a_names[$linenum]}, "
+        fi
+        fddr_a_names[$linenum]="${fddr_a_names[$linenum]}$(basename "$acc_path")"
+    done
+    echo -e "lines\\t\\tcount\\t\\tnames\\n"
+    local k
+    local trim_names
+    local w
+    local i
+    w="$(tput cols)"
+    w="$((w-32))" # first to cols
+    for k in "${!fddr_a_lines[@]}";
+    do
+        for ((i=1;i<16;i++))
+        do
+            trim_names="$(echo "${fddr_a_names[$k]}" | cut -d ',' "-f1-$i")"
+            if [ "${#trim_names}" -gt "$w" ]
+            then
+                i="$((i-1))"
+                trim_names="$(echo "${fddr_a_names[$k]}" | cut -d ',' "-f1-$i")"
+                break
+            fi
+        done
+        echo -e "$k\\t\\t${fddr_a_lines[$k]}\\t\\t$trim_names"
+    done
+}
+
 function fddr.rewrite_database() {
     if [ ! -d "$FDDR_ACC_PATH" ]
     then
@@ -307,6 +354,7 @@ then
     echo "CMD:  show <account>"
     echo "      parse"
     echo "      rewrite [DANGEROUS!!!]"
+    echo "      check"
     echo "Example: $(basename "$0") show ChillerDragon.acc"
     echo "Example: $(basename "$0") -v show ChillerDragon.acc ../accounts"
     echo "Example: $(basename "$0") parse ../accounts"
@@ -383,6 +431,10 @@ then
         log "writing backup to /tmp/xxx_fddr_accbackup ..."
         cp -r "$FDDR_ACC_PATH" /tmp/xxx_fddr_accbackup
     fi
+elif [ "$1" == "check" ]
+then
+    shift
+    fddr_cmd=check
 else
     echo "Error: invalid cmd '$1'"
     exit 1
@@ -403,6 +455,9 @@ elif [ "$fddr_cmd" == "rewrite" ]
 then
     log "rewriting database ..."
     fddr.rewrite_database
+elif [ "$fddr_cmd" == "check" ]
+then
+    fddr.check_database
 fi
 
 if [ "$fddr_warnings" != "0" ] && [ "$fddr_is_verbose" == "1" ]
