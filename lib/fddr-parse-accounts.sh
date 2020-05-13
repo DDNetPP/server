@@ -20,6 +20,10 @@ fi
 FDDR_PURGE_FILE="${FDDR_PURGE_FILE:-/tmp/fddr-purge.txt}"
 FDDR_ACC_PATH="${FDDR_ACC_PATH:-./accounts}"
 FDDR_NUM_LINES=36
+FDDR_MIN_NAME_LEN=3
+FDDR_MAX_NAME_LEN=20
+FDDR_MIN_PW_LEN=3
+FDDR_MAX_PW_LEN=20
 
 declare -A fddr_a_lines
 declare -A fddr_a_names
@@ -278,6 +282,48 @@ function fddr.check_database() {
     for acc in "$FDDR_ACC_PATH"/*.acc
     do
         fddr.parse_account "$acc" || exit 1
+        # values
+        if ! [[ "$acc_port" =~ ^[0-9]*$ ]]
+        then
+            wrn "Invalid port '$acc_port' $(basename "$acc_path")"
+            fddr_warnings="$((fddr_warnings+1))"
+        fi
+        if ! [[ "$acc_logged_in" =~ ^(0|1)$ ]]
+        then
+            wrn "Invalid logged in '$acc_logged_in' $(basename "$acc_path")"
+            fddr_warnings="$((fddr_warnings+1))"
+        fi
+        if ! [[ "$acc_disabled" =~ ^(0|1)$ ]]
+        then
+            wrn "Invalid disables '$acc_disabled' $(basename "$acc_path")"
+            fddr_warnings="$((fddr_warnings+1))"
+        fi
+        if [[ "${#acc_password}" -lt "$FDDR_MIN_PW_LEN" ]]
+        then
+            wrn "Password too short ${#acc_password}/$FDDR_MIN_PW_LEN $(basename "$acc_path")"
+            fddr_warnings="$((fddr_warnings+1))"
+        fi
+        if [[ "${#acc_password}" -gt "$FDDR_MAX_PW_LEN" ]]
+        then
+            wrn "Password too long ${#acc_password}/$FDDR_MAX_PW_LEN $(basename "$acc_path")"
+            fddr_warnings="$((fddr_warnings+1))"
+        fi
+        if [[ "${#acc_username}" -lt "$FDDR_MIN_NAME_LEN" ]]
+        then
+            wrn "Username too short ${#acc_username}/$FDDR_MIN_NAME_LEN $(basename "$acc_path")"
+            fddr_warnings="$((fddr_warnings+1))"
+        fi
+        if [[ "${#acc_username}" -gt "$FDDR_MAX_NAME_LEN" ]]
+        then
+            wrn "Username too long ${#acc_username}/$FDDR_MAX_NAME_LEN $(basename "$acc_path")"
+            fddr_warnings="$((fddr_warnings+1))"
+        fi
+        if ! [[ "${acc_client_id}" =~ ^(-)?[0-9]{1,2}$ ]]
+        then
+            wrn "Invalid client id '$acc_client_id' $(basename "$acc_path")"
+            fddr_warnings="$((fddr_warnings+1))"
+        fi
+        # lines
         fddr_a_lines[$linenum]="$((fddr_a_lines[$linenum]+1))"
         if [ "${fddr_a_lines[$linenum]}" -gt "1" ]
         then
