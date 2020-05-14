@@ -9,6 +9,12 @@ fi
 
 source lib/lib.sh
 
+is_force=0
+if [ "$1" == "--force" ] || [ "$1" == "-f" ]
+then
+    is_force=1
+fi
+
 install_dep make
 install_dep cmake
 install_dep git
@@ -31,7 +37,7 @@ then
         git reset --hard "$upstream"
     fi
 fi
-if [[ ! -z $(git status -s) ]]
+if [[ ! -z $(git status -s) ]] && [[ "$is_force" == "0" ]]
 then
     err --log "Error: updating the git repo failed"
     err       "       cd $gitpath_mod"
