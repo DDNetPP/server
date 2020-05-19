@@ -61,7 +61,7 @@ mv "$CFG_COMPILED_BIN" "$cwd/${CFG_BIN}"
 num_maps="$(find ./data/maps -maxdepth 1 -name '*.map' 2>/dev/null | wc -l)"
 if [ "$num_maps" != 0 ]
 then
-    log "copying $num_maps from source directory ..."
+    log "copying $num_maps maps from source directory ..."
     cp data/maps/*.map "$cwd/maps"
 fi
 
