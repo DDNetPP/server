@@ -42,6 +42,7 @@ then
     err --log "Error: updating the git repo failed"
     err       "       cd $gitpath_mod"
     err       "       git status"
+    err       "       $(tput bold)./cmake_update.sh --force$(tput sgr0) to ignore"
     exit 1
 fi
 mkdir -p build || { err "Error: creating dir build/"; exit 1; }
