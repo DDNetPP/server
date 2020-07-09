@@ -266,7 +266,7 @@ function check_deps() {
     exit
     fi
 
-    check_cfg
+    twcfg.check_cfg
 
     if [ ! -d "$logpath" ]
     then
