@@ -9,7 +9,7 @@ fi
 
 source lib/lib.sh
 
-if [ "$1" == "--help" ] || [ "$1" == "-h" ] || [ "$#" != "1" ]
+if [ "$1" == "--help" ] || [ "$1" == "-h" ] || [ "$#" == "0" ]
 then
     echo "usage: ./lib/econ.sh <econ command>"
     echo ""
@@ -50,5 +50,5 @@ then
     exit 1
 fi
 
-./lib/econ-exec.exp localhost "$ec_port" "$ec_password" "$1"
+./lib/econ-exec.exp localhost "$ec_port" "$ec_password" "$*"
 
