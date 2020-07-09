@@ -21,4 +21,5 @@ else
 fi
 
 show_procs
+log "port: $(get_tw_config sv_port 8303) ($(port_status))"
 

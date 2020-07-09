@@ -5,6 +5,7 @@ gitpath=/home/$USER/git
 
 source lib/include/logger.sh
 source lib/include/editor.sh
+source lib/include/tw_config.sh
 source lib/include/port.sh
 source lib/include/dir.sh
 source lib/include/sid.sh
@@ -68,7 +69,7 @@ function check_warnings() {
     local port
     local num_cores
     check_server_dir
-    check_cfg
+    twcfg.check_cfg
     mkdir -p lib/tmp
     mkdir -p lib/var
     if [ -f failed_sql.sql ]
@@ -86,7 +87,7 @@ function check_warnings() {
             wrn "         ckeck core_dumps/ directory"
         fi
     fi
-    include_exec "autoexec.cfg" > lib/tmp/compiled.cfg
+    twcfg.include_exec "autoexec.cfg" > lib/tmp/compiled.cfg
     port="$(wc -l < <(grep '^sv_port ' lib/tmp/compiled.cfg))"
     if [ "$port" != "" ] && [ "$port" -gt "1" ]
     then
