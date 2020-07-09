@@ -152,7 +152,7 @@ then
     exit 1
 fi
 
-if [[ $gitpath_log =~ \.teeworlds/dumps ]]
+if [[ $gitpath_log =~ \.teeworlds/dumps/ ]]
 then
     log "detected 0.7 logpath"
     # only use the relative part starting from dumps dir
