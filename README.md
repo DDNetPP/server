@@ -4,9 +4,9 @@ A template repo for the actual server.
 ## Setup
 
 ```
-sudo apt install figlet screen    # On Debian/Ubuntu
-sudo yum install figlet screen    # On CentOS/RHEL
-sudo dnf install figlet screen    # On Fedora 22+
+sudo apt install figlet screen expect gdb  # On Debian/Ubuntu
+sudo yum install figlet screen expect gdb  # On CentOS/RHEL
+sudo dnf install figlet screen expect gdb  # On Fedora 22+
 
 cd
 mkdir -p git && cd git

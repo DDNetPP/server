@@ -1,0 +1,15 @@
+#!/usr/bin/expect
+# usage: econ-exec <host> <port> <pass> <command>
+
+set timeout 20
+set password [lindex $argv 2];
+set command [lindex $argv 3];
+spawn nc [lindex $argv 0] [lindex $argv 1];
+expect "Enter password:"
+send "$password\n"
+
+sleep 1
+send "$command\n"
+
+sleep 1
+
