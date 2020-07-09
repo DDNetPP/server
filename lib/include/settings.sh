@@ -154,6 +154,7 @@ fi
 
 if [[ $gitpath_log =~ \.teeworlds/dumps ]]
 then
+    log "detected 0.7 logpath"
     # only use the relative part starting from dumps dir
     logroot="${gitpath_log##*.teeworlds/dumps/}"
     is_dumps_logpath=1
