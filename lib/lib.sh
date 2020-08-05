@@ -143,7 +143,7 @@ function install_dep() {
 
 function show_procs() {
     local proc
-    if pgrep -f "$CFG_SRV_NAME"
+    if pgrep -f "$CFG_SRV_NAME" > /dev/null
     then
         wrn "process with the same name is running already!"
         echo ""
