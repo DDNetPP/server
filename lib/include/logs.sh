@@ -59,7 +59,12 @@ function show_latest_logs() {
     num_logs="$((num_logs - 1))"
     log "showing latest logfile out of $num_logs logs:"
     echo "$latest_log"
-    less "$latest_log"
+    if [ "$1" == "-f" ]
+    then
+        tail -f "$latest_log"
+    else
+        less "$latest_log"
+    fi
 }
 
 function show_logs() {
