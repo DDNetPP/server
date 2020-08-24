@@ -1,5 +1,18 @@
 #!/bin/bash
-cd stats || exit 1
+if [ "$1" == "--help" ] || [ "$1" == "-h" ]
+then
+    echo "usage: $(basename "$0") [PATH]"
+    echo "description: creates git commits every 65h"
+    echo "options:"
+    echo "  PATH    git directory (default=stats)"
+    exit 0
+fi
+if [ "$1" == "" ]
+then
+    cd stats || exit 1
+else
+    cd "$1" || exit 1
+fi
 
 function sleep_hours() {
     hours=$1
