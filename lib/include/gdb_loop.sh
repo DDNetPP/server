@@ -171,6 +171,11 @@ then
         exit 1
     fi
 fi
+if [ -f lib/var/loop_gdb_on_restart.sh ]
+then
+    log "found custom loop_gdb_on_restart.sh script ... executing."
+    lib/var/loop_gdb_on_restart.sh
+fi
 log "sleeping $RESTART_DELAY seconds ... press CTRL-C now to stop the server"
 sleep $RESTART_DELAY
 
