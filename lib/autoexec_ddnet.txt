@@ -1,0 +1,28 @@
+# DDraceNetwork template config
+#
+# SERVERNAME: SERVER_NAME
+
+sv_rcon_password "XXX"
+
+##########
+# helper #
+##########
+# sv_rcon_helper_password "XXX"
+access_level right 2
+access_level left 2
+access_level up 2
+access_level down 2
+access_level undeep 2
+access_level grenade 2
+access_level rifle 2
+access_level shotgun 2
+access_level unsuper 2
+access_level super 2
+access_level unmute 2
+
+
+#############
+# moderator #
+#############
+# sv_rcon_mod_password "XXX"
+

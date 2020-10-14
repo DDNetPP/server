@@ -3,6 +3,41 @@
 twcfg_line=0
 twcfg_last_line="firstline"
 
+function add_cfg_template() {
+    local cfg_type
+    cfg_type=$1
+    log "editing $cfg_type template cfg..."
+    sed "s/SERVER_NAME/$CFG_SRV_NAME/g" lib/autoexec_"${cfg_type}".txt > autoexec.cfg
+    edit_file autoexec.cfg
+}
+
+function select_cfg_template() {
+    PS3='Please enter your choice: '
+    options=(
+        "ddnet++"
+        "ddnet"
+        "Abort"
+    )
+    select opt in "${options[@]}"
+    do
+        case $opt in
+            "ddnet++")
+                add_cfg_template ddnet++
+                break
+                ;;
+            "ddnet")
+                add_cfg_template ddnet
+                break
+                ;;
+            "Abort")
+                exit
+                ;;
+            *) echo "invalid option $REPLY";;
+        esac
+    done
+}
+
+
 function twcfg.check_cfg() {
     if [ ! -f autoexec.cfg ]
     then
@@ -17,9 +52,7 @@ function twcfg.check_cfg() {
             log "skipping config..."
             return
         fi
-        log "editing template cfg..."
-        sed "s/SERVER_NAME/$CFG_SRV_NAME/g" lib/autoexec.txt > autoexec.cfg
-        edit_file autoexec.cfg
+        select_cfg_template
     fi
 }
 

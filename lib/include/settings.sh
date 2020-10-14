@@ -18,7 +18,7 @@ aSettStr+=("editor");aSettVal+=("")
 aSettStr+=("gdb_cmds");aSettVal+=("")
 aSettStr+=("gdb_dump_core");aSettVal+=("0")
 # aSettStr+=("is_debug");aSettVal+=("1")
-aSettStr+=("cstd");aSettVal+=("1")
+aSettStr+=("cstd");aSettVal+=("0")
 aSettStr+=("post_logs_dir");aSettVal+=("")
 aSettStr+=("git_force_pull");aSettVal+=("0")
 

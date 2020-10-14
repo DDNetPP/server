@@ -10,7 +10,7 @@ function edit_file() {
     lines=0
     selected_editor=""
     aEditors=("vim" "vi" "nano" "emacs" "ne" "cat");
-    if [ -z "$EDITOR" ] && [ "$EDIROR" != "" ]
+    if [ -z "$EDITOR" ] && [ "$EDITOR" != "" ]
     then
         aEditors+=("$EDITOR")
     fi
