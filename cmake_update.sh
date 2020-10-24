@@ -51,12 +51,31 @@ then
     err       "       $(tput bold)./cmake_update.sh --force$(tput sgr0) to ignore"
     exit 1
 fi
+current_branch="$(git rev-parse --abbrev-ref HEAD)"
+if [ "$CFG_GIT_BRANCH" != "" ]
+then
+    log "checking out branch specified in cfg $CFG_GIT_BRANCH ..."
+    git add .. || exit 1
+    git reset --hard || exit 1
+    git checkout "$CFG_GIT_BRANCH"
+fi
+if [ "$CFG_GIT_COMMIT" != "" ]
+then
+    log "checking out commit specified in cfg $CFG_GIT_COMMIT ..."
+    git checkout "$CFG_GIT_COMMIT"
+fi
 bin_commit="$(git rev-parse HEAD)"
 mkdir -p build || { err "Error: creating dir build/"; exit 1; }
 cd build || { err "Could not enter build/ directory"; exit 1; }
 branch="$(git branch | sed -n '/\* /s///p')"
 cmake .. "${CFG_CMAKE_FLAGS[@]}" || { err --log "build failed at $branch $(git rev-parse HEAD) (cmake)"; exit 1; }
 make "-j$(get_cores)" || { err --log "build failed at $branch $(git rev-parse HEAD) (make)"; exit 1; }
+if [ "$CFG_GIT_COMMIT" != "" ] || [ "$CFG_GIT_BRANCH" != "" ]
+then
+    git add .. || exit 1
+    git reset --hard || exit 1
+    git checkout "$current_branch"
+fi
 if [ ! -f "$CFG_COMPILED_BIN" ]
 then
     err "Binary not found is your config correct?"

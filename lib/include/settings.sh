@@ -23,6 +23,8 @@ aSettStr+=("post_logs_dir");aSettVal+=("")
 aSettStr+=("git_force_pull");aSettVal+=("0")
 aSettStr+=("test_run");aSettVal+=("0")
 aSettStr+=("test_run_port");aSettVal+=("8303")
+aSettStr+=("git_commit");aSettVal+=("")
+aSettStr+=("git_branch");aSettVal+=("")
 
 function create_settings() {
     if [ -f $settings_file ];
@@ -127,6 +129,8 @@ read_settings_file
 # - git force pull      13
 # - test run            14
 # - test run port       15
+# - git commit          16
+# - git branch          17
 
 export gitpath_src="${aSettVal[0]}"
 export gitpath_mod="${aSettVal[1]}"
@@ -147,6 +151,8 @@ export CFG_POST_LOGS_DIR="${aSettVal[12]}"
 export CFG_GIT_FORCE_PULL="${aSettVal[13]}"
 export CFG_TEST_RUN="${aSettVal[14]}"
 export CFG_TEST_RUN_PORT="${aSettVal[15]}"
+export CFG_GIT_COMMIT="${aSettVal[16]}"
+export CFG_GIT_BRANCH="${aSettVal[17]}"
 
 gitpath_log="${gitpath_log%%+(/)}" # strip trailing slash
 logroot="$gitpath_log"
