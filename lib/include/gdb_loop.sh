@@ -80,6 +80,16 @@ then
     rm "$p/tmp_gdb.txt"
 fi
 
+function get_commit()
+{
+    if cd "$gitpath_mod"
+    then
+        git rev-parse HEAD
+    else
+        echo "invalid"
+    fi
+}
+
 custom_gdb=""
 if [ "$CFG_GDB_CMDS" != "" ]
 then
@@ -105,7 +115,10 @@ gdb -ex='set confirm off' \
     ./$CFG_BIN "logfile $logfile;#sid:$server_id"
 EOF
 start_ts=$(date '+%Y-%m-%d %H:%M:%S')
-echo "/============= server start $start_ts =============\\" >> "$p/full_gdb.txt"
+{
+    echo "/============= server start $start_ts =============\\"
+    echo "build commit: $(get_commit)"
+} >> "$p/full_gdb.txt"
 echo ""
 eval "$GDB_CMD"
 echo ""
