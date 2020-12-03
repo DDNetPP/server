@@ -57,7 +57,7 @@ function check_logsize() {
 
 start_ts_slug=$(date '+%Y-%m-%d_%H-%M-%S')
 gdb_corefile=""
-if [[ "$CFG_GDB_DUMP_CORE" == "1" ]] || [[ "$CFG_GDB_DUMP_CORE" == "yes" ]] || [[ "$CFG_GDB_DUMP_CORE" == "on" ]] || [[ "$CFG_GDB_DUMP_CORE" == "true" ]]
+if is_cfg CFG_GDB_DUMP_CORE
 then
     log "dumping core is turned on (generate-core-file)"
     gdb_corefile="-ex='generate-core-file core_dumps/core_$start_ts_slug'"

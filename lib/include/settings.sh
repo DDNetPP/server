@@ -109,6 +109,20 @@ function read_settings_file() {
     done < "$settings_file"
 }
 
+function is_cfg() {
+    # check if cfg is truthy
+    # does not take a cfg value but a var name
+    # example: is_cfg CFG_GDB_DUMP_CORE
+    local cfg
+    cfg=$1
+    case "${!cfg}" in
+        1|true) return 0;;
+        yes|on) return 0;;
+        *) return 1;;
+    esac
+    return 1
+}
+
 create_settings # create fresh if null
 read_settings_file
 

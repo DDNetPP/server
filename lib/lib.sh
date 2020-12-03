@@ -87,6 +87,16 @@ function check_warnings() {
             wrn "         ckeck core_dumps/ directory"
         fi
     fi
+    if is_cfg CFG_GDB_DUMP_CORE
+    then
+        if [ "$(cat /proc/sys/kernel/core_pattern)" != "core" ]
+        then
+            wrn "WARNING: unsupported coredump pattern!"
+            wrn "         cat /proc/sys/kernel/core_pattern"
+            wrn "         expected 'core'"
+            wrn "         got '$(cat /proc/sys/kernel/core_pattern)'"
+        fi
+    fi
     twcfg.include_exec "autoexec.cfg" > lib/tmp/compiled.cfg
     port="$(wc -l < <(grep '^sv_port ' lib/tmp/compiled.cfg))"
     if [ "$port" != "" ] && [ "$port" -gt "1" ]

@@ -31,13 +31,30 @@ source lib/lib.sh
 
 restart_side_runner
 
+if is_cfg CFG_GDB_DUMP_CORE
+then
+    log "dumping core is turned on (generate-core-file)"
+    ulimit -c unlimited
+    mkdir -p core_dumps/ || exit 1
+fi
+
 p=logs/crashes
 mkdir -p "$p" || exit 1
 
 logfile="$logroot/$CFG_SRV_NAME/logs/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S).log"
 start_ts=$(date '+%Y-%m-%d %H:%M:%S')
-./$CFG_BIN "logfile $logfile;#sid:$server_id"
+./"$CFG_BIN" "logfile $logfile;#sid:$server_id"
 exitcode="$?"
+if is_cfg CFG_GDB_DUMP_CORE
+then
+    for core in ./core.*
+    do
+        [[ -e "$core" ]] || break
+
+        log "saving core_dumps/${core:2} ..."
+        mv "$core" core_dumps/
+    done
+fi
 stop_ts=$(date '+%Y-%m-%d %H:%M:%S')
 echo "+----------------------------------------+"
 echo ""
