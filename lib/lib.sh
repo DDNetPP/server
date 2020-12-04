@@ -18,6 +18,16 @@ function is_cmd() {
     [ -x "$(command -v "$1")" ] && return 0
 }
 
+function get_commit()
+{
+    if cd "$gitpath_mod"
+    then
+        git rev-parse HEAD
+    else
+        echo "invalid"
+    fi
+}
+
 function get_cores() {
     local cores
     if is_cmd nproc
@@ -95,6 +105,9 @@ function check_warnings() {
             wrn "         cat /proc/sys/kernel/core_pattern"
             wrn "         expected 'core'"
             wrn "         got '$(cat /proc/sys/kernel/core_pattern)'"
+            wrn ""
+            wrn "         $(tput bold)sysctl -w kernel.core_pattern=core$(tput sgr0)"
+            wrn ""
         fi
     fi
     twcfg.include_exec "autoexec.cfg" > lib/tmp/compiled.cfg

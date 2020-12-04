@@ -42,6 +42,7 @@ p=logs/crashes
 mkdir -p "$p" || exit 1
 
 logfile="$logroot/$CFG_SRV_NAME/logs/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S).log"
+start_ts_slug=$(date '+%Y-%m-%d_%H-%M-%S')
 start_ts=$(date '+%Y-%m-%d %H:%M:%S')
 ./"$CFG_BIN" "logfile $logfile;#sid:$server_id"
 exitcode="$?"
@@ -51,8 +52,9 @@ then
     do
         [[ -e "$core" ]] || break
 
-        log "saving core_dumps/${core:2} ..."
-        mv "$core" core_dumps/
+        corefile="core_dumps/${core:2}_${start_ts_slug}_$(get_commit)"
+        log "saving $corefile ..."
+        mv "$core" "$corefile"
     done
 fi
 stop_ts=$(date '+%Y-%m-%d %H:%M:%S')

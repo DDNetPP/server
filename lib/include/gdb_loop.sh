@@ -60,7 +60,7 @@ gdb_corefile=""
 if is_cfg CFG_GDB_DUMP_CORE
 then
     log "dumping core is turned on (generate-core-file)"
-    gdb_corefile="-ex='generate-core-file core_dumps/core_$start_ts_slug'"
+    gdb_corefile="-ex='generate-core-file core_dumps/core_${start_ts_slug}_$(get_commit)'"
     mkdir -p core_dumps/ || exit 1
 fi
 
@@ -79,16 +79,6 @@ if [ -f "$p/tmp_gdb.txt" ]
 then
     rm "$p/tmp_gdb.txt"
 fi
-
-function get_commit()
-{
-    if cd "$gitpath_mod"
-    then
-        git rev-parse HEAD
-    else
-        echo "invalid"
-    fi
-}
 
 custom_gdb=""
 if [ "$CFG_GDB_CMDS" != "" ]
