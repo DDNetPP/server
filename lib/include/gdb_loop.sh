@@ -60,7 +60,7 @@ gdb_corefile=""
 if is_cfg CFG_GDB_DUMP_CORE
 then
     log "dumping core is turned on (generate-core-file)"
-    gdb_corefile="-ex='generate-core-file core_dumps/core_${start_ts_slug}_$(get_commit)'"
+    gdb_corefile="-ex='generate-core-file core_dumps/core_${start_ts_slug}:$(get_commit)'"
     mkdir -p core_dumps/ || exit 1
 fi
 

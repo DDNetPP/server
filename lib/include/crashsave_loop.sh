@@ -52,7 +52,7 @@ then
     do
         [[ -e "$core" ]] || break
 
-        corefile="core_dumps/${core:2}_${start_ts_slug}_$(get_commit)"
+        corefile="core_dumps/core_${start_ts_slug}:$(get_commit)"
         log "saving $corefile ..."
         mv "$core" "$corefile"
     done
