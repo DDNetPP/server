@@ -48,7 +48,7 @@ function show_latest_logs() {
         err "logpath not found '$logpath'"
         exit 1
     fi
-    latest_log="$(find "$logpath" | tail -n1)"
+    latest_log="$(find "$logpath" | sort | tail -n1)"
     if [ ! -f $latest_log ]
     then
         wrn "there are no logfiles yet."
