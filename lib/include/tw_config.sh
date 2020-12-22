@@ -16,6 +16,7 @@ function select_cfg_template() {
     options=(
         "ddnet++"
         "ddnet"
+        "cfg (directory)"
         "Abort"
     )
     select opt in "${options[@]}"
@@ -27,6 +28,28 @@ function select_cfg_template() {
                 ;;
             "ddnet")
                 add_cfg_template ddnet
+                break
+                ;;
+            "cfg (directory)")
+                if [ ! -d cfg ]
+                then
+                    log "clone config repository to ./cfg"
+                    log "provide git remote to repo or abort and 'mkdir cfg'"
+                    read -rp 'git remote url:' git_remote
+                    git clone "$git_remote" cfg
+                    if [ ! -f ./cfg/passwords.cfg ] && grep -rq '^exec cfg/passwords.cfg' cfg
+                    then
+                        {
+                            echo "# passwords"
+                            echo ""
+                            echo "sv_rcon_password rcon"
+                            echo "sv_rcon_mod_password mod"
+                            echo "ec_password econ"
+                        } > ./cfg/passwords.cfg
+                        edit_file ./cfg/passwords.cfg
+                    fi
+                fi
+                add_cfg_template cfg
                 break
                 ;;
             "Abort")

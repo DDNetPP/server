@@ -1,0 +1,6 @@
+# cfg repo template config
+#
+# SERVERNAME: SERVER_NAME
+
+exec cfg/autoexec.cfg
+

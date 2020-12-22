@@ -117,6 +117,19 @@ function check_warnings() {
         wrn "WARNING: found sv_port $port times in your config"
         wrn "         avoid duplicates in config to avoid confusion."
     fi
+    if [ -d ./cfg ]
+    then
+        if [ -d ./cfg/.git ] && [ -f ./cfg/passwords.cfg ]
+        then
+            (
+                cd cfg || exit 1
+                if ! git check-ignore -q passwords.cfg
+                then
+                    wrn "WARNING: file cfg/passwords.cfg found but not in cfg/.gitignore"
+                fi
+            )
+        fi
+    fi
 }
 
 function install_apt() {
