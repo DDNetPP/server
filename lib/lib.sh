@@ -274,6 +274,10 @@ function check_logdir() {
     then
         return # log path found all fine
     fi
+    if [ "$CFG_SERVER_TYPE" == "tem" ]
+    then
+        return # tem has tem.settings logpath
+    fi
     err "log path not found '$gitpath_log'"
     log "do you want to create this directory? [y/N]"
     yn=""
@@ -298,33 +302,36 @@ function check_deps() {
 
     logpath="$gitpath_log/$CFG_SRV_NAME/logs/"
 
-    if [ ! -f "$CFG_BIN" ]
+    if [ "$CFG_SERVER_TYPE" == "teeworlds" ] && [ ! -f "$CFG_BIN" ]
     then
         err "server binary '$CFG_BIN' not found!"
         err "make sure the binary and your current path match"
         err "try ./github_update.sh to fetch the new binary"
-    exit
+        exit 1
     fi
 
     twcfg.check_cfg
 
-    if [ ! -d "$logpath" ]
+    if [ "$CFG_SERVER_TYPE" != "tem" ]
     then
-        wrn "logpath '$logpath' not found!"
-        echo ""
-        log "do you want to create this directory? [y/N]"
-        read -r -n 1 yn
-        echo ""
-        if [[ ! "$yn" =~ [yY] ]]
+        if [ ! -d "$logpath" ]
         then
-            log "stopped."
-            exit
-        fi
-        mkdir -p "$logpath" && suc "starting server..."
-    else
-        if [ ! -d "$gitpath_log/.git" ]
-        then
-            wrn "WARNING: logpath is not a git repository"
+            wrn "logpath '$logpath' not found!"
+            echo ""
+            log "do you want to create this directory? [y/N]"
+            read -r -n 1 yn
+            echo ""
+            if [[ ! "$yn" =~ [yY] ]]
+            then
+                log "stopped."
+                exit
+            fi
+            mkdir -p "$logpath" && suc "starting server..."
+        else
+            if [ ! -d "$gitpath_log/.git" ]
+            then
+                wrn "WARNING: logpath is not a git repository"
+            fi
         fi
     fi
 }
