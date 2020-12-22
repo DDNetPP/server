@@ -181,6 +181,17 @@ export CFG_GIT_BRANCH="${aSettVal[17]}"
 export CFG_SERVER_TYPE="${aSettVal[18]}"
 export CFG_TEM_SETTINGS="${aSettVal[19]}"
 
+if [ "$CFG_SERVER_TYPE" == "tem" ]
+then
+    tem_settings_path="$gitpath_mod/$CFG_TEM_SETTINGS"
+    if [ ! -f "$tem_settings_path" ]
+    then
+        err "ERROR: tem settings file not found"
+        err "       $tem_settings_path"
+        exit 1
+    fi
+    gitpath_log="$(grep sh_logs_path "$tem_settings_path" | cut -d'=' -f2-)"
+fi
 gitpath_log="${gitpath_log%%+(/)}" # strip trailing slash
 logroot="$gitpath_log"
 is_dumps_logpath=0
