@@ -9,12 +9,27 @@ fi
 
 source lib/lib.sh
 
-if [ "$1" == "--help" ] || [ "$1" == "-h" ]
-then
-    echo "usage: ./show_log.sh [-f]"
-    echo "options:"
-    echo "  -f      follows log using tail -f"
-    exit 0
-fi
+logpath=""
+follow=""
 
-show_latest_logs "$1"
+for arg in "$@"
+do
+    if [ "$arg" == "--help" ] || [ "$1" == "-h" ]
+    then
+        echo "usage: ./show_log.sh [logname] [-f] [logname]"
+        echo "options:"
+        echo "  -h          show this help"
+        echo "  -f          follows log using tail -f"
+        echo "  logname     directory in ./logs/logname for local log types"
+        exit 0
+    elif [ "$arg" == "-f" ]
+    then
+        follow=-f
+    elif [ "$logpath" == "" ]
+    then
+        logpath="$arg"
+    fi
+done
+
+show_latest_logs "$follow" "$logpath"
+

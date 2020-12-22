@@ -42,7 +42,14 @@ function cache_logpath() {
 }
 
 function show_latest_logs() {
+    # usage: show_latest_logs [-f] [path]
+    # -f to follow
+    # path to use custom log dir instead of cfg gitpath
     logpath="$gitpath_log/$CFG_SRV_NAME/logs/"
+    if [ "$2" != "" ]
+    then
+        logpath="./logs/$2"
+    fi
     if [ ! -d $logpath ]
     then
         err "logpath not found '$logpath'"
