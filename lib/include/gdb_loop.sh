@@ -71,9 +71,9 @@ check_logsize "$p/full_gdb.txt"
 check_logsize "$p/log_gdb.txt"
 
 ts=$(date +%F_%H-%M-%S)
-log_filename="$CFG_SRV_NAME/logs/${CFG_SRV_NAME}_$ts.log"
+log_filename="${CFG_SRV_NAME}_$ts.log"
 logfile="$LOGS_PATH_TW/$log_filename"
-logfile_absolute="$CFG_LOGS_PATH/$log_filename"
+logfile_absolute="$LOGS_PATH_FULL/$log_filename"
 cache_logpath "$logfile"
 if [ -f "$p/tmp_gdb.txt" ]
 then

@@ -191,6 +191,10 @@ then
         exit 1
     fi
     CFG_LOGS_PATH="$(grep sh_logs_path "$tem_settings_path" | cut -d'=' -f2-)"
+    if [ "${CFG_LOGS_PATH::1}" != "/" ]
+    then
+        CFG_LOGS_PATH="$HOME/.teeworlds/dumps/$CFG_LOGS_PATH"
+    fi
 fi
 CFG_LOGS_PATH="${CFG_LOGS_PATH%%+(/)}" # strip trailing slash
 LOGS_PATH_TW="$CFG_LOGS_PATH"
@@ -220,10 +224,18 @@ then
         fi
     fi
 fi
+LOGS_PATH_FULL="$CFG_LOGS_PATH/$CFG_SRV_NAME/logs/"
+LOGS_PATH_FULL_TW="$LOGS_PATH_TW/$CFG_SRV_NAME/logs/"
+if [ "$CFG_SERVER_TYPE" == "tem" ]
+then
+    LOGS_PATH_FULL="$CFG_LOGS_PATH"
+    LOGS_PATH_FULL_TW="$LOGS_PATH_TW"
+fi
 
 export CFG_CMAKE_FLAGS # usage: "${CFG_CMAKE_FLAGS[@]}"
 export is_dumps_logpath
 export LOGS_PATH_TW
+export LOGS_PATH_FULL
 export CFG_BIN=bin/$CFG_SRV_NAME
 if [[ "${CFG_CMAKE_FLAGS,,}" =~ debug ]]
 then

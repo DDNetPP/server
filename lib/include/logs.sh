@@ -45,14 +45,14 @@ function show_latest_logs() {
     # usage: show_latest_logs [-f] [path]
     # -f to follow
     # path to use custom log dir instead of cfg gitpath
-    logpath="$CFG_LOGS_PATH/$CFG_SRV_NAME/logs/"
+    logpath="$LOGS_PATH_FULL"
     if [ "$2" != "" ]
     then
         logpath="./logs/$2"
     fi
     if [ ! -d $logpath ]
     then
-        err "logpath not found '$logpath'"
+        err "log path not found '$logpath'"
         exit 1
     fi
     latest_log="$(find "$logpath" | sort | tail -n1)"

@@ -66,7 +66,7 @@ then
     cd "$gitpath_mod" || exit 1
     nohup ./start_tem.sh "$CFG_TEM_SETTINGS" "#sid:$server_id" > "$logfile" 2>&1 &
 else # teeworlds
-    logfile="$CFG_LOGS_PATH/$CFG_SRV_NAME/logs/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S).log"
+    logfile="$LOGS_PATH_FULL/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S).log"
     cache_logpath "$logfile"
 
     nohup ./$CFG_BIN "#sid:$server_id" > "$logfile" 2>&1 &
