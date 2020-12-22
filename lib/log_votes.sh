@@ -20,7 +20,7 @@ then
 fi
 
 OUTPUT="$1"
-LOGPATH="$gitpath_log"
+LOGPATH="$CFG_LOGS_PATH"
 if [ "$2" != "" ]
 then
     LOGPATH="$2"

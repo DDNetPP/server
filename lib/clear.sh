@@ -121,7 +121,7 @@ do
             del logs/
         ;;
         2|gl|?(\[gl\])git_logs)
-            del "$gitpath_log/$CFG_SRV_NAME/logs"
+            del "$CFG_LOGS_PATH/$CFG_SRV_NAME/logs"
         ;;
         3|b|?(\[b\])binarys)
             del "bin"

@@ -264,17 +264,17 @@ function check_gitpath() {
     then
         err "gitpath mod is empty"
         exit 1
-    elif [ "$gitpath_log" == "" ]
+    elif [ "$CFG_LOGS_PATH" == "" ]
     then
         err "gitpath log is empty"
         exit 1
     fi
     check_directory "$gitpath_mod"
-    check_directory "$gitpath_log"
+    check_directory "$CFG_LOGS_PATH"
 }
 
 function check_logdir() {
-    if [ -d "$gitpath_log" ]
+    if [ -d "$CFG_LOGS_PATH" ]
     then
         return # log path found all fine
     fi
@@ -282,17 +282,17 @@ function check_logdir() {
     then
         return # tem has tem.settings logpath
     fi
-    err "log path not found '$gitpath_log'"
+    err "log path not found '$CFG_LOGS_PATH'"
     log "do you want to create this directory? [y/N]"
     yn=""
     read -r -n 1 yn
     echo ""
     if [[ "$yn" =~ [yY] ]]
     then
-        mkdir "$gitpath_log/"
+        mkdir "$CFG_LOGS_PATH/"
     fi
     # make sure everything
-    if [ ! -d "$gitpath_log/" ]
+    if [ ! -d "$CFG_LOGS_PATH/" ]
     then
         err "logs path not found."
         exit 1
@@ -304,7 +304,7 @@ function check_deps() {
     check_logdir
     check_warnings
 
-    logpath="$gitpath_log/$CFG_SRV_NAME/logs/"
+    logpath="$CFG_LOGS_PATH/$CFG_SRV_NAME/logs/"
 
     if [ "$CFG_SERVER_TYPE" == "teeworlds" ] && [ ! -f "$CFG_BIN" ]
     then
@@ -332,7 +332,7 @@ function check_deps() {
             fi
             mkdir -p "$logpath" && suc "starting server..."
         else
-            if [ ! -d "$gitpath_log/.git" ]
+            if [ ! -d "$CFG_LOGS_PATH/.git" ]
             then
                 wrn "WARNING: logpath is not a git repository"
             fi

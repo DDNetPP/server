@@ -159,7 +159,7 @@ read_settings_file
 
 export gitpath_src="${aSettVal[0]}"
 export gitpath_mod="${aSettVal[1]}"
-export gitpath_log="${aSettVal[2]}"
+export CFG_LOGS_PATH="${aSettVal[2]}"
 export CFG_SRV_NAME="${aSettVal[3]}"
 export CFG_COMPILED_BIN="${aSettVal[4]}"
 # https://github.com/koalaman/shellcheck/wiki/Sc2086
@@ -190,23 +190,23 @@ then
         err "       $tem_settings_path"
         exit 1
     fi
-    gitpath_log="$(grep sh_logs_path "$tem_settings_path" | cut -d'=' -f2-)"
+    CFG_LOGS_PATH="$(grep sh_logs_path "$tem_settings_path" | cut -d'=' -f2-)"
 fi
-gitpath_log="${gitpath_log%%+(/)}" # strip trailing slash
-logroot="$gitpath_log"
+CFG_LOGS_PATH="${CFG_LOGS_PATH%%+(/)}" # strip trailing slash
+logroot="$CFG_LOGS_PATH"
 is_dumps_logpath=0
 
-if [ "$gitpath_log" == "" ]
+if [ "$CFG_LOGS_PATH" == "" ]
 then
     err "[setting] gitpath_log can not be empty"
     exit 1
 fi
 
-if [[ $gitpath_log =~ \.teeworlds/dumps/ ]]
+if [[ $CFG_LOGS_PATH =~ \.teeworlds/dumps/ ]]
 then
     log "detected 0.7 logpath"
     # only use the relative part starting from dumps dir
-    logroot="${gitpath_log##*.teeworlds/dumps/}"
+    logroot="${CFG_LOGS_PATH##*.teeworlds/dumps/}"
     is_dumps_logpath=1
     if [ "$logroot" == "" ]
     then

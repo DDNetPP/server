@@ -73,7 +73,7 @@ check_logsize "$p/log_gdb.txt"
 ts=$(date +%F_%H-%M-%S)
 log_filename="$CFG_SRV_NAME/logs/${CFG_SRV_NAME}_$ts.log"
 logfile="$logroot/$log_filename"
-logfile_absolute="$gitpath_log/$log_filename"
+logfile_absolute="$CFG_LOGS_PATH/$log_filename"
 cache_logpath "$logfile"
 if [ -f "$p/tmp_gdb.txt" ]
 then
