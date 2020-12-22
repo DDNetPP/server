@@ -16,7 +16,7 @@ then
 fi
 
 
-if echo $psaux | grep $server_id | grep -qv grep;
+if pgrep -f "$server_id"
 then
     pkill -f "$server_id"
     log "stopped server with id '$server_id'"

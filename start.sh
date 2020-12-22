@@ -38,7 +38,7 @@ then
         exit 1
     fi
     mkdir -p maps/tmp
-    cd maps/tmp
+    cd maps/tmp || exit 1
     mapname="${mapurl##*/}"
     if ! [[ "$mapname" =~ .map$ ]]
     then
@@ -59,10 +59,18 @@ then
     exit 0
 fi
 
-logfile="$gitpath_log/$CFG_SRV_NAME/logs/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S).log"
-cache_logpath "$logfile"
+if [ "$CFG_SERVER_TYPE" == "tem" ]
+then
+    logfile="$(pwd)/logs/tem/vanilla_tem_$(date +%F_%H-%M-%S).log"
+    mkdir -p logs/tem
+    cd "$gitpath_mod" || exit 1
+    nohup ./start_tem.sh "$CFG_TEM_SETTINGS" "#sid:$server_id" > "$logfile" 2>&1 &
+else # teeworlds
+    logfile="$gitpath_log/$CFG_SRV_NAME/logs/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S).log"
+    cache_logpath "$logfile"
 
-nohup ./$CFG_BIN "#sid:$server_id" > "$logfile" 2>&1 &
+    nohup ./$CFG_BIN "#sid:$server_id" > "$logfile" 2>&1 &
 
-show_logs
+    show_logs
+fi
 

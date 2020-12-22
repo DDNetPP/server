@@ -4,27 +4,29 @@ shopt -s extglob # used for trailing slashes globbing
 # init variables
 settings_file="server.cnf"
 line_num=0
-aSettStr=();aSettVal=()
-aSettStr+=("gitpath_src");aSettVal+=("/home/chiller/git")
-aSettStr+=("gitpath_mod");aSettVal+=("/home/chiller/git/mod")
-aSettStr+=("gitpath_log");aSettVal+=("/home/chiller/.teeworlds/dumps/TeeworldsLogs")
-aSettStr+=("server_name");aSettVal+=("teeworlds")
-aSettStr+=("compiled_binary_name");aSettVal+=("teeworlds_srv")
-aSettStr+=("cmake_flags");aSettVal+=("-DCMAKE_BUILD_TYPE=Debug")
-aSettStr+=("error_logs");aSettVal+=("1")
+aSettStr=();aSettVal=();aSettValid=()
+aSettStr+=("gitpath_src");aSettVal+=("/home/chiller/git");aSettValid+=('')
+aSettStr+=("gitpath_mod");aSettVal+=("/home/chiller/git/mod");aSettValid+=('')
+aSettStr+=("gitpath_log");aSettVal+=("/home/chiller/.teeworlds/dumps/TeeworldsLogs");aSettValid+=('')
+aSettStr+=("server_name");aSettVal+=("teeworlds");aSettValid+=('')
+aSettStr+=("compiled_binary_name");aSettVal+=("teeworlds_srv");aSettValid+=('')
+aSettStr+=("cmake_flags");aSettVal+=("-DCMAKE_BUILD_TYPE=Debug");aSettValid+=('')
+aSettStr+=("error_logs");aSettVal+=("1");aSettValid+=('')
 # aSettStr+=("error_logs_api");aSettVal+=("curl -d \"{\\\"err\\\":\\\"\$err\\\"}\" -H 'Content-Type: application/json' http://localhost:80/api")
-aSettStr+=("error_logs_api");aSettVal+=("test")
-aSettStr+=("editor");aSettVal+=("")
-aSettStr+=("gdb_cmds");aSettVal+=("")
-aSettStr+=("gdb_dump_core");aSettVal+=("0")
-# aSettStr+=("is_debug");aSettVal+=("1")
-aSettStr+=("cstd");aSettVal+=("0")
-aSettStr+=("post_logs_dir");aSettVal+=("")
-aSettStr+=("git_force_pull");aSettVal+=("0")
-aSettStr+=("test_run");aSettVal+=("0")
-aSettStr+=("test_run_port");aSettVal+=("8303")
-aSettStr+=("git_commit");aSettVal+=("")
-aSettStr+=("git_branch");aSettVal+=("")
+aSettStr+=("error_logs_api");aSettVal+=("test");aSettValid+=('')
+aSettStr+=("editor");aSettVal+=("");aSettValid+=('')
+aSettStr+=("gdb_cmds");aSettVal+=("");aSettValid+=('')
+aSettStr+=("gdb_dump_core");aSettVal+=("0");aSettValid+=('')
+# aSettStr+=("is_debug");aSettVal+=("1");aSettValid+=('')
+aSettStr+=("cstd");aSettVal+=("0");aSettValid+=('')
+aSettStr+=("post_logs_dir");aSettVal+=("");aSettValid+=('')
+aSettStr+=("git_force_pull");aSettVal+=("0");aSettValid+=('')
+aSettStr+=("test_run");aSettVal+=("0");aSettValid+=('')
+aSettStr+=("test_run_port");aSettVal+=("8303");aSettValid+=('')
+aSettStr+=("git_commit");aSettVal+=("");aSettValid+=('')
+aSettStr+=("git_branch");aSettVal+=("");aSettValid+=('')
+aSettStr+=("server_type");aSettVal+=("teeworlds");aSettValid+=('(tem|teeworlds)')
+aSettStr+=("tem_settings");aSettVal+=("tem.settings");aSettValid+=('')
 
 function create_settings() {
     if [ -f $settings_file ];
@@ -66,6 +68,13 @@ function parse_settings_line() {
                 if [[ "${aSettStr[$i]}" =~ path ]]
                 then
                     val="${val%%+(/)}" # strip trailing slash
+                fi
+                valid_pattern=${aSettValid[$i]}
+                if [[ "$valid_pattern" != "" ]] && [[ ! "$val" =~ $valid_pattern ]]
+                then
+                    err "SettingsError: invalid value '$val' for setting '$sett'"
+                    err "               values have to match $valid_pattern"
+                    exit 1
                 fi
                 aSettVal[$i]="$val"
                 return
@@ -145,6 +154,8 @@ read_settings_file
 # - test run port       15
 # - git commit          16
 # - git branch          17
+# - server type         18
+# - tem settings        19
 
 export gitpath_src="${aSettVal[0]}"
 export gitpath_mod="${aSettVal[1]}"
@@ -167,6 +178,8 @@ export CFG_TEST_RUN="${aSettVal[14]}"
 export CFG_TEST_RUN_PORT="${aSettVal[15]}"
 export CFG_GIT_COMMIT="${aSettVal[16]}"
 export CFG_GIT_BRANCH="${aSettVal[17]}"
+export CFG_SERVER_TYPE="${aSettVal[18]}"
+export CFG_TEM_SETTINGS="${aSettVal[19]}"
 
 gitpath_log="${gitpath_log%%+(/)}" # strip trailing slash
 logroot="$gitpath_log"
