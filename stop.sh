@@ -15,20 +15,29 @@ then
     rm lib/tmp/logfile.txt
 fi
 
-
-if pgrep -f "$server_id"
+proc_str="./$CFG_BIN"
+if [ "$CFG_SERVER_TYPE" == "tem" ]
 then
-    pkill -f "$server_id"
-    log "stopped server with id '$server_id'"
+    proc_str="settings=$CFG_TEM_SETTINGS"
 else
-    wrn "no server with this id found '$server_id'"
+    if pgrep -f "$server_id" > /dev/null
+    then
+        pkill -f "$server_id"
+        log "stopped server with id '$server_id'"
+    else
+        wrn "no server with this id found '$server_id'"
+    fi
 fi
+
 sleep 0.5 # give server time to shutdown
-if show_procs
+if show_procs "$proc_str"
 then
-    log "other processes containing '$CFG_BIN' were found."
-    log "you can stop them all."
-    log "but keep it mind it could stop any application on your server not only tw server"
+    if [ "$CFG_SERVER_TYPE" != "tem" ]
+    then
+        log "other processes containing '$CFG_BIN' were found."
+        log "you can stop them all."
+        log "but keep it mind it could stop any application on your server not only tw server"
+    fi
     log "do you want to stop them all? [y/N]"
     read -r -n 1 yn
     echo ""
