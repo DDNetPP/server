@@ -193,7 +193,7 @@ then
     CFG_LOGS_PATH="$(grep sh_logs_path "$tem_settings_path" | cut -d'=' -f2-)"
 fi
 CFG_LOGS_PATH="${CFG_LOGS_PATH%%+(/)}" # strip trailing slash
-logroot="$CFG_LOGS_PATH"
+LOGS_PATH_TW="$CFG_LOGS_PATH"
 is_dumps_logpath=0
 
 if [ "$CFG_LOGS_PATH" == "" ]
@@ -206,9 +206,9 @@ if [[ $CFG_LOGS_PATH =~ \.teeworlds/dumps/ ]]
 then
     log "detected 0.7 logpath"
     # only use the relative part starting from dumps dir
-    logroot="${CFG_LOGS_PATH##*.teeworlds/dumps/}"
+    LOGS_PATH_TW="${CFG_LOGS_PATH##*.teeworlds/dumps/}"
     is_dumps_logpath=1
-    if [ "$logroot" == "" ]
+    if [ "$LOGS_PATH_TW" == "" ]
     then
         wrn "WARNING log root path is empty"
         read -p "Do you want to proceed? [y/N]" -n 1 -r
@@ -223,7 +223,7 @@ fi
 
 export CFG_CMAKE_FLAGS # usage: "${CFG_CMAKE_FLAGS[@]}"
 export is_dumps_logpath
-export logroot
+export LOGS_PATH_TW
 export CFG_BIN=bin/$CFG_SRV_NAME
 if [[ "${CFG_CMAKE_FLAGS,,}" =~ debug ]]
 then
