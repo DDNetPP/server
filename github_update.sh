@@ -9,7 +9,7 @@ fi
 
 source lib/lib.sh
 
-src_dir="$gitpath_src/DDNetPP"
+src_dir="$CFG_GIT_ROOT/DDNetPP"
 srv_dir="$(pwd)"
 
 yes_flag=0
@@ -56,7 +56,7 @@ then
         err "Source path not found. Stopping..."
         exit
     fi
-    git clone --recursive https://github.com/DDNetPP/DDNetPP "$gitpath_src/DDNetPP"
+    git clone --recursive https://github.com/DDNetPP/DDNetPP "$CFG_GIT_ROOT/DDNetPP"
 fi
 
 check_bam

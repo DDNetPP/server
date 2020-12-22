@@ -5,7 +5,7 @@ shopt -s extglob # used for trailing slashes globbing
 settings_file="server.cnf"
 line_num=0
 aSettStr=();aSettVal=();aSettValid=()
-aSettStr+=("gitpath_src");aSettVal+=("/home/chiller/git");aSettValid+=('')
+aSettStr+=("git_root");aSettVal+=("/home/chiller/git");aSettValid+=('')
 aSettStr+=("gitpath_mod");aSettVal+=("/home/chiller/git/mod");aSettValid+=('')
 aSettStr+=("gitpath_log");aSettVal+=("/home/chiller/.teeworlds/dumps/TeeworldsLogs");aSettValid+=('')
 aSettStr+=("server_name");aSettVal+=("teeworlds");aSettValid+=('')
@@ -58,6 +58,11 @@ function parse_settings_line() {
             wrn "WARNING: 'binary_name' is deprecated by 'compiled_binary_name'"
             wrn "         please fix at $settings_file:$line_num"
             sett=compiled_binary_name
+        elif [ "$sett" == "gitpath_src" ]
+        then
+            wrn "WARNING: 'gitpath_src' is deprecated by 'git_root'"
+            wrn "         please fix at $settings_file:$line_num"
+            sett=git_root
         fi
         local i
         for i in "${!aSettStr[@]}"
@@ -136,7 +141,7 @@ create_settings # create fresh if null
 read_settings_file
 
 # Settings:
-# - gitpath src         0
+# - git root            0
 # - gitpath mod         1
 # - gitpath log         2
 # - server name         3
@@ -157,7 +162,7 @@ read_settings_file
 # - server type         18
 # - tem settings        19
 
-export gitpath_src="${aSettVal[0]}"
+export CFG_GIT_ROOT="${aSettVal[0]}"
 export gitpath_mod="${aSettVal[1]}"
 export CFG_LOGS_PATH="${aSettVal[2]}"
 export CFG_SRV_NAME="${aSettVal[3]}"
@@ -236,6 +241,7 @@ export CFG_CMAKE_FLAGS # usage: "${CFG_CMAKE_FLAGS[@]}"
 export is_dumps_logpath
 export LOGS_PATH_TW
 export LOGS_PATH_FULL
+export LOGS_PATH_FULL_TW
 export CFG_BIN=bin/$CFG_SRV_NAME
 if [[ "${CFG_CMAKE_FLAGS,,}" =~ debug ]]
 then

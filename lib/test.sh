@@ -25,7 +25,7 @@ sv_port "9988"
 EOF
 
 read -rd '' servercnf << EOF
-gitpath_src=~/git
+git_root=~/git
 gitpath_mod=~/git/ddnet7
 gitpath_log=/tmp/TestLogs
 server_name=testsrv-9988

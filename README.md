@@ -29,7 +29,7 @@ during the setup you will be asked to create a ``server.cnf``
 ```
 # DDNet++ server config by ChillerDragon
 # https://github.com/DDNetPP/server
-gitpath_src=/home/chiller/git
+git_root=/home/chiller/git
 gitpath_mod=/home/chiller/git/teeworlds
 gitpath_log=/home/chiller/.teeworlds/dumps
 server_name=fly

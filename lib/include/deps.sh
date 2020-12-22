@@ -3,9 +3,9 @@
 bam_bin=""
 
 function install_bam() {
-    if [ ! -d "$gitpath_src/bam" ]
+    if [ ! -d "$CFG_GIT_ROOT/bam" ]
     then
-        err "Path not found: $gitpath_src/bam"
+        err "Path not found: $CFG_GIT_ROOT/bam"
         log "do you want to fetch a fresh source? [y/N]"
         read -r -n 1 yn
         echo ""
@@ -14,13 +14,13 @@ function install_bam() {
             err "Bam path not found. Stopping..."
             exit
         fi
-        git clone https://github.com/matricks/bam "$gitpath_src/bam"
+        git clone https://github.com/matricks/bam "$CFG_GIT_ROOT/bam"
     fi
-    if [ ! -f "$gitpath_src/bam/bam" ]
+    if [ ! -f "$CFG_GIT_ROOT/bam/bam" ]
     then
-        wrn "Executable not found: $gitpath_src/bam/bam"
+        wrn "Executable not found: $CFG_GIT_ROOT/bam/bam"
         log "building bam from source..."
-        cd "$gitpath_src/bam" || exit 1
+        cd "$CFG_GIT_ROOT/bam" || exit 1
         ./make_unix.sh
         r=$?;
         log "build finished with exit code $r"
@@ -31,7 +31,7 @@ function install_bam() {
             exit
         fi
     fi
-    bam_bin="$gitpath_src/bam/bam"
+    bam_bin="$CFG_GIT_ROOT/bam/bam"
 }
 
 function check_bam() {
