@@ -43,7 +43,7 @@ then
     echo ""
     if [[ "$yn" =~ [yY] ]]
     then
-        pkill -f "./$CFG_BIN"
+        pkill -f "$proc_str"
         log "stopped all processes."
     else
         log "aborting stop script."
