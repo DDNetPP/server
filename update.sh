@@ -58,10 +58,9 @@ then
 elif [ "$CFG_SERVER_TYPE" == "tem" ] || [ "$arg_type" == "tem" ]
 then
     tem_update
+    git_save_pull
 else
     err "something went wrong :/"
     exit 1
 fi
-
-git_save_pull
 
