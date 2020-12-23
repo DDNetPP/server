@@ -28,20 +28,25 @@ function download_web() {
 function download_zip() {
     local url="$1"
     cwd="$(pwd)"
+    local tmp_maps_archive
+    local tmp_maps_dir
+    tmp_maps_archive="/tmp/ddpp_$USER/maps.archive"
+    tmp_maps_dir="/tmp/ddpp_$USER/maps"
+    mkdir -p "/tmp/ddpp_$USER" || exit 1
     mkdir -p "$maps_dir" || exit 1
-    if [ -f /tmp/XXX_maps.zip ]
+    if [ -f "$tmp_maps_archive" ]
     then
-        rm -rf /tmp/XXX_maps.zip || exit 1
+        rm -rf "$tmp_maps_archive" || exit 1
     fi
-    wget -O /tmp/XXX_maps.zip "$url"
-    unzip /tmp/XXX_maps.zip -d /tmp/YYY_maps
+    wget -O "$tmp_maps_archive" "$url"
+    unzip "$tmp_maps_archive" -d /tmp/YYY_maps
     found=0
-    cd /tmp/YYY_maps/ || { err "failed to cd into '$dir'"; exit 1; }
+    cd "$tmp_maps_dir" || { err "failed to cd into '$dir'"; exit 1; }
     count="$(find . -name -maxdepth 1 '*.map' 2>/dev/null | wc -l)"
     if [ "$count" != 0 ]
     then
         log "found $count maps. copying ..."
-        cp /tmp/YYY_maps/*.map "$maps_dir"
+        cp "$tmp_maps_dir"*.map "$maps_dir"
         found=1
     fi
     # check one subdir
@@ -54,7 +59,7 @@ function download_zip() {
         if [ "$count" != 0 ]
         then
             log "found $count maps. copying ..."
-            cp /tmp/YYY_maps/"$dir"/*.map "$maps_dir"
+            cp "$tmp_maps_dir""$dir"/*.map "$maps_dir"
             found=1
         fi
     fi
@@ -64,13 +69,13 @@ function download_zip() {
         err "url: $url"
         exit 1
     fi
-    if [ -f /tmp/XXX_maps.zip ]
+    if [ -f "$tmp_maps_archive" ]
     then
-        rm -rf /tmp/XXX_maps.zip || exit 1
+        rm -rf "$tmp_maps_archive" || exit 1
     fi
-    if [ -d /tmp/YYY_maps/ ]
+    if [ -d "$tmp_maps_dir" ]
     then
-        rm -rf /tmp/YYY_maps/ || exit 1
+        rm -rf "$tmp_maps_dir" || exit 1
     fi
     cd "$cwd" || exit 1
 }
