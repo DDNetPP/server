@@ -25,21 +25,44 @@ function download_web() {
     cd "$cwd" || exit 1
 }
 
-function download_zip() {
-    local url="$1"
-    cwd="$(pwd)"
+function download_archive() {
+    local archive_type="$1"
+    local url="$2"
+    local archive_name
     local tmp_maps_archive
     local tmp_maps_dir
-    tmp_maps_archive="/tmp/ddpp_$USER/maps.archive"
-    tmp_maps_dir="/tmp/ddpp_$USER/maps"
-    mkdir -p "/tmp/ddpp_$USER" || exit 1
+    archive_name="${url##*/}"
+    archive_name="$(basename "$archive_name" ".$archive_type")"
+    cwd="$(pwd)"
+    tmp_maps_root="/tmp/ddpp_$USER"
+    tmp_maps_archive="$tmp_maps_root/maps.archive"
+    tmp_maps_dir="$tmp_maps_root/maps"
+    mkdir -p "$tmp_maps_root" || exit 1
     mkdir -p "$maps_dir" || exit 1
     if [ -f "$tmp_maps_archive" ]
     then
         rm -rf "$tmp_maps_archive" || exit 1
     fi
+    if [ -d "$tmp_maps_dir" ]
+    then
+        rm -rf "$tmp_maps_dir" || exit 1
+    fi
     wget -O "$tmp_maps_archive" "$url"
-    unzip "$tmp_maps_archive" -d /tmp/YYY_maps
+    if [ "$archive_type" == "zip" ]
+    then
+        unzip "$tmp_maps_archive" -d "$tmp_maps_dir"
+    elif [ "$archive_type" == "tar.gz" ]
+    then
+        tar -xvzf "$tmp_maps_archive" -C "$tmp_maps_root"
+        mv "$tmp_maps_root/$archive_name" "$tmp_maps_dir" || exit 1
+    elif [ "$archive_type" == "tar.xz" ]
+    then
+        tar -xf "$tmp_maps_archive" -C "$tmp_maps_root"
+        mv "$tmp_maps_root/$archive_name" "$tmp_maps_dir" || exit 1
+    else
+        err "unsupported archive_type '$archive_type'"
+        exit 1
+    fi
     found=0
     cd "$tmp_maps_dir" || { err "failed to cd into '$dir'"; exit 1; }
     count="$(find . -name -maxdepth 1 '*.map' 2>/dev/null | wc -l)"
@@ -49,17 +72,21 @@ function download_zip() {
         cp "$tmp_maps_dir"*.map "$maps_dir"
         found=1
     fi
-    # check one subdir
+    # check one first subdir or data/maps to look for more maps
     dir="$(find . -type d -print | tail -n1)"
-    log "navigating to '$dir'"
+    if [ -d data/maps ]
+    then
+        dir=data/maps
+    fi
     if [[ "$dir" != "" ]]
     then
+        log "navigating to '$dir'"
         cd "$dir" || { err "failed to cd into '$dir'"; exit 1; }
         count="$(find . -name '*.map' 2>/dev/null | wc -l)"
         if [ "$count" != 0 ]
         then
             log "found $count maps. copying ..."
-            cp "$tmp_maps_dir""$dir"/*.map "$maps_dir"
+            cp "$tmp_maps_dir/$dir"/*.map "$maps_dir"
             found=1
         fi
     fi
@@ -68,14 +95,6 @@ function download_zip() {
         err "did not find any maps in the zip file"
         err "url: $url"
         exit 1
-    fi
-    if [ -f "$tmp_maps_archive" ]
-    then
-        rm -rf "$tmp_maps_archive" || exit 1
-    fi
-    if [ -d "$tmp_maps_dir" ]
-    then
-        rm -rf "$tmp_maps_dir" || exit 1
     fi
     cd "$cwd" || exit 1
 }
@@ -115,7 +134,9 @@ function menu() {
     fi
     PS3='Please enter your choice: '
     options=(
-        "vanilla"
+        "vanilla git"
+        "vanilla 0.7.1 release"
+        "vanilla 0.6.5 release"
         "heinrich5991 [BIG]"
         "ddnet [BIG]"
         "ddnet7 [BIG]"
@@ -129,8 +150,16 @@ function menu() {
     select opt in "${options[@]}"
     do
         case $opt in
-            "vanilla")
+            "vanilla git")
                 download_git https://github.com/teeworlds/teeworlds-maps
+                break
+                ;;
+            "vanilla 0.7.1 release")
+                download_archive tar.gz https://github.com/teeworlds/teeworlds/releases/download/0.7.1/teeworlds-0.7.1-linux_x86_64.tar.gz
+                break
+                ;;
+            "vanilla 0.6.5 release")
+                download_archive tar.xz https://downloads.teeworlds.com/teeworlds-0.6.5-linux_x86_64.tar.xz
                 break
                 ;;
             "heinrich5991 [BIG]")
@@ -142,11 +171,11 @@ function menu() {
                 break
                 ;;
             "ddnet7 [BIG]")
-                download_zip https://maps.ddnet.tw/compilations/maps7.zip
+                download_archive zip https://maps.ddnet.tw/compilations/maps7.zip
                 break
                 ;;
             "KoG [BIG]")
-                download_zip https://qshar.com/maps.tar.gz
+                download_archive tar.gz https://qshar.com/maps.tar.gz
                 break
                 ;;
             "ddnet++")
