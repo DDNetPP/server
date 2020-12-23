@@ -19,14 +19,14 @@ proc_str="./$CFG_BIN"
 if [ "$CFG_SERVER_TYPE" == "tem" ]
 then
     proc_str="settings=$CFG_TEM_SETTINGS"
+fi
+
+if pgrep -f "$server_id" > /dev/null
+then
+    pkill -f "$server_id"
+    log "stopped server with id '$server_id'"
 else
-    if pgrep -f "$server_id" > /dev/null
-    then
-        pkill -f "$server_id"
-        log "stopped server with id '$server_id'"
-    else
-        wrn "no server with this id found '$server_id'"
-    fi
+    wrn "no server with this id found '$server_id'"
 fi
 
 sleep 0.5 # give server time to shutdown
