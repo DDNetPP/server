@@ -60,5 +60,8 @@ then
     tem_update
 else
     err "something went wrong :/"
+    exit 1
 fi
+
+git_save_pull
 
