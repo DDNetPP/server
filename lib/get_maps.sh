@@ -96,6 +96,14 @@ function download_archive() {
         err "url: $url"
         exit 1
     fi
+    if [ -f "$tmp_maps_archive" ]
+    then
+        rm -rf "$tmp_maps_archive" || exit 1
+    fi
+    if [ -d "$tmp_maps_dir" ]
+    then
+        rm -rf "$tmp_maps_dir" || exit 1
+    fi
     cd "$cwd" || exit 1
 }
 
