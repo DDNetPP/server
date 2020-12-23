@@ -163,7 +163,7 @@ read_settings_file
 # - tem settings        19
 
 export CFG_GIT_ROOT="${aSettVal[0]}"
-export gitpath_mod="${aSettVal[1]}"
+export CFG_GIT_PATH_MOD="${aSettVal[1]}"
 export CFG_LOGS_PATH="${aSettVal[2]}"
 export CFG_SRV_NAME="${aSettVal[3]}"
 export CFG_COMPILED_BIN="${aSettVal[4]}"
@@ -188,7 +188,7 @@ export CFG_TEM_SETTINGS="${aSettVal[19]}"
 
 if [ "$CFG_SERVER_TYPE" == "tem" ]
 then
-    tem_settings_path="$gitpath_mod/$CFG_TEM_SETTINGS"
+    tem_settings_path="$CFG_GIT_PATH_MOD/$CFG_TEM_SETTINGS"
     if [ ! -f "$tem_settings_path" ]
     then
         err "ERROR: tem settings file not found"

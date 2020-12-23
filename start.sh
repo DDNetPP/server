@@ -63,7 +63,7 @@ if [ "$CFG_SERVER_TYPE" == "tem" ]
 then
     logfile="$(pwd)/logs/tem/vanilla_tem_$(date +%F_%H-%M-%S).log"
     mkdir -p logs/tem
-    cd "$gitpath_mod" || exit 1
+    cd "$CFG_GIT_PATH_MOD" || exit 1
     nohup ./start_tem.sh "$CFG_TEM_SETTINGS" "#sid:$server_id" > "$logfile" 2>&1 &
 else # teeworlds
     logfile="$LOGS_PATH_FULL/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S).log"

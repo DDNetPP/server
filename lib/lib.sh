@@ -20,7 +20,7 @@ function is_cmd() {
 
 function get_commit()
 {
-    if cd "$gitpath_mod"
+    if cd "$CFG_GIT_PATH_MOD"
     then
         git rev-parse HEAD
     else
@@ -260,7 +260,7 @@ function check_directory() {
 }
 
 function check_gitpath() {
-    if [ "$gitpath_mod" == "" ]
+    if [ "$CFG_GIT_PATH_MOD" == "" ]
     then
         err "gitpath mod is empty"
         exit 1
@@ -269,7 +269,7 @@ function check_gitpath() {
         err "gitpath log is empty"
         exit 1
     fi
-    check_directory "$gitpath_mod"
+    check_directory "$CFG_GIT_PATH_MOD"
     check_directory "$CFG_LOGS_PATH"
 }
 

@@ -16,7 +16,7 @@ function cmake_update() {
     mkdir -p maps || { err "Error: creating dir maps/"; exit 1; }
     mkdir -p logs || { err "Error: creating dir logs/"; exit 1; }
     mkdir -p bin || { err "Error: creating dir bin/"; exit 1; }
-    cd "$gitpath_mod" || { err "Could not enter git directory"; exit 1; }
+    cd "$CFG_GIT_PATH_MOD" || { err "Could not enter git directory"; exit 1; }
     bin_old_commit="$(git rev-parse HEAD)"
     if [ "$bin_old_commit" == "" ]
     then
@@ -38,7 +38,7 @@ function cmake_update() {
     if [[ ! -z $(git status -s) ]] && [[ "$is_force" == "0" ]]
     then
         err --log "Error: updating the git repo failed"
-        err       "       cd $gitpath_mod"
+        err       "       cd $CFG_GIT_PATH_MOD"
         err       "       git status"
         err       "       $(tput bold)./update.sh --force$(tput sgr0) to ignore"
         exit 1
