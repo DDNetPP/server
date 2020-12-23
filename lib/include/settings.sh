@@ -5,9 +5,9 @@ shopt -s extglob # used for trailing slashes globbing
 settings_file="server.cnf"
 line_num=0
 aSettStr=();aSettVal=();aSettValid=()
-aSettStr+=("git_root");aSettVal+=("/home/chiller/git");aSettValid+=('')
-aSettStr+=("gitpath_mod");aSettVal+=("/home/chiller/git/mod");aSettValid+=('')
-aSettStr+=("gitpath_log");aSettVal+=("/home/chiller/.teeworlds/dumps/TeeworldsLogs");aSettValid+=('')
+aSettStr+=("git_root");aSettVal+=("/home/$USER/git");aSettValid+=('')
+aSettStr+=("gitpath_mod");aSettVal+=("/home/$USER/git/mod");aSettValid+=('')
+aSettStr+=("gitpath_log");aSettVal+=("/home/$USER/.teeworlds/dumps/TeeworldsLogs");aSettValid+=('')
 aSettStr+=("server_name");aSettVal+=("teeworlds");aSettValid+=('')
 aSettStr+=("compiled_binary_name");aSettVal+=("teeworlds_srv");aSettValid+=('')
 aSettStr+=("cmake_flags");aSettVal+=("-DCMAKE_BUILD_TYPE=Debug");aSettValid+=('')
@@ -27,6 +27,7 @@ aSettStr+=("git_commit");aSettVal+=("");aSettValid+=('')
 aSettStr+=("git_branch");aSettVal+=("");aSettValid+=('')
 aSettStr+=("server_type");aSettVal+=("teeworlds");aSettValid+=('(tem|teeworlds)')
 aSettStr+=("tem_settings");aSettVal+=("tem.settings");aSettValid+=('')
+aSettStr+=("tem_path");aSettVal+=("/home/$USER/git/TeeworldsEconMod");aSettValid+=('')
 
 function create_settings() {
     if [ -f $settings_file ];
@@ -161,6 +162,7 @@ read_settings_file
 # - git branch          17
 # - server type         18
 # - tem settings        19
+# - tem path            20
 
 export CFG_GIT_ROOT="${aSettVal[0]}"
 export CFG_GIT_PATH_MOD="${aSettVal[1]}"
@@ -185,10 +187,11 @@ export CFG_GIT_COMMIT="${aSettVal[16]}"
 export CFG_GIT_BRANCH="${aSettVal[17]}"
 export CFG_SERVER_TYPE="${aSettVal[18]}"
 export CFG_TEM_SETTINGS="${aSettVal[19]}"
+export CFG_TEM_PATH="${aSettVal[20]}"
 
 if [ "$CFG_SERVER_TYPE" == "tem" ]
 then
-    tem_settings_path="$CFG_GIT_PATH_MOD/$CFG_TEM_SETTINGS"
+    tem_settings_path="$CFG_TEM_PATH/$CFG_TEM_SETTINGS"
     if [ ! -f "$tem_settings_path" ]
     then
         err "ERROR: tem settings file not found"

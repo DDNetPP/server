@@ -55,7 +55,7 @@ then
     cd ../../
     read -rp 'password: ' pass
     log "starting server with password '$pass' ..."
-    ./$CFG_BIN "sv_map tmp/$mapname;password $pass"
+    ./"$CFG_BIN" "sv_map tmp/$mapname;password $pass"
     exit 0
 fi
 
@@ -63,13 +63,13 @@ if [ "$CFG_SERVER_TYPE" == "tem" ]
 then
     logfile="$(pwd)/logs/tem/vanilla_tem_$(date +%F_%H-%M-%S).log"
     mkdir -p logs/tem
-    cd "$CFG_GIT_PATH_MOD" || exit 1
+    cd "$CFG_TEM_PATH" || exit 1
     nohup ./start_tem.sh "$CFG_TEM_SETTINGS" "#sid:$server_id" > "$logfile" 2>&1 &
 else # teeworlds
     logfile="$LOGS_PATH_FULL/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S).log"
     cache_logpath "$logfile"
 
-    nohup ./$CFG_BIN "#sid:$server_id" > "$logfile" 2>&1 &
+    nohup ./"$CFG_BIN" "#sid:$server_id" > "$logfile" 2>&1 &
 
     show_logs
 fi
