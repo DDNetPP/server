@@ -72,7 +72,7 @@ echo "+----------------------------------------+"
     echo "echo ------------------"
 } >> crashes.txt
 
-./cmake_update.sh > "$p/raw_build.txt"
+./update.sh > "$p/raw_build.txt"
 if [ "$CFG_CSTD" == "1" ]
 then
     url="$(cstd "$p/raw_build.txt")"

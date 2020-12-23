@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# TODO: remove or update this script
+
 if [ ! -f srv.txt ]
 then
     echo "Error: srv.txt not found."

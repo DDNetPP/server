@@ -51,7 +51,7 @@ then
     echo "  the user will be asked to abort the script"
     echo "  to ignore this warning set the IGNORE_ERR var to 1"
     echo "example:"
-    echo "  $(basename "$0") ./stop.sh;./cmake_update.sh;./start.sh"
+    echo "  $(basename "$0") ./stop.sh;./update.sh;./start.sh"
     echo "  IGNORE_ERR=1 $(basename "$0") /usr/bin/nonzero.sh"
     exit 0
 elif [ "$1" == "--script" ] || [ "$1" == "--file" ]

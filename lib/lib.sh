@@ -317,10 +317,30 @@ function check_deps() {
     then
         err "server binary '$CFG_BIN' not found!"
         err "make sure the binary and your current path match"
-        err "try ./github_update.sh to fetch the new binary"
+        err "try ./update.sh to fetch the new binary"
         exit 1
     fi
 
     twcfg.check_cfg
+}
+
+function update_configs() {
+    cwd="$(pwd)"
+    cd "$cwd" || exit 1
+    if [[ -d cfg/ ]] && [[ -d cfg/.git ]]
+    then
+        log "found config directory cfg/"
+        log "updating configs ..."
+        cd cfg || exit 1
+        git_save_pull
+    fi
+    cd "$cwd" || exit 1
+    if [[ -d votes/ ]] && [[ -d votes/.git ]]
+    then
+        log "found config directory votes/"
+        log "updating configs ..."
+        cd votes || exit 1
+        git_save_pull
+    fi
 }
 

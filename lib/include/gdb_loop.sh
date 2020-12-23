@@ -135,7 +135,7 @@ cat "$p/raw_gdb.txt" >> "$p/log_gdb.txt"
 rm "$p/raw_gdb.txt"
 log_err "gdb_loop.sh server $CFG_SRV_NAME crashed at $ts"
 echo "echo \"crash or shutdown$ts\"" >> crashes.txt
-./cmake_update.sh > "$p/raw_build.txt"
+./update.sh > "$p/raw_build.txt"
 if [ "$CFG_CSTD" == "1" ]
 then
     url="$(cstd "$p/raw_build.txt")"
