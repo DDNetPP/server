@@ -73,7 +73,7 @@ function cmake_update() {
         err "Binary not found is your config correct?"
         err "Expected binary name '$CFG_COMPILED_BIN'"
         err "and only found those files:"
-        ls
+        ls --color=always
         exit 1
     fi
     if [ -f "$cwd/${CFG_BIN}" ]
