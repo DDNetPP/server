@@ -107,14 +107,14 @@ function get_tw_config() {
     then
         err "Error: invalid number of arguments given get_tw_config(config_key, default_value)"
         err "       expected 2 given $#"
-        exit 1
+        return
     fi
     local config_key="$1"
     local default_value="$2"
     local found_key
     if [ ! -d lib/ ]
     then
-        wrn "could not detect port lib/ directory not found."
+        wrn "could not get tw config lib/ directory not found."
         return
     elif [ ! -f autoexec.cfg ]
     then
@@ -124,7 +124,7 @@ function get_tw_config() {
     mkdir -p lib/tmp
     twcfg_line=0
     twcfg.include_exec "autoexec.cfg" > lib/tmp/compiled.cfg
-    found_key="$(grep "^$config_key " lib/tmp/compiled.cfg | tail -n1 | cut -d' ' -f2 | xargs)"
+    found_key="$(grep "^$config_key " lib/tmp/compiled.cfg | tail -n1 | cut -d' ' -f2- | xargs)"
     if [ "$found_key" == "" ]
     then
         echo "$default_value"
