@@ -112,9 +112,17 @@ done
 #     sleep 0.3
 # done
 
-options="[ll]local_logs [gl]git_logs [b]binarys [lt]lib/tmp [lv]lib/var [m]maps [c]cfg"
+options=(
+    "[ll]local_logs"
+    "[gl]git_logs"
+    "[b]binarys"
+    "[lt]lib/tmp"
+    "[lv]lib/var"
+    "[m]maps"
+    "[c]cfg"
+)
 PS3='select option to be deleted: '
-select opt in $options
+select opt in "${options[@]}"
 do
     case "$REPLY" in
         1|ll|?(\[ll\])local_logs)
