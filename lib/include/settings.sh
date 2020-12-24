@@ -7,9 +7,11 @@ line_num=0
 aSettStr=();aSettVal=();aSettValid=()
 aSettStr+=("git_root");aSettVal+=("/home/$USER/git");aSettValid+=('')
 aSettStr+=("gitpath_mod");aSettVal+=("/home/$USER/git/mod");aSettValid+=('')
+aSettStr+=("gitpath_bot");aSettVal+=("/home/$USER/git/chillerbot-h7");aSettValid+=('')
 aSettStr+=("gitpath_log");aSettVal+=("/home/$USER/.teeworlds/dumps/TeeworldsLogs");aSettValid+=('')
 aSettStr+=("server_name");aSettVal+=("teeworlds");aSettValid+=('')
-aSettStr+=("compiled_binary_name");aSettVal+=("teeworlds_srv");aSettValid+=('')
+aSettStr+=("compiled_teeworlds_name");aSettVal+=("teeworlds_srv");aSettValid+=('')
+aSettStr+=("compiled_bot_name");aSettVal+=("chillerbot-z7");aSettValid+=('')
 aSettStr+=("cmake_flags");aSettVal+=("-DCMAKE_BUILD_TYPE=Debug");aSettValid+=('')
 aSettStr+=("error_logs");aSettVal+=("1");aSettValid+=('')
 # aSettStr+=("error_logs_api");aSettVal+=("curl -d \"{\\\"err\\\":\\\"\$err\\\"}\" -H 'Content-Type: application/json' http://localhost:80/api")
@@ -56,11 +58,11 @@ function create_settings() {
 function parse_settings_line() {
         local sett=$1
         local val=$2
-        if [ "$sett" == "binary_name" ]
+        if [ "$sett" == "compiled_binary_name" ]
         then
-            wrn "WARNING: 'binary_name' is deprecated by 'compiled_binary_name'"
+            wrn "WARNING: 'compiled_binary_name' is deprecated by 'compiled_teeworlds_name'"
             wrn "         please fix at $settings_file:$line_num"
-            sett=compiled_binary_name
+            sett=compiled_teeworlds_name
         elif [ "$sett" == "gitpath_src" ]
         then
             wrn "WARNING: 'gitpath_src' is deprecated by 'git_root'"
@@ -146,50 +148,54 @@ read_settings_file
 # Settings:
 # - git root            0
 # - gitpath mod         1
-# - gitpath log         2
-# - server name         3
-# - compiled bin name   4
-# - cmake flags         5
-# - error logs          6
-# - error logs api      7
-# - editor              8
-# - gdb commands        9
-# - gdb dump core       10
-# - use cstd paste      11
-# - post logs dir       12
-# - git force pull      13
-# - test run            14
-# - test run port       15
-# - git commit          16
-# - git branch          17
-# - server type         18
-# - tem settings        19
-# - tem path            20
+# - gitpath bot         2
+# - gitpath log         3
+# - server name         4
+# - teeworlds bin name  5
+# - bot bin name        6
+# - cmake flags         7
+# - error logs          8
+# - error logs api      9
+# - editor              10
+# - gdb commands        11
+# - gdb dump core       12
+# - use cstd paste      13
+# - post logs dir       14
+# - git force pull      15
+# - test run            16
+# - test run port       17
+# - git commit          18
+# - git branch          19
+# - server type         20
+# - tem settings        21
+# - tem path            22
 
 export CFG_GIT_ROOT="${aSettVal[0]}"
 export CFG_GIT_PATH_MOD="${aSettVal[1]}"
-export CFG_LOGS_PATH="${aSettVal[2]}"
-export CFG_SRV_NAME="${aSettVal[3]}"
-export CFG_COMPILED_BIN="${aSettVal[4]}"
+export CFG_GIT_PATH_BOT="${aSettVal[2]}"
+export CFG_LOGS_PATH="${aSettVal[3]}"
+export CFG_SRV_NAME="${aSettVal[4]}"
+export CFG_COMPILED_BIN="${aSettVal[5]}"
+export CFG_COMPILED_BIN_BOT="${aSettVal[6]}"
 # https://github.com/koalaman/shellcheck/wiki/Sc2086
 # https://github.com/koalaman/shellcheck/wiki/SC2206
-read -r -a CFG_CMAKE_FLAGS <<< "${aSettVal[5]}"
-export CFG_ERROR_LOGS="${aSettVal[6]}" # 0=off 1=no duplicated 2=duplicates
-export CFG_ERROR_LOGS_API="${aSettVal[7]}" # shell command that gets executed on error
-export CFG_EDITOR="${aSettVal[8]}"
-export CFG_GDB_CMDS="${aSettVal[9]}"
-export CFG_GDB_DUMP_CORE="${aSettVal[10]}"
-# export CFG_DEBUG="${aSettVal[11]}" # debug depends on cmake flags
-export CFG_CSTD="${aSettVal[11]}"
-export CFG_POST_LOGS_DIR="${aSettVal[12]}"
-export CFG_GIT_FORCE_PULL="${aSettVal[13]}"
-export CFG_TEST_RUN="${aSettVal[14]}"
-export CFG_TEST_RUN_PORT="${aSettVal[15]}"
-export CFG_GIT_COMMIT="${aSettVal[16]}"
-export CFG_GIT_BRANCH="${aSettVal[17]}"
-export CFG_SERVER_TYPE="${aSettVal[18]}"
-export CFG_TEM_SETTINGS="${aSettVal[19]}"
-export CFG_TEM_PATH="${aSettVal[20]}"
+read -r -a CFG_CMAKE_FLAGS <<< "${aSettVal[7]}"
+export CFG_ERROR_LOGS="${aSettVal[8]}" # 0=off 1=no duplicated 2=duplicates
+export CFG_ERROR_LOGS_API="${aSettVal[9]}" # shell command that gets executed on error
+export CFG_EDITOR="${aSettVal[10]}"
+export CFG_GDB_CMDS="${aSettVal[11]}"
+export CFG_GDB_DUMP_CORE="${aSettVal[12]}"
+# export CFG_DEBUG="${aSettVal[13]}" # debug depends on cmake flags
+export CFG_CSTD="${aSettVal[13]}"
+export CFG_POST_LOGS_DIR="${aSettVal[14]}"
+export CFG_GIT_FORCE_PULL="${aSettVal[15]}"
+export CFG_TEST_RUN="${aSettVal[16]}"
+export CFG_TEST_RUN_PORT="${aSettVal[17]}"
+export CFG_GIT_COMMIT="${aSettVal[18]}"
+export CFG_GIT_BRANCH="${aSettVal[19]}"
+export CFG_SERVER_TYPE="${aSettVal[20]}"
+export CFG_TEM_SETTINGS="${aSettVal[21]}"
+export CFG_TEM_PATH="${aSettVal[22]}"
 
 if [ "$CFG_SERVER_TYPE" == "tem" ]
 then

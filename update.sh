@@ -37,27 +37,36 @@ do
         echo "type:"
         echo "  teeworlds   compile a teeworlds server $(print_default teeworlds)"
         echo "  tem         update a TeeworldsEconMod repo $(print_default tem)"
+        echo "  bot         update side runner bot"
         echo "otpions:"
         echo "  -f|--force      force build dirty git tree"
         exit 0
     elif [ "${arg::1}" != "-" ] && [ "$arg_type" == "" ]
     then
         arg_type="$arg"
-        if [[ ! "$arg_type" =~ (teeworlds|tem) ]]
+        if [[ ! "$arg_type" =~ (teeworlds|tem|bot) ]]
         then
             err "ERROR: invalid update type '$arg_type'"
-            err "       valid types: teeworlds, tem"
+            err "       valid types: teeworlds, tem, bot"
+            exit 1
         fi
         shift
     fi
 done
 
-if [ "$CFG_SERVER_TYPE" == "teeworlds" ] || [ "$arg_type" == "teeworlds" ]
+if [ "$arg_type" == "bot" ]
 then
-    cmake_update "$@"
+    cmake_update_bot "$@"
+    update_configs
+    git_save_pull
+elif [ "$CFG_SERVER_TYPE" == "teeworlds" ] || [ "$arg_type" == "teeworlds" ]
+then
+    cmake_update_teeworlds "$@"
+    git_save_pull
 elif [ "$CFG_SERVER_TYPE" == "tem" ] || [ "$arg_type" == "tem" ]
 then
     tem_update
+    update_configs
     git_save_pull
 else
     err "something went wrong :/"
