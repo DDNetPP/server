@@ -40,12 +40,14 @@ function create_settings() {
     echo 
     if [[ $REPLY =~ ^[Yy]$ ]]
     then
-        echo "# DDNet++ server config by ChillerDragon" > "$settings_file"
-        echo "# https://github.com/DDNetPP/server" >> "$settings_file"
-        for i in "${!aSettStr[@]}"
-        do
-            echo "${aSettStr[$i]}=${aSettVal[$i]}" >> "$settings_file"
-        done
+        {
+            echo "# DDNet++ server config by ChillerDragon"
+            echo "# https://github.com/DDNetPP/server"
+            for i in "${!aSettStr[@]}"
+            do
+                echo "${aSettStr[$i]}=${aSettVal[$i]}"
+            done
+        } > "$settings_file"
         edit_file "$settings_file"
     fi
     exit 1
