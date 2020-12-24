@@ -15,6 +15,7 @@ status.txt
 *_playerdata.dat
 *.db
 *.dtb
+*.sqlite
 *.cfg
 *.cnf
 *.map
