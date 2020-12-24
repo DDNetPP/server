@@ -11,7 +11,7 @@ source lib/lib.sh
 
 check_warnings
 
-if echo $psaux | grep $server_id | grep -qv grep;
+if pgrep -f "$server_id" > /dev/null
 then
     suc "server is up and running '$server_id'"
     check_logpath

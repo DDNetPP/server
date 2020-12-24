@@ -1,6 +1,5 @@
 #!/bin/bash
 
-psaux=$(ps aux)
 gitpath=/home/$USER/git
 
 source lib/include/logger.sh

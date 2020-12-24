@@ -130,7 +130,7 @@ do
             del lib/tmp
         ;;
         5|lv|?(\[lv\])lib/var)
-            if echo $psaux | grep $server_id | grep -qv grep;
+            if pgrep -f "$server_id" > /dev/null
             then
                 err "can not delete lib/var while server is running"
                 err "it holds the uuid which is needed for stopping the server"
