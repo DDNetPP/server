@@ -1,7 +1,5 @@
 #!/bin/bash
 
-gitpath=/home/$USER/git
-
 source lib/include/logger.sh
 source lib/include/editor.sh
 source lib/include/tw_config.sh
