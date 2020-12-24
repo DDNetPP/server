@@ -170,7 +170,7 @@ function cmake_update() {
             mkdir -p "$cwd/bin/backup"
             cp "$cwd/${CFG_BIN}" "$cwd/bin/backup/$bin_old_commit"
         fi
-        mv "$arg_compiled_bin" "$cwd/${CFG_BIN}"
+        cp "$arg_compiled_bin" "$cwd/${CFG_BIN}"
 
         num_maps="$(find ./data/maps -maxdepth 1 -name '*.map' 2>/dev/null | wc -l)"
         if [ "$num_maps" != 0 ]
@@ -197,7 +197,7 @@ function cmake_update() {
         fi
     elif [ "$arg_type" == "bot" ]
     then
-        mv "$arg_compiled_bin" "$cwd/bin/bot/" || exit 1
+        cp "$arg_compiled_bin" "$cwd/bin/bot/" || exit 1
     fi
 
     cd "$cwd" || exit 1
