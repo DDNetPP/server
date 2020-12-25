@@ -432,21 +432,36 @@ function fddr.read_purgefile() {
 
 if [ "$#" == "0" ] || [ "$1" == "--help" ] || [ "$1" == "-h" ]
 then
-    echo "Usage: $(basename "$0") [Flags..] <CMD> [args..] [accounts path]"
-    echo "Flags: -v - verbose"
-    echo "       -p - password"
-    echo "CMD:  show <account>"
-    echo "      parse"
-    echo "      rewrite [DANGEROUS!!!]"
-    echo "      check"
-    echo "      get_var <var> <accounts..>"
-    echo "      get_vars"
+    tput bold
+    printf "Usage: "
+    tput sgr0
+    echo "$(basename "$0") [Flags..] <CMD> [args..] [accounts path]"
+    tput bold
+    echo "Flags:"
+    tput sgr0
+    echo "  -v - verbose"
+    echo "  -p - password"
+    tput bold
+    echo "CMD:"
+    tput sgr0
+    echo "  show <account>"
+    echo "  parse"
+    echo "  rewrite [DANGEROUS!!!]"
+    echo "  check"
+    echo "  get_var <var> <accounts..>"
+    echo "  get_vars"
+    tput bold
     echo "ENV:"
-    echo "      FDDR_ACC_PATH   path to accounts directory (default ./accounts)"
-    echo "Example: $(basename "$0") show ChillerDragon.acc"
-    echo "Example: $(basename "$0") -v show ChillerDragon.acc ../accounts"
-    echo "Example: $(basename "$0") parse ../accounts"
-    echo "Example: FDDR_ACC_PATH=~/data/accounts $(basename "$0") show ChillerDragon.acc"
+    tput sgr0
+    echo "  FDDR_ACC_PATH   path to accounts directory (default ./accounts)"
+    tput bold
+    echo "EXAMPLES:"
+    tput sgr0
+    echo "  $(basename "$0") show ChillerDragon.acc"
+    echo "  $(basename "$0") -v show ChillerDragon.acc ../accounts"
+    echo "  $(basename "$0") parse ../accounts"
+    echo "  FDDR_ACC_PATH=~/data/accounts $(basename "$0") show ChillerDragon.acc"
+    echo "  find \"\$FDDR_ACC_PATH\" -print0 | xargs -0 ./lib/fddr-parse-accounts.sh get_var acc_contact | awk 'NF'"
     exit 0
 fi
 
