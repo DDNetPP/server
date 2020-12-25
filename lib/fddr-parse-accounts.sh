@@ -1,6 +1,6 @@
 #!/bin/bash
 # F-DDrace accounts parser
-# https://github.com/fokkonaut/F-DDrace/blob/3a41550df2502ca304d79465706e6fd52b951b5f/src/game/server/gamecontext.cpp#L3826-L3862
+# https://github.com/fokkonaut/F-DDrace/blob/c620a26fe72dfd6ce749e270acfd3d6c9e7cd901/src/game/server/gamecontext.cpp#L4397-L4439
 
 if [ ! -f lib/lib.sh ]
 then
@@ -19,7 +19,7 @@ fi
 
 FDDR_PURGE_FILE="${FDDR_PURGE_FILE:-/tmp/fddr-purge.txt}"
 FDDR_ACC_PATH="${FDDR_ACC_PATH:-./accounts}"
-FDDR_NUM_LINES=36
+FDDR_NUM_LINES=42
 FDDR_MIN_NAME_LEN=3
 FDDR_MAX_NAME_LEN=20
 FDDR_MIN_PW_LEN=3
@@ -33,7 +33,6 @@ fddr_arg=error
 fddr_is_verbose=0
 fddr_show_password=0
 
-# https://github.com/fokkonaut/F-DDrace/blob/F-DDrace/src/game/server/gamecontext.cpp#L3717-L3760
 function fddr.reset_vars() {
     acc_port=""
     acc_logged_in="0"
@@ -70,8 +69,14 @@ function fddr.reset_vars() {
     acc_killingspree_record="0"
     acc_euros="0"
     acc_expiredate_vip="0"
-    acc_tele_rifle="0"
-    acc_expiredate_telerifle="0"
+    acc_portal_rifle="0"
+    acc_expire_date_portal_rifle="0"
+    acc_version=""
+    acc_addr=""
+    acc_last_addr=""
+    acc_taser_battery="0"
+    acc_contact=""
+    acc_timeout_code=""
 }
 
 function fddr.parse_account() {
@@ -157,9 +162,21 @@ function fddr.parse_account() {
         elif [ "$linenum" == "34" ]; then
             acc_expiredate_vip="$line"
         elif [ "$linenum" == "35" ]; then
-            acc_tele_rifle="$line"
+            acc_portal_rifle="$line"
         elif [ "$linenum" == "36" ]; then
-            acc_expiredate_telerifle="$line"
+            acc_expire_date_portal_rifle="$line"
+        elif [ "$linenum" == "37" ]; then
+            acc_version="$line"
+        elif [ "$linenum" == "38" ]; then
+            acc_addr="$line"
+        elif [ "$linenum" == "39" ]; then
+            acc_last_addr="$line"
+        elif [ "$linenum" == "40" ]; then
+            acc_taser_battery="$line"
+        elif [ "$linenum" == "41" ]; then
+            acc_contact="$line"
+        elif [ "$linenum" == "42" ]; then
+            acc_timeout_code="$line"
         else
             err "Error: too many lines $linenum/$FDDR_NUM_LINES"
             err "       $acc_path"
@@ -226,8 +243,8 @@ function fddr.write_account() {
         linenum="$((linenum+1))"; echo "$acc_killingspree_record"
         linenum="$((linenum+1))"; echo "$acc_euros"
         linenum="$((linenum+1))"; echo "$acc_expiredate_vip"
-        linenum="$((linenum+1))"; echo "$acc_tele_rifle"
-        linenum="$((linenum+1))"; echo "$acc_expiredate_telerifle"
+        linenum="$((linenum+1))"; echo "$acc_portal_rifle"
+        linenum="$((linenum+1))"; echo "$acc_expire_date_portal_rifle"
     } > "$file_path"
     if [ "$linenum" != "$FDDR_NUM_LINES" ]
     then
@@ -252,7 +269,12 @@ function fddr.print_account() {
     echo "  port: $acc_port loggedin: $acc_logged_in"
     echo "  clientID: $acc_client_id disabled: $acc_disabled"
     echo "  euros: $acc_euros vip: $acc_vip vip-expire: $acc_expiredate_vip"
-    echo "  telerifle: $acc_tele_rifle telerifle-expire: $acc_expiredate_telerifle"
+    echo "  portalrifle: $acc_portal_rifle portal-rifle-expire: $acc_expire_date_portal_rifle"
+    echo "meta:"
+    echo "  version: $acc_version"
+    echo "  addr: $acc_addr last addr: $acc_last_addr"
+    echo "  contact: $acc_contact"
+    echo "  timoutcode: $acc_timeout_code"
     echo "stats:"
     echo "  level: $acc_level xp: $acc_xp"
     echo "  money: $acc_money police: $acc_police"
@@ -262,6 +284,7 @@ function fddr.print_account() {
     echo "  $acc_money3"
     echo "  $acc_money4"
     echo "  taserlevel: $acc_taser_level"
+    echo "  tasterbattery: $acc_taser_battery"
     echo "  spwanweapon0: $acc_spawn_weapon0"
     echo "  spwanweapon1: $acc_spawn_weapon1"
     echo "  spwanweapon2: $acc_spawn_weapon2"
