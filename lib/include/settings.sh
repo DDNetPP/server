@@ -224,7 +224,7 @@ fi
 
 if [[ $CFG_LOGS_PATH =~ \.teeworlds/dumps/ ]]
 then
-    log "detected 0.7 logpath"
+    # log "detected 0.7 logpath"
     # only use the relative part starting from dumps dir
     LOGS_PATH_TW="${CFG_LOGS_PATH##*.teeworlds/dumps/}"
     IS_DUMPS_LOGPATH=1

@@ -296,6 +296,21 @@ function fddr.print_account() {
     echo "  insta k=$acc_instagib_kills d=$acc_instagib_deaths wins=$acc_instagib_wins"
 }
 
+function fddr.get_var() {
+    local path="$1"
+    local var="$2"
+    fddr.parse_account "$path"
+    eval "echo \$$var"
+}
+
+function fddr.get_vars() {
+    fddr.reset_vars
+    for var in "${!acc_@}"
+    do
+        echo "$var"
+    done
+}
+
 function fddr.check_database() {
     if [ ! -d "$FDDR_ACC_PATH" ]
     then
@@ -417,13 +432,15 @@ function fddr.read_purgefile() {
 
 if [ "$#" == "0" ] || [ "$1" == "--help" ] || [ "$1" == "-h" ]
 then
-    echo "Usage: $(basename "$0") [Flags] <CMD> [args] [accounts path]"
+    echo "Usage: $(basename "$0") [Flags..] <CMD> [args..] [accounts path]"
     echo "Flags: -v - verbose"
     echo "       -p - password"
     echo "CMD:  show <account>"
     echo "      parse"
     echo "      rewrite [DANGEROUS!!!]"
     echo "      check"
+    echo "      get_var <var> <account>"
+    echo "      get_vars"
     echo "ENV:"
     echo "      FDDR_ACC_PATH   path to accounts directory (default ./accounts)"
     echo "Example: $(basename "$0") show ChillerDragon.acc"
@@ -507,6 +524,28 @@ elif [ "$1" == "check" ]
 then
     shift
     fddr_cmd=check
+elif [ "$1" == "get_var" ]
+then
+    shift
+    fddr_cmd=get_var
+    if [ "$1" == "" ]
+    then
+        echo "Usage: $(basename "$0") get_var <var> <account>"
+        exit 1
+    fi
+    arg_var="$1"
+    shift
+    if [ "$1" == "" ]
+    then
+        echo "Usage: $(basename "$0") get_var <var> <account>"
+        exit 1
+    fi
+    arg_name="$1"
+    shift
+elif [ "$1" == "get_vars" ]
+then
+    shift
+    fddr_cmd=get_vars
 else
     echo "Error: invalid cmd '$1'"
     exit 1
@@ -530,6 +569,12 @@ then
 elif [ "$fddr_cmd" == "check" ]
 then
     fddr.check_database
+elif [ "$fddr_cmd" == "get_var" ]
+then
+    fddr.get_var "$FDDR_ACC_PATH/$arg_name" "$arg_var"
+elif [ "$fddr_cmd" == "get_vars" ]
+then
+    fddr.get_vars
 fi
 
 if [ "$fddr_warnings" != "0" ] && [ "$fddr_is_verbose" == "1" ]
