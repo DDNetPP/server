@@ -1,0 +1,45 @@
+# shellcheck shell=bash
+
+_fddr-parse-accounts_list_accounts() {
+    local file
+    local cur=$1
+    for file in "$FDDR_ACC_PATH/$cur"*
+    do
+        COMPREPLY+=($(compgen -W "$(basename "$file")" -- "$cur"))
+    done
+}
+
+_fddr-parse-accounts_complete() {
+    COMPREPLY=()
+    local cur="${COMP_WORDS[COMP_CWORD]}"
+    local commands="show parse rewrite check get_var get_vars"
+    if [[ "$COMP_CWORD" -gt "1" ]]
+    then
+        case "${COMP_WORDS[1]}" in
+            show)
+                if [ "$COMP_CWORD" -eq "2" ]
+                then
+                    _fddr-parse-accounts_list_accounts "$cur"
+                else
+                    _filedir
+                fi
+                ;;
+            get_var)
+                if [ "$COMP_CWORD" -gt "2" ]
+                then
+                    _fddr-parse-accounts_list_accounts "$cur"
+                else
+                    for var in $(${COMP_WORDS[0]} get_vars)
+                    do
+                        COMPREPLY+=($(compgen -W "$var" -- "$cur"))
+                    done
+                fi
+                ;;
+        esac
+    else
+        COMPREPLY+=($(compgen -W "${commands}" -- "${cur}"))
+    fi
+}
+
+complete -F _fddr-parse-accounts_complete fddr-parse-accounts.sh
+
