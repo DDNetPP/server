@@ -228,7 +228,7 @@ function check_running() {
         echo ""
         if ! [[ "$yn" =~ [yY] ]]
         then
-            log "stopping..."
+            log "aborting ..."
             exit
         fi
         log "ignoring duplicated process..."
