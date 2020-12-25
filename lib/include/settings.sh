@@ -214,7 +214,7 @@ then
 fi
 CFG_LOGS_PATH="${CFG_LOGS_PATH%%+(/)}" # strip trailing slash
 LOGS_PATH_TW="$CFG_LOGS_PATH"
-is_dumps_logpath=0
+IS_DUMPS_LOGPATH=0
 
 if [ "$CFG_LOGS_PATH" == "" ]
 then
@@ -227,7 +227,7 @@ then
     log "detected 0.7 logpath"
     # only use the relative part starting from dumps dir
     LOGS_PATH_TW="${CFG_LOGS_PATH##*.teeworlds/dumps/}"
-    is_dumps_logpath=1
+    IS_DUMPS_LOGPATH=1
     if [ "$LOGS_PATH_TW" == "" ]
     then
         wrn "WARNING log root path is empty"
@@ -249,7 +249,7 @@ then
 fi
 
 export CFG_CMAKE_FLAGS # usage: "${CFG_CMAKE_FLAGS[@]}"
-export is_dumps_logpath
+export IS_DUMPS_LOGPATH
 export LOGS_PATH_TW
 export LOGS_PATH_FULL
 export LOGS_PATH_FULL_TW

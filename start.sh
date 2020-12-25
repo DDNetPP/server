@@ -71,6 +71,6 @@ else # teeworlds
 
     nohup ./"$CFG_BIN" "#sid:$server_id" > "$logfile" 2>&1 &
 
-    show_logs
+    show_log_file "$logfile"
 fi
 

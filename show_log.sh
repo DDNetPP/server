@@ -31,5 +31,5 @@ do
     fi
 done
 
-show_latest_logs "$follow" "$logpath"
+show_latest_log "$follow" "$logpath"
 

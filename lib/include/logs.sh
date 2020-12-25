@@ -25,7 +25,7 @@ function cache_logpath() {
         return
     fi
     mkdir -p lib/tmp
-    if [ "$is_dumps_logpath" == "1" ]
+    if [ "$IS_DUMPS_LOGPATH" == "1" ]
     then
         if [ "$HOME" == "" ]
         then
@@ -41,8 +41,8 @@ function cache_logpath() {
     echo "$logpath" > lib/tmp/logpath.txt
 }
 
-function show_latest_logs() {
-    # usage: show_latest_logs [-f] [path]
+function show_latest_log() {
+    # usage: show_latest_log [-f] [path]
     # -f to follow
     # path to use custom log dir instead of cfg gitpath
     logpath="$LOGS_PATH_FULL"
@@ -50,13 +50,13 @@ function show_latest_logs() {
     then
         logpath="./logs/$2"
     fi
-    if [ ! -d $logpath ]
+    if [ ! -d "$logpath" ]
     then
         err "log path not found '$logpath'"
         exit 1
     fi
     latest_log="$(find "$logpath" | sort | tail -n1)"
-    if [ ! -f $latest_log ]
+    if [ ! -f "$latest_log" ]
     then
         wrn "there are no logfiles yet."
         exit 1
@@ -73,31 +73,21 @@ function show_latest_logs() {
     fi
 }
 
-function show_logs() {
-    log "do you want to show logs? [y/N]"
+function show_log_file() {
+    local logfile="$1"
+    log "logfile: $logfile"
+    log "do you want to show the logfile? [y/N]"
     read -r -n 1 yn
     echo ""
     if [[ ! "$yn" =~ [yY] ]]
     then
         return
     fi
-    if [ "$logfile" == "" ]
-    then
-        log "logfile not found."
-        log "do you want to show latest logs? [y/N]"
-        read -r -n 1 yn
-        echo ""
-        if [[ "$yn" =~ [yY] ]]
-        then
-            show_latest_logs
-            return
-        fi
-        exit
-    fi
-    if [ ! -f "$logfile" ]
+    if [ ! -f "$logfile" ] || [ "$logfile" == "" ]
     then
         err "logfile not found '$logfile'"
-        exit
+        exit 1
     fi
     cat "$logfile"
 }
+

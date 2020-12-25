@@ -8,7 +8,7 @@ fi
 source lib/lib.sh
 
 figlet "lib.sh"
-echo "show_logs"
+echo "show_latest_log"
 echo "show_procs"
 echo "get_tw_config <key> <default>"
 PS1='> '
