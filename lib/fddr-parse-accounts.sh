@@ -439,7 +439,7 @@ then
     echo "      parse"
     echo "      rewrite [DANGEROUS!!!]"
     echo "      check"
-    echo "      get_var <var> <account>"
+    echo "      get_var <var> <accounts..>"
     echo "      get_vars"
     echo "ENV:"
     echo "      FDDR_ACC_PATH   path to accounts directory (default ./accounts)"
@@ -540,8 +540,17 @@ then
         echo "Usage: $(basename "$0") get_var <var> <account>"
         exit 1
     fi
-    arg_name="$(basename "$1")"
-    shift
+    arg_names=()
+    for arg in "$@"
+    do
+        if [[ "$arg" =~ \.acc$ ]]
+        then
+            arg_names+=("$(basename "$1")")
+            shift
+        else
+            break
+        fi
+    done
 elif [ "$1" == "get_vars" ]
 then
     shift
@@ -571,7 +580,10 @@ then
     fddr.check_database
 elif [ "$fddr_cmd" == "get_var" ]
 then
-    fddr.get_var "$FDDR_ACC_PATH/$arg_name" "$arg_var"
+    for name in "${arg_names[@]}"
+    do
+        fddr.get_var "$FDDR_ACC_PATH/$name" "$arg_var"
+    done
 elif [ "$fddr_cmd" == "get_vars" ]
 then
     fddr.get_vars
