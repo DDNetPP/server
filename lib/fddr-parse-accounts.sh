@@ -401,9 +401,12 @@ then
     echo "      parse"
     echo "      rewrite [DANGEROUS!!!]"
     echo "      check"
+    echo "ENV:"
+    echo "      FDDR_ACC_PATH   path to accounts directory (default ./accounts)"
     echo "Example: $(basename "$0") show ChillerDragon.acc"
     echo "Example: $(basename "$0") -v show ChillerDragon.acc ../accounts"
     echo "Example: $(basename "$0") parse ../accounts"
+    echo "Example: FDDR_ACC_PATH=~/data/accounts $(basename "$0") show ChillerDragon.acc"
     exit 0
 fi
 
