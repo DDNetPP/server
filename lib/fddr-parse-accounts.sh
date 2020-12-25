@@ -29,7 +29,7 @@ declare -A fddr_a_lines
 declare -A fddr_a_names
 fddr_warnings=0
 fddr_cmd=error
-fddr_arg=error
+arg_name=error
 fddr_is_verbose=0
 fddr_show_password=0
 
@@ -472,7 +472,7 @@ then
         echo "Usage: $(basename "$0") show <account>"
         exit 1
     fi
-    fddr_arg="$1"
+    arg_name="$(basename "$1")"
     shift
 elif [ "$1" == "parse" ]
 then
@@ -540,7 +540,7 @@ then
         echo "Usage: $(basename "$0") get_var <var> <account>"
         exit 1
     fi
-    arg_name="$1"
+    arg_name="$(basename "$1")"
     shift
 elif [ "$1" == "get_vars" ]
 then
@@ -558,7 +558,7 @@ fi
 
 if [ "$fddr_cmd" == "show" ]
 then
-    fddr.print_account "$FDDR_ACC_PATH/$fddr_arg"
+    fddr.print_account "$FDDR_ACC_PATH/$arg_name"
 elif [ "$fddr_cmd" == "parse" ]
 then
     fddr.read_database
