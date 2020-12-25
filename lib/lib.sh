@@ -271,37 +271,25 @@ function check_gitpath() {
 }
 
 function check_logdir() {
-    if [ -d "$CFG_LOGS_PATH" ]
+    if [ -d "$LOGS_PATH_FULL" ]
     then
+        if [ ! -d "$CFG_LOGS_PATH/.git" ]
+        then
+            wrn "WARNING: log path is not a git repository"
+        fi
         return # log path found all fine
     fi
-    err "log path not found '$CFG_LOGS_PATH'"
+    err "log path not found '$LOGS_PATH_FULL'"
     log "do you want to create this directory? [y/N]"
     yn=""
     read -r -n 1 yn
     echo ""
     if [[ "$yn" =~ [yY] ]]
     then
-        mkdir "$CFG_LOGS_PATH/"
-    fi
-    if [ ! -d "$LOGS_PATH_FULL" ]
-    then
-        wrn "log path '$LOGS_PATH_FULL' not found!"
-        echo ""
-        log "do you want to create this directory? [y/N]"
-        read -r -n 1 yn
-        echo ""
-        if [[ ! "$yn" =~ [yY] ]]
-        then
-            log "stopped."
-            exit
-        fi
-        mkdir -p "$LOGS_PATH_FULL" && suc "starting server..."
+        mkdir -p "$LOGS_PATH_FULL" && suc "created logs directory"
     else
-        if [ ! -d "$CFG_LOGS_PATH/.git" ]
-        then
-            wrn "WARNING: log path is not a git repository"
-        fi
+        log "stopped."
+        exit 1
     fi
 }
 
