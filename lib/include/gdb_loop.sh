@@ -101,6 +101,8 @@ gdb -ex='set confirm off' \
     -ex='echo (gdb) bt full\n' -ex='bt full' \
     -ex='echo (gdb) info registers\n' -ex='info registers' \
     -ex='echo (gdb) x/20i \$rip-20\n' -ex='x/20i \$rip-20' \
+    -ex='echo (gdb) list\n' -ex='list' \
+    -ex='echo (gdb) info threads\n' -ex='info threads' \
     $custom_gdb \
     $gdb_corefile \
     -ex=quit --args \
