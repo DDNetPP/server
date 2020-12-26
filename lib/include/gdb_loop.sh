@@ -116,7 +116,7 @@ start_ts=$(date '+%Y-%m-%d %H:%M:%S')
     echo "build commit: $(get_commit)"
     echo "gdb ./bin/backup/$(get_commit) $gdb_corefile"
     echo "objdump -dCS -M intel bin/backup/$(get_commit) > ./lib/tmp/debug.asm && vim ./lib/tmp/debug.asm"
-    echo "python -c 'print(hex(0xbabe + 10)'"
+    echo "python -c 'print(hex(0xbabe + 10))'"
 } >> "$p/full_gdb.txt"
 echo ""
 eval "$GDB_CMD"
