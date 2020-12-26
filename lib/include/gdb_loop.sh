@@ -57,10 +57,12 @@ function check_logsize() {
 
 start_ts_slug=$(date '+%Y-%m-%d_%H-%M-%S')
 gdb_corefile=""
+gdb_corefile_cmd=""
 if is_cfg CFG_GDB_DUMP_CORE
 then
     log "dumping core is turned on (generate-core-file)"
-    gdb_corefile="-ex='generate-core-file core_dumps/core_${start_ts_slug}:$(get_commit)'"
+    gdb_corefile="core_dumps/core_${start_ts_slug}:$(get_commit)"
+    gdb_corefile_cmd="-ex='generate-core-file $gdb_corefile'"
     mkdir -p core_dumps/ || exit 1
 fi
 
@@ -104,7 +106,7 @@ gdb -ex='set confirm off' \
     -ex='echo (gdb) list\n' -ex='list' \
     -ex='echo (gdb) info threads\n' -ex='info threads' \
     $custom_gdb \
-    $gdb_corefile \
+    $gdb_corefile_cmd \
     -ex=quit --args \
     ./$CFG_BIN "logfile $logfile;#sid:$server_id"
 EOF
@@ -112,6 +114,9 @@ start_ts=$(date '+%Y-%m-%d %H:%M:%S')
 {
     echo "/============= server start $start_ts =============\\"
     echo "build commit: $(get_commit)"
+    echo "gdb ./bin/backup/$(get_commit) $gdb_corefile"
+    echo "objdump -dCS -M intel bin/backup/$(get_commit) > ./lib/tmp/debug.asm && vim ./lib/tmp/debug.asm"
+    echo "python -c 'print(hex(0xbabe + 10)'"
 } >> "$p/full_gdb.txt"
 echo ""
 eval "$GDB_CMD"
