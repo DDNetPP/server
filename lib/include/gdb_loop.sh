@@ -90,6 +90,7 @@ fi
 read -rd '' GDB_CMD << EOF
 gdb -ex='set confirm off' \
     -ex='set pagination off' \
+    -ex='set disassembly-flavor intel' \
     -ex=run \
     -ex="set logging file $p/tmp_gdb.txt" \
     -ex='set logging on' \
@@ -99,6 +100,7 @@ gdb -ex='set confirm off' \
     -ex='set logging on' \
     -ex='echo (gdb) bt full\n' -ex='bt full' \
     -ex='echo (gdb) info registers\n' -ex='info registers' \
+    -ex='echo (gdb) x/20i \$rip-20\n' -ex='x/20i \$rip-20' \
     $custom_gdb \
     $gdb_corefile \
     -ex=quit --args \
