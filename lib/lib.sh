@@ -310,8 +310,13 @@ function check_deps() {
 }
 
 function update_configs() {
-    cwd="$(pwd)"
-    cd "$cwd" || exit 1
+    # TODO:
+    # https://github.com/DDNetPP/server/issues/29
+    local path="$1"
+    if [ "$path" != "" ]
+    then
+        cd "$path" || exit 1
+    fi
     if [[ -d cfg/ ]] && [[ -d cfg/.git ]]
     then
         log "found config directory cfg/"
@@ -319,7 +324,7 @@ function update_configs() {
         cd cfg || exit 1
         git_save_pull
     fi
-    cd "$cwd" || exit 1
+    cd .. || exit 1
     if [[ -d votes/ ]] && [[ -d votes/.git ]]
     then
         log "found config directory votes/"
