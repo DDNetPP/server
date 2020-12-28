@@ -206,7 +206,7 @@ then
         err "       $tem_settings_path"
         exit 1
     fi
-    CFG_LOGS_PATH="$(grep sh_logs_path "$tem_settings_path" | cut -d'=' -f2-)"
+    CFG_LOGS_PATH="$(grep '^sh_logs_path' "$tem_settings_path" | tail -n1 | cut -d'=' -f2-)"
     if [ "${CFG_LOGS_PATH::1}" != "/" ]
     then
         CFG_LOGS_PATH="$HOME/.teeworlds/dumps/$CFG_LOGS_PATH"
