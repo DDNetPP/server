@@ -30,6 +30,8 @@ aSettStr+=("git_branch");aSettVal+=("");aSettValid+=('')
 aSettStr+=("server_type");aSettVal+=("teeworlds");aSettValid+=('(tem|teeworlds)')
 aSettStr+=("tem_settings");aSettVal+=("tem.settings");aSettValid+=('')
 aSettStr+=("tem_path");aSettVal+=("/home/$USER/git/TeeworldsEconMod");aSettValid+=('')
+aSettStr+=("env_build");aSettVal+=("");aSettValid+=('')
+aSettStr+=("env_runtime");aSettVal+=("");aSettValid+=('')
 
 function create_settings() {
     if [ -f $settings_file ];
@@ -169,6 +171,8 @@ read_settings_file
 # - server type         20
 # - tem settings        21
 # - tem path            22
+# - env build           23
+# - env runtime         24
 
 export CFG_GIT_ROOT="${aSettVal[0]}"
 export CFG_GIT_PATH_MOD="${aSettVal[1]}"
@@ -196,6 +200,8 @@ export CFG_GIT_BRANCH="${aSettVal[19]}"
 export CFG_SERVER_TYPE="${aSettVal[20]}"
 export CFG_TEM_SETTINGS="${aSettVal[21]}"
 export CFG_TEM_PATH="${aSettVal[22]}"
+export CFG_ENV_BUILD="${aSettVal[23]}"
+export CFG_ENV_RUNTIME="${aSettVal[24]}"
 
 if [ "$CFG_SERVER_TYPE" == "tem" ]
 then

@@ -44,7 +44,14 @@ mkdir -p "$p" || exit 1
 logfile="$LOGS_PATH_FULL_TW/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S).log"
 start_ts_slug=$(date '+%Y-%m-%d_%H-%M-%S')
 start_ts=$(date '+%Y-%m-%d %H:%M:%S')
-./"$CFG_BIN" "logfile $logfile;#sid:$server_id"
+
+run_cmd="$CFG_ENV_RUNTIME ./$CFG_BIN 'logfile $logfile;#sid:$server_id'"
+log "running:"
+tput bold
+echo "$run_cmd"
+tput sgr0
+eval "$run_cmd"
+
 exitcode="$?"
 if is_cfg CFG_GDB_DUMP_CORE
 then

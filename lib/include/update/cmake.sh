@@ -87,6 +87,14 @@ function cmake_update() {
         err "ERROR: cmake_update argument <git path> can not be empty"
         exit 1
     fi
+    if [ "$arg_args" == "-f" ] || [ "$arg_args" == "--force" ]
+    then
+        arg_args=--force
+    elif [ "$arg_args" != "" ]
+    then
+        err "ERROR: arg_args can only be --force or -f"
+        exit 1
+    fi
 
     install_dep make
     install_dep cmake
@@ -145,7 +153,11 @@ function cmake_update() {
     mkdir -p build || { err "Error: creating dir build/"; exit 1; }
     cd build || { err "Could not enter build/ directory"; exit 1; }
     branch="$(git branch | sed -n '/\* /s///p')"
-    cmake .. "${arg_cmake_flags[@]}" || { err --log "build failed at $branch $(git rev-parse HEAD) (cmake)"; exit 1; }
+
+    local build_cmd="$CFG_ENV_BUILD cmake .. ${arg_cmake_flags[*]}"
+    log "$(tput bold)$build_cmd$(tput sgr0)"
+    eval "$build_cmd" || \
+        { err --log "build failed at $branch $bin_commit (cmake)"; exit 1; }
     make "-j$(get_cores)" || { err --log "build failed at $branch $(git rev-parse HEAD) (make)"; exit 1; }
     if [ "$arg_git_commit" != "" ] || [ "$arg_git_branch" != "" ]
     then
