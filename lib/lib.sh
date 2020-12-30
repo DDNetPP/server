@@ -175,10 +175,14 @@ function install_dep() {
 }
 
 function show_procs() {
+    show_procs_name "$CFG_SRV_NAME"
+}
+
+function show_procs_name() {
     local proc
     local num_procs
     local proc_str
-    proc_str=${1:-$CFG_SRV_NAME}
+    proc_str="$1"
     num_procs="$(pgrep -f "$proc_str" | wc -l)"
     if [ "$num_procs" -gt "0" ]
     then

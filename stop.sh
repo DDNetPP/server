@@ -30,7 +30,7 @@ else
 fi
 
 sleep 0.5 # give server time to shutdown
-if show_procs "$proc_str"
+if show_procs_name "$proc_str"
 then
     if [ "$CFG_SERVER_TYPE" != "tem" ]
     then
