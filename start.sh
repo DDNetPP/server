@@ -69,7 +69,7 @@ else # teeworlds
     logfile="$LOGS_PATH_FULL/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S).log"
     cache_logpath "$logfile"
 
-    run_cmd="nohup $CFG_ENV_RUNTIME ./$CFG_BIN #sid:$server_id > $logfile 2>&1 &"
+    run_cmd="nohup $CFG_ENV_RUNTIME ./$CFG_BIN \"#sid:$server_id\" > $logfile 2>&1 &"
     log "running:"
     tput bold
     echo "$run_cmd"
