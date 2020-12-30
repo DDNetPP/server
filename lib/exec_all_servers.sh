@@ -74,7 +74,7 @@ for d in ../*/
 do
     (
         cd "$d" || exit 1
-        check_server_dir --silent
+        check_server_dir > /dev/null 2>&1
         echo "$d"
     )
 done
@@ -101,7 +101,7 @@ for d in ../*/
 do
     (
         cd "$d" || exit 1
-        check_server_dir --silent
+        check_server_dir > /dev/null 2>&1
         figlet "$d"
         echo -e "navigating to: \\033[1m$(pwd)\\033[0m"
         echo -e "executing: \\033[1m$shell_command\\033[0m"
