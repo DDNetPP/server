@@ -20,6 +20,6 @@ else
     wrn "no server with this id found '$server_id'"
 fi
 
-show_procs
+show_procs "$CFG_SRV_NAME"
 log "port: $(get_tw_config sv_port 8303) ($(port_status))"
 
