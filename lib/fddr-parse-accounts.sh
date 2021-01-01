@@ -392,6 +392,48 @@ function fddr.check_database() {
     done
 }
 
+function fddr.filter() {
+    # usage: fddr.filter variable operator value
+    # variables: (see get_vars)
+    # operator: == != < >
+    # value: string or integer
+    local acc
+    local num_accs=0
+    local num_matches=0
+    local filter_variable="$1"
+    local filter_operator="$2"
+    local filter_value="$3"
+    local val
+    if [ "$#" != "3" ]
+    then
+        err "usage: fddr.filter variable operator value"
+        exit 1
+    fi
+    if [ ! -d "$FDDR_ACC_PATH" ]
+    then
+        err "Error: '$FDDR_ACC_PATH' is not a directory"
+        exit 1
+    fi
+    for acc in "$FDDR_ACC_PATH"/*.acc
+    do
+        num_accs="$((num_accs+1))"
+        fddr.parse_account "$acc" || exit 1
+        val="$(eval "echo \$$filter_variable")"
+        if [ "$filter_operator" == "==" ]
+        then
+            if [ "$val" == "$filter_value" ]
+            then
+                num_matches="$((num_matches+1))"
+                echo "$acc"
+            fi
+        else
+            err "invalid operator '$filter_operator'"
+            exit 1
+        fi
+    done
+    log "total accounts: $num_accs matches: $num_matches"
+}
+
 function fddr.rewrite_database() {
     if [ ! -d "$FDDR_ACC_PATH" ]
     then
@@ -570,6 +612,16 @@ elif [ "$1" == "get_vars" ]
 then
     shift
     fddr_cmd=get_vars
+elif [ "$1" == "filter" ]
+then
+    shift
+    fddr_cmd=filter
+    arg_var="$1"
+    shift
+    arg_operator="$1"
+    shift
+    arg_value="$1"
+    shift
 else
     echo "Error: invalid cmd '$1'"
     exit 1
@@ -602,6 +654,9 @@ then
 elif [ "$fddr_cmd" == "get_vars" ]
 then
     fddr.get_vars
+elif [ "$fddr_cmd" == "filter" ]
+then
+    fddr.filter "$arg_var" "$arg_operator" "$arg_value"
 fi
 
 if [ "$fddr_warnings" != "0" ] && [ "$fddr_is_verbose" == "1" ]
