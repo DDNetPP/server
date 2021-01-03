@@ -10,6 +10,7 @@ source lib/include/deps.sh
 source lib/include/settings.sh
 source lib/include/git.sh
 source lib/include/logs.sh
+source lib/include/screen.sh
 
 function is_cmd() {
     [ -x "$(command -v "$1")" ] && return 0

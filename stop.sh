@@ -21,6 +21,19 @@ then
     proc_str="settings=$CFG_TEM_SETTINGS"
 fi
 
+if proc_in_screen "$server_id"
+then
+    log "consider using screen to stop the process"
+    log "do you really want to kill the server? [y/N]"
+    read -r -n 1 yn
+    echo ""
+    if [[ ! "$yn" =~ [yY] ]]
+    then
+        log "aborting stop script."
+        exit
+    fi
+fi
+
 if pgrep -f "$server_id" > /dev/null
 then
     pkill -f "$server_id"
