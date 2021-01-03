@@ -44,11 +44,11 @@ then
     # [game]: pickup player='0:nameless tee' item=1/0
     # tw 0.7
     # [game]: pickup player='8:nameless tee' item=1
-    egrep -v "^\[.{$TS_LEN}\]\[register\]" |
-        egrep -v "^\[.{$TS_LEN}\]\[engine/mastersrv\]" |
-        egrep -v "^\[.{$TS_LEN}\]\[game\]: pickup player='.*' item=[0-9](/[0-9])?$"
+    grep -Ev "^\[.{$TS_LEN}\]\[register\]" |
+        grep -Ev "^\[.{$TS_LEN}\]\[engine/mastersrv\]" |
+        grep -Ev "^\[.{$TS_LEN}\]\[game\]: pickup player='.*' item=[0-9](/[0-9])?$"
 else
-    egrep -v "^\[.{$TS_LEN}\]\[register\]" |
-        egrep -v "^\[.{$TS_LEN}\]\[engine/mastersrv\]"
+    grep -Ev "^\[.{$TS_LEN}\]\[register\]" |
+        grep -Ev "^\[.{$TS_LEN}\]\[engine/mastersrv\]"
 fi
 
