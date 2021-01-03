@@ -13,7 +13,15 @@ check_warnings
 
 if pgrep -f "$server_id" > /dev/null
 then
-    suc "server is up and running '$server_id'"
+    suc -n "server is up and running '$server_id'"
+    if proc_in_screen "$server_id" >/dev/null
+    then
+        tput bold
+        echo " (SCREEN)"
+        tput sgr0
+    else
+        echo ""
+    fi
     check_logpath
     exit
 else

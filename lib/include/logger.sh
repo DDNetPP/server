@@ -29,7 +29,12 @@ function wrn() {
 }
 
 function suc() {
+    if [ "$#" == 2 ] && [ "$1" == "-n" ]
+    then
+      echo -ne "[${Green}+${Reset}] $2"
+    else
       echo -e "[${Green}+${Reset}] $1"
+    fi
 }
 
 ERR_LOGFILE=logs/error_log.txt
