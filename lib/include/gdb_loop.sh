@@ -90,7 +90,7 @@ then
 fi
 
 read -rd '' GDB_CMD << EOF
-gdb -ex='set confirm off' \
+$CFG_ENV_RUNTIME gdb -ex='set confirm off' \
     -ex='set pagination off' \
     -ex='set disassembly-flavor intel' \
     -ex=run \
