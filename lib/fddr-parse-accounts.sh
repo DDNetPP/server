@@ -399,7 +399,12 @@ function fddr.show_vars() {
     fddr.parse_account "$acc" || exit 1
     for var in $variables
     do
-        eval "echo \$$var"
+        if [ "$var" == "acc" ]
+        then
+            echo "$acc"
+        else
+            eval "echo \$$var"
+        fi
     done
 }
 
@@ -410,7 +415,6 @@ function fddr.filter_print() {
     then
         echo "$acc"
     else
-        echo "$acc"
         fddr.show_vars "$acc" "$vars"
     fi
 }
@@ -436,7 +440,7 @@ function fddr.filter() {
         err "usage: $0 filter 'variable operator value' ['show variables..']"
         err "example:"
         err "  $0 filter 'acc_level > 60'"
-        err "  $0 filter 'acc_level > 60' 'show acc_username acc_level"
+        err "  $0 filter 'acc_level > 60' 'show acc acc_username acc_level"
         exit 1
     elif [ "$filter_variable" == "" ]
     then
@@ -585,7 +589,8 @@ then
     echo "  $0 -v show ChillerDragon.acc ../accounts"
     echo "  $0 parse ../accounts"
     echo "  $0 filter 'acc_level > 100'"
-    echo "  $0 filter 'acc_level > 100' 'show acc_level acc_xp'"
+    echo "  $0 filter 'acc_level > 100' 'show acc acc_level acc_xp'"
+    echo "  $0 filter 'acc_contact != \"\"' 'show acc_contact'"
     echo "  FDDR_ACC_PATH=~/data/accounts $(basename "$0") show ChillerDragon.acc"
     echo "  find \"\$FDDR_ACC_PATH\" -print0 | xargs -0 ./lib/fddr-parse-accounts.sh get_var acc_contact | awk 'NF'"
     exit 0
