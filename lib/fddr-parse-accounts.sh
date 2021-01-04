@@ -392,6 +392,29 @@ function fddr.check_database() {
     done
 }
 
+function fddr.show_vars() {
+    local acc="$1"
+    local variables="$2"
+    local var
+    fddr.parse_account "$acc" || exit 1
+    for var in $variables
+    do
+        eval "echo \$$var"
+    done
+}
+
+function fddr.filter_print() {
+    local acc="$1"
+    local vars="$2"
+    if [ "$vars" == "" ]
+    then
+        echo "$acc"
+    else
+        echo "$acc"
+        fddr.show_vars "$acc" "$vars"
+    fi
+}
+
 function fddr.filter() {
     # usage: fddr.filter variable operator value
     # variables: (see get_vars)
@@ -403,15 +426,17 @@ function fddr.filter() {
     local filter_variable="$1"
     local filter_operator="$2"
     local filter_value="$3"
+    local arg_show="$4"
     local val
     local var
     local found=0
     if { [ "$1" == "--help" ] || [ "$1" == "help" ] || [ "$1" == "-h" ]; } || \
         { [ "$1" == "" ] && [ "$2" == "" ] && [ "$3" == "" ]; }
     then
-        err "usage: $0 filter 'variable operator value'"
+        err "usage: $0 filter 'variable operator value' ['show variables..']"
         err "example:"
         err "  $0 filter 'acc_level > 60'"
+        err "  $0 filter 'acc_level > 60' 'show acc_username acc_level"
         exit 1
     elif [ "$filter_variable" == "" ]
     then
@@ -458,28 +483,28 @@ function fddr.filter() {
             if [ "$val" == "$filter_value" ]
             then
                 num_matches="$((num_matches+1))"
-                echo "$acc"
+                fddr.filter_print "$acc" "$arg_show"
             fi
         elif [ "$filter_operator" == "!=" ]
         then
             if [ "$val" != "$filter_value" ]
             then
                 num_matches="$((num_matches+1))"
-                echo "$acc"
+                fddr.filter_print "$acc" "$arg_show"
             fi
         elif [ "$filter_operator" == ">" ]
         then
             if [ "$val" -gt "$filter_value" ]
             then
                 num_matches="$((num_matches+1))"
-                echo "$acc"
+                fddr.filter_print "$acc" "$arg_show"
             fi
         elif [ "$filter_operator" == "<" ]
         then
             if [ "$val" -lt "$filter_value" ]
             then
                 num_matches="$((num_matches+1))"
-                echo "$acc"
+                fddr.filter_print "$acc" "$arg_show"
             fi
         else
             err "invalid operator '$filter_operator'"
@@ -542,6 +567,7 @@ then
     echo "CMD:"
     tput sgr0
     echo "  show <account>"
+    echo "  show_vars <account> '<var..>'"
     echo "  parse"
     echo "  rewrite"
     echo "  check"
@@ -559,6 +585,7 @@ then
     echo "  $0 -v show ChillerDragon.acc ../accounts"
     echo "  $0 parse ../accounts"
     echo "  $0 filter 'acc_level > 100'"
+    echo "  $0 filter 'acc_level > 100' 'show acc_level acc_xp'"
     echo "  FDDR_ACC_PATH=~/data/accounts $(basename "$0") show ChillerDragon.acc"
     echo "  find \"\$FDDR_ACC_PATH\" -print0 | xargs -0 ./lib/fddr-parse-accounts.sh get_var acc_contact | awk 'NF'"
     exit 0
@@ -587,6 +614,19 @@ then
         exit 1
     fi
     arg_name="$(basename "$1")"
+    shift
+elif [ "$1" == "show_vars" ]
+then
+    shift
+    fddr_cmd=show_vars
+    if [ "$1" == "" ]
+    then
+        echo "Usage: $(basename "$0") show_vars <account> <var..>"
+        exit 1
+    fi
+    arg_name="$(basename "$1")"
+    shift
+    arg_vars="$1"
     shift
 elif [ "$1" == "parse" ]
 then
@@ -685,6 +725,12 @@ then
     then
         arg_value="$(echo "$arg_filter" | cut -d"'" -f2)"
     fi
+    if [[ "$1" =~ show\  ]]
+    then
+        arg_show="$1"
+        arg_show="${arg_show:5}" # cut off 'show '
+        shift
+    fi
 else
     echo "Error: invalid cmd '$1'"
     exit 1
@@ -698,6 +744,9 @@ fi
 if [ "$fddr_cmd" == "show" ]
 then
     fddr.print_account "$FDDR_ACC_PATH/$arg_name"
+elif [ "$fddr_cmd" == "show_vars" ]
+then
+    fddr.show_vars "$FDDR_ACC_PATH/$arg_name" "$arg_vars"
 elif [ "$fddr_cmd" == "parse" ]
 then
     fddr.read_database
@@ -719,7 +768,7 @@ then
     fddr.get_vars
 elif [ "$fddr_cmd" == "filter" ]
 then
-    fddr.filter "$arg_variable" "$arg_operator" "$arg_value"
+    fddr.filter "$arg_variable" "$arg_operator" "$arg_value" "$arg_show"
 fi
 
 if [ "$fddr_warnings" != "0" ] && [ "$fddr_is_verbose" == "1" ]
