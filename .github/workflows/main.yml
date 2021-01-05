@@ -20,3 +20,6 @@ jobs:
 
       - name: Shellcheck
         run: shellcheck -x *.sh
+
+      - name: Unit tests
+        run: ./lib/run_tests.sh

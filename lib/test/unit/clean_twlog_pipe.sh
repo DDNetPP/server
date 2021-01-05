@@ -11,7 +11,7 @@ source lib/lib.sh
 
 log -n "clean_twlog_pipe.sh ... "
 
-if ! diff <(cat ./lib/test/data/vanilla07.log | ./lib/clean_twlog_pipe.sh --pickups=0) ./lib/test/data/vanilla07_clean.log
+if ! diff <(./lib/clean_twlog_pipe.sh --pickups=0 < ./lib/test/unit/data/vanilla07.log) ./lib/test/unit/data/vanilla07_clean.log
 then
     echo "FAIL"
     err "--pickups=0 failed"
