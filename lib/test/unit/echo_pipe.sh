@@ -11,7 +11,7 @@ source lib/lib.sh
 
 log -n "echo_pipe.sh ... "
 
-if ! diff <(./lib/echo_pipe.sh < ./lib/test/unit/data/crashes.txt) ./lib/test/unit/data/crashes_echo.txt
+if ! diff <(./lib/echo_pipe.sh < ./lib/test/unit/data/echo_pipe.in) ./lib/test/unit/data/echo_pipe.out
 then
     echo "FAIL"
     err "echo pipe failed"
