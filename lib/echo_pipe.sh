@@ -2,7 +2,7 @@
 
 function format_line() {
     local line="$1"
-    echo "echo \"$(echo "$line" | sed 's/"/\\"/')\""
+    echo "echo \"${line//\"/\\\"}\""
 }
 
 if [ "$1" == "--help" ] || [ "$1" == "-h" ] || [ "$#" -gt "1" ]
@@ -17,7 +17,7 @@ then
     exit 0
 elif [ "$#" == "0" ]
 then
-    while IFS='$\n' read -r line;
+    while IFS=$'\n' read -r line;
     do
         format_line "$line"
     done
