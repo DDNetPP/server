@@ -32,8 +32,7 @@ jobs:
             echo "editor=touch"
           } > server.cnf
           mkdir -p /home/$USER/.teeworlds/dumps/TeeworldsLogs/test-srv/logs
-          pwd
-          cat server.cnf
 
       - name: Unit tests
-        run: export EDITOR=touch yes | ./lib/run_tests.sh
+        run: ./lib/run_tests.sh
+
