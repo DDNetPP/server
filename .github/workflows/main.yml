@@ -21,5 +21,8 @@ jobs:
       - name: Shellcheck
         run: shellcheck -x *.sh
 
+      - name: Setup settings
+        run: touch server.cnf autoexec.cfg
+
       - name: Unit tests
         run: ./lib/run_tests.sh
