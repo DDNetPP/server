@@ -36,4 +36,4 @@ jobs:
           cat server.cnf
 
       - name: Unit tests
-        run: yes | ./lib/run_tests.sh
+        run: export EDITOR=touch yes | ./lib/run_tests.sh
