@@ -21,8 +21,17 @@ jobs:
       - name: Shellcheck
         run: shellcheck -x *.sh
 
-      - name: Setup settings
-        run: touch server.cnf autoexec.cfg
+      - name: Minimal setup
+        run: |
+          touch autoexec.cfg
+          {
+            echo "git_root=/home/$USER"
+            echo "gitpath_mod=/home/$USER/teeworlds"
+            echo "gitpath_log=/home/$USER/.teeworlds/dumps/TeeworldsLogs"
+            echo "server_name=test-srv"
+            echo "editor=touch"
+          } > server.cnf
+          mkdir -p /home/$USER/.teeworlds/dumps/TeeworldsLogs/test-srv/logs
 
       - name: Unit tests
         run: ./lib/run_tests.sh
