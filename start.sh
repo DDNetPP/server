@@ -12,24 +12,51 @@ source lib/lib.sh
 check_deps
 check_running
 
-if [ "$1" == "--help" ] || [ "$1" == "-h" ]
-then
-    echo "usage: ./start.sh [map url]"
-    echo ""
-    echo "when no arguemnt provided a production server is started"
-    echo "it is writing a logfile and running in the background"
-    echo ""
-    echo "when the map argument is provided a test server is started"
-    echo "the map will be downloaded into maps/tmp/mapname.map"
-    echo "and the server will be started with that map and running in the foreground"
-    echo "no logfile will be written"
-    exit 0
-elif [ "$#" -gt 0 ]
-then
-    mapurl="$1"
-    if ! [[ "$mapurl" =~ (http|www).*\.map ]]
+
+arg_is_interactive=0
+arg_tmp_map_url=""
+
+for arg in "$@"
+do
+    if [ "$arg" == "--help" ] || [ "$arg" == "-h" ]
     then
-        err "invalid url '$mapurl'"
+        echo "usage: ./start.sh [map url] [OPTION]"
+        echo "options:"
+        echo "  -i|--interactive        no logfiles and daemon"
+        echo "map url:"
+        echo ""
+        echo "  when no arguemnt provided a production server is started"
+        echo "  it is writing a logfile and running in the background"
+        echo ""
+        echo "  when the map argument is provided a test server is started"
+        echo "  the map will be downloaded into maps/tmp/mapname.map"
+        echo "  and the server will be started with that map and running in the foreground"
+        echo "  no logfile will be written"
+        exit 0
+    elif [ "${arg::1}" == "-" ]
+    then
+        if [ "$arg" == "-i" ] || [ "$arg" == "--interactive" ]
+        then
+            arg_is_interactive=1
+        else
+            err "invalid argument '$arg' see '--help'"
+            exit 1
+        fi
+    elif [ "$arg_tmp_map_url" == "" ]
+    then
+        arg_tmp_map_url="$arg"
+    else
+        err "unexpected argument '$arg' see '--help'"
+        exit 1
+    fi
+done
+
+
+if [ "$arg_tmp_map_url" != "" ]
+then
+    if ! [[ "$arg_tmp_map_url" =~ (http|www).*\.map ]]
+    then
+        err "invalid url '$arg_tmp_map_url'"
         exit 1
     fi
     if [ ! -d maps/ ]
@@ -39,7 +66,7 @@ then
     fi
     mkdir -p maps/tmp
     cd maps/tmp || exit 1
-    mapname="${mapurl##*/}"
+    mapname="${arg_tmp_map_url##*/}"
     if ! [[ "$mapname" =~ .map$ ]]
     then
         err "Failed to parse mapname '$mapname'"
@@ -51,7 +78,7 @@ then
     fi
     mapname="$(basename "$mapname" .map)"
     log "downloading map '$mapname' ..."
-    wget "$mapurl"
+    wget "$arg_tmp_map_url"
     cd ../../
     read -rp 'password: ' pass
     log "starting server with password '$pass' ..."
@@ -64,12 +91,21 @@ then
     logfile="$(pwd)/logs/tem/vanilla_tem_$(date +%F_%H-%M-%S).log"
     mkdir -p logs/tem
     cd "$CFG_TEM_PATH" || exit 1
-    nohup ./start_tem.sh "$CFG_TEM_SETTINGS" "#sid:$server_id" > "$logfile" 2>&1 &
+    if [ "$arg_is_interactive" == "1" ]
+    then
+        ./start_tem.sh "$CFG_TEM_SETTINGS" "#sid:$server_id"
+    else
+        nohup ./start_tem.sh "$CFG_TEM_SETTINGS" "#sid:$server_id" > "$logfile" 2>&1 &
+    fi
 else # teeworlds
     logfile="$LOGS_PATH_FULL/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S).log"
     cache_logpath "$logfile"
 
     run_cmd="$CFG_ENV_RUNTIME nohup ./$CFG_BIN \"#sid:$server_id\" > $logfile 2>&1 &"
+    if [ "$arg_is_interactive" == "1" ]
+    then
+        run_cmd="$CFG_ENV_RUNTIME ./$CFG_BIN \"#sid:$server_id\""
+    fi
     log "running:"
     tput bold
     echo "$run_cmd"
