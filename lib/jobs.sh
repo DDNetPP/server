@@ -32,7 +32,7 @@ then
 fi
 
 check_server_dir
-JOB_PATH="$(pwd)/lib/var/jobs"
+JOB_PATH="${SCRIPT_ROOT}/lib/var/jobs"
 function is_job() {
     if [ -f "$JOB_PATH/global/on/$jobname" ] || [ -f "$JOB_PATH/global/off/$jobname" ]
     then

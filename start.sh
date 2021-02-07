@@ -89,7 +89,7 @@ fi
 log_ext="${CFG_LOG_EXT:-.log}"
 if [ "$CFG_SERVER_TYPE" == "tem" ]
 then
-    logfile="$(pwd)/logs/tem/vanilla_tem_$(date +%F_%H-%M-%S)${log_ext}"
+    logfile="${SCRIPT_ROOT}/logs/tem/vanilla_tem_$(date +%F_%H-%M-%S)${log_ext}"
     mkdir -p logs/tem
     cd "$CFG_TEM_PATH" || exit 1
     if [ "$arg_is_interactive" == "1" ]

@@ -59,41 +59,29 @@ function is_err_log() {
     fi
 }
 
-function check_cwd() {
-    if [ "$cwd" == "" ]
-    then
-        return;
-    fi
-    if [ ! -d .git/ ]; then
-        cd "$cwd" || { err "log_err: cd '$cwd' failed."; return; }
-    elif [ ! -d lib/ ]; then
-        cd "$cwd" || { err "log_err: cd '$cwd' failed."; return; }
-    elif [ ! -f server.cnf ]; then
-        cd "$cwd" || { err "log_err: cd '$cwd' failed."; return; }
-    fi
-}
-
 function log_err() {
-    local err="$1"
-    check_cwd
-    if [ ! -d .git/ ]; then
-        err "log_err: .git/ not found are you in the server dir?"; return;
-    elif [ ! -d lib/ ]; then
-        err "log_err: lib/ not found are you in the server dir?"; return;
-    elif [ ! -f server.cnf ]; then
-        err "log_err: server.cnf not found are you in the server dir?"; return;
-    fi
-    mkdir -p logs/ || { err "log_err: failed to create logs/ directory"; return; }
-    if is_err_log "$err"
-    then
-        echo "[$(date '+%Y-%m-%d %H:%M:%S')] $err" >> "$ERR_LOGFILE" || err "log_err: failed to write log"
-    fi
-    if [ "$CFG_ERROR_LOGS_API" != "" ]
-    then
-        log "pwd: $(pwd)"
-        log "executing error api cmd:"
-        echo "eval \"$CFG_ERROR_LOGS_API\""
-        eval "$CFG_ERROR_LOGS_API"
-    fi
+    local err_msg="$1"
+    (
+        cd "$SCRIPT_ROOT" || exit 1
+        if [ ! -d .git/ ]; then
+            err "log_err: .git/ not found are you in the server dir?"; return;
+        elif [ ! -d lib/ ]; then
+            err "log_err: lib/ not found are you in the server dir?"; return;
+        elif [ ! -f server.cnf ]; then
+            err "log_err: server.cnf not found are you in the server dir?"; return;
+        fi
+        mkdir -p logs/ || { err "log_err: failed to create logs/ directory"; return; }
+        if is_err_log "$err_msg"
+        then
+            echo "[$(date '+%Y-%m-%d %H:%M:%S')] $err_msg" >> "$ERR_LOGFILE" || err "log_err: failed to write log"
+        fi
+        if [ "$CFG_ERROR_LOGS_API" != "" ]
+        then
+            log "pwd: $(pwd)"
+            log "executing error api cmd:"
+            echo "eval \"$CFG_ERROR_LOGS_API\""
+            eval "$CFG_ERROR_LOGS_API"
+        fi
+    )
 }
 

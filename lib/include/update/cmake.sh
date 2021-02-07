@@ -100,8 +100,6 @@ function cmake_update() {
     install_dep cmake
     install_dep git
 
-    cwd="$(pwd)"
-
     mkdir -p maps || { err "Error: creating dir maps/"; exit 1; }
     mkdir -p logs || { err "Error: creating dir logs/"; exit 1; }
     mkdir -p bin || { err "Error: creating dir bin/"; exit 1; }
@@ -176,42 +174,42 @@ function cmake_update() {
 
     if [ "$arg_type" == "teeworlds" ]
     then
-        if [ -f "$cwd/${CFG_BIN}" ]
+        if [ -f "${SCRIPT_ROOT}/${CFG_BIN}" ]
         then
             log "creating backup of old binary at bin/backup"
-            mkdir -p "$cwd/bin/backup"
-            cp "$cwd/${CFG_BIN}" "$cwd/bin/backup/$bin_old_commit"
+            mkdir -p "${SCRIPT_ROOT}/bin/backup"
+            cp "${SCRIPT_ROOT}/${CFG_BIN}" "${SCRIPT_ROOT}/bin/backup/$bin_old_commit"
         fi
-        cp "$arg_compiled_bin" "$cwd/${CFG_BIN}"
+        cp "$arg_compiled_bin" "${SCRIPT_ROOT}/${CFG_BIN}"
 
         num_maps="$(find ./data/maps -maxdepth 1 -name '*.map' 2>/dev/null | wc -l)"
         if [ "$num_maps" != 0 ]
         then
             log "copying $num_maps maps from source directory ..."
-            cp data/maps/*.map "$cwd/maps"
+            cp data/maps/*.map "${SCRIPT_ROOT}/maps"
         fi
 
-        update_configs "$cwd"
+        update_configs "${SCRIPT_ROOT}"
 
         if [ "$CFG_TEST_RUN" == "1" ] || [ "$CFG_TEST_RUN" == "true" ]
         then
             log "test if server can start ..."
-            cd "$cwd" || exit 1
+            cd "${SCRIPT_ROOT}" || exit 1
             if ! ./"${CFG_BIN}" "sv_port $CFG_TEST_RUN_PORT;status;shutdown"
             then
                 err --log "failed to run server built with $bin_commit"
-                if [ -f "$cwd/bin/backup/$bin_old_commit" ]
+                if [ -f "${SCRIPT_ROOT}/bin/backup/$bin_old_commit" ]
                 then
                     wrn "restoring backup binary ..."
-                    mv "$cwd/bin/backup/$bin_old_commit" "$cwd/${CFG_BIN}"
+                    mv "${SCRIPT_ROOT}/bin/backup/$bin_old_commit" "${SCRIPT_ROOT}/${CFG_BIN}"
                 fi
             fi
         fi
     elif [ "$arg_type" == "bot" ]
     then
-        cp "$arg_compiled_bin" "$cwd/bin/bot/" || exit 1
+        cp "$arg_compiled_bin" "${SCRIPT_ROOT}/bin/bot/" || exit 1
     fi
 
-    cd "$cwd" || exit 1
+    cd "${SCRIPT_ROOT}" || exit 1
 }
 

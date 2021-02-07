@@ -10,11 +10,10 @@ fi
 
 source lib/lib.sh
 
-maps_dir="$(pwd)/maps"
+maps_dir="${SCRIPT_ROOT}/maps"
 
 function download_web() {
     local url="$1"
-    cwd="$(pwd)"
     mkdir -p "$maps_dir" || exit 1
     cd "$maps_dir" || exit 1
     url="${url%%+(/)}" # strip trailing slash
@@ -22,7 +21,7 @@ function download_web() {
     num_dirs="$(echo "$tmp" | tr "/" "\\n" | wc -l)"
     num_dirs="$((num_dirs - 1))"
     wget -r -np -nH --cut-dirs="$num_dirs" -R index.html "$url/"
-    cd "$cwd" || exit 1
+    cd "$SCRIPT_ROOT" || exit 1
 }
 
 function download_archive() {
@@ -33,7 +32,6 @@ function download_archive() {
     local tmp_maps_dir
     archive_name="${url##*/}"
     archive_name="$(basename "$archive_name" ".$archive_type")"
-    cwd="$(pwd)"
     tmp_maps_root="/tmp/ddpp_$USER"
     tmp_maps_archive="$tmp_maps_root/maps.archive"
     tmp_maps_dir="$tmp_maps_root/maps"
@@ -104,12 +102,11 @@ function download_archive() {
     then
         rm -rf "$tmp_maps_dir" || exit 1
     fi
-    cd "$cwd" || exit 1
+    cd "$SCRIPT_ROOT" || exit 1
 }
 
 function download_git() {
     local url="$1"
-    cwd="$(pwd)"
     mkdir -p "$maps_dir" || exit 1
     if [ -d /tmp/YYY_maps/ ]
     then
@@ -121,7 +118,7 @@ function download_git() {
     then
         rm -rf /tmp/YYY_maps/ || exit 1
     fi
-    cd "$cwd" || exit 1
+    cd "$SCRIPT_ROOT" || exit 1
 }
 
 function menu() {

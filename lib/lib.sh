@@ -1,5 +1,7 @@
 #!/bin/bash
 
+export SCRIPT_ROOT="$(pwd)"
+
 source lib/include/logger.sh
 source lib/include/editor.sh
 source lib/include/tw_config.sh
