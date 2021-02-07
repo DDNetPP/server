@@ -41,7 +41,7 @@ fi
 p=logs/crashes
 mkdir -p "$p" || exit 1
 
-logfile="$LOGS_PATH_FULL_TW/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S).log"
+logfile="$LOGS_PATH_FULL_TW/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S)${CFG_LOG_EXT}"
 start_ts_slug=$(date '+%Y-%m-%d_%H-%M-%S')
 start_ts=$(date '+%Y-%m-%d %H:%M:%S')
 

@@ -13,7 +13,7 @@ check_deps
 check_running
 install_dep gdb
 
-logfile="$LOGS_PATH_FULL_TW/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S).log"
+logfile="$LOGS_PATH_FULL_TW/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S)${CFG_LOG_EXT}"
 cache_logpath "$logfile"
 
 gdb -ex=run --args ./"$CFG_BIN" "logfile $logfile;#sid:$server_id"
