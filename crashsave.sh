@@ -9,6 +9,8 @@ fi
 
 source lib/lib.sh
 
+del_file "lib/tmp/failed_starts.txt"
+
 check_deps
 check_running
 get_sid

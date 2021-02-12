@@ -9,15 +9,6 @@ fi
 
 source lib/lib.sh
 
-function del_file() {
-    local file="$1"
-    if [ -f "$file" ]
-    then
-        echo "[!] deleting file '$file' ..."
-        rm "$file"
-    fi
-}
-
 if [ "$1" == "--help" ] || [ "$1" == "-h" ]
 then
     echo "usage: $(basename "$0")"

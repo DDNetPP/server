@@ -12,11 +12,6 @@ MAX_LOG_SIZE=5000
 # WARNING: using something other than seconds might need some changes in the script
 RESTART_DELAY=5
 
-# max failed starts - do not continue restarting the server
-# when it failed to start x times.
-# Failed starts are crashes during the first 5 seconds after server start.
-MAX_FAILED_STARTS=3
-
 if [ "$1" != "--loop" ]
 then
     echo "do not call this script manually!"
@@ -31,6 +26,7 @@ then
 fi
 
 source lib/lib.sh
+source lib/include/lib_loop.sh
 
 restart_side_runner
 
@@ -161,27 +157,9 @@ stop_secs="$(date --date "$stop_ts" +%s)"
 runtime="$((stop_secs - start_secs))"
 
 log "server runtime: $runtime seconds"
-if [ "$runtime" -lt "5" ]
+if failed_too_many_starts "$runtime"
 then
-    mkdir -p lib/tmp
-    failed_starts=0
-    if [ -f lib/tmp/failed_starts.txt ]
-    then
-        failed_starts="$(cat lib/tmp/failed_starts.txt)"
-    fi
-    failed_starts="$((failed_starts + 1))"
-    echo "$failed_starts" > lib/tmp/failed_starts.txt
-    wrn "WARNING: Server runtime too short!"
-    wrn "         if the server crashes during first 5 seconds"
-    wrn "         this gets tracked as failed start."
-    wrn "failed starts $failed_starts/$MAX_FAILED_STARTS"
-    if [ "$failed_starts" -ge "$MAX_FAILED_STARTS" ]
-    then
-        err "ERROR: Reached failed starts threshold!"
-        err "       You have to manually restart the server"
-        err "       when it crashed after start too often."
-        exit 1
-    fi
+    exit 1
 fi
 if [ -f lib/var/loop_gdb_on_restart.sh ]
 then

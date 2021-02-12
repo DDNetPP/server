@@ -14,6 +14,15 @@ source lib/include/git.sh
 source lib/include/logs.sh
 source lib/include/screen.sh
 
+function del_file() {
+    local file="$1"
+    if [ -f "$file" ]
+    then
+        echo "[!] deleting file '$file' ..."
+        rm "$file"
+    fi
+}
+
 function is_cmd() {
     [ -x "$(command -v "$1")" ] && return 0
 }
