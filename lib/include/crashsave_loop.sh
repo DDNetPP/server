@@ -75,6 +75,16 @@ echo "+----------------------------------------+"
     echo "echo ------------------"
 } >> crashes.txt
 
+start_secs="$(date --date "$start_ts" +%s)"
+stop_secs="$(date --date "$stop_ts" +%s)"
+runtime="$((stop_secs - start_secs))"
+
+log "server runtime: $runtime seconds"
+if failed_too_many_starts "$runtime"
+then
+    exit 1
+fi
+
 ./update.sh > "$p/raw_build.txt"
 if [ "$CFG_CSTD" == "1" ]
 then
@@ -87,15 +97,6 @@ git status | ./lib/echo_pipe.sh >> "$p/status.txt"
 
 post_logs
 
-start_secs="$(date --date "$start_ts" +%s)"
-stop_secs="$(date --date "$stop_ts" +%s)"
-runtime="$((stop_secs - start_secs))"
-
-log "server runtime: $runtime seconds"
-if failed_too_many_starts "$runtime"
-then
-    exit 1
-fi
 log "sleeping $RESTART_DELAY seconds ... press CTRL-C now to stop the server"
 sleep $RESTART_DELAY
 

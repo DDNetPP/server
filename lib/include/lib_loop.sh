@@ -1,9 +1,13 @@
 #!/bin/bash
 
-# max failed starts - do not continue restarting the server
+# max failed starts warning - do not continue restarting the server until new commit
 # when it failed to start x times.
 # Failed starts are crashes during the first 5 seconds after server start.
-MAX_FAILED_STARTS=3
+MAX_FAILED_STARTS_WARNING=3
+
+
+# max failed starts error - abort the script
+MAX_FAILED_STARTS_ERROR=6
 
 function failed_too_many_starts() {
     local runtime="$1"
@@ -32,14 +36,38 @@ function failed_too_many_starts() {
     wrn "WARNING: Server runtime too short!"
     wrn "         if the server crashes during first 5 seconds"
     wrn "         this gets tracked as failed start."
-    wrn "failed starts $failed_starts/$MAX_FAILED_STARTS"
-    if [ "$failed_starts" -ge "$MAX_FAILED_STARTS" ]
+    wrn "failed starts $failed_starts/$MAX_FAILED_STARTS_ERROR"
+    if [ "$failed_starts" -ge "$MAX_FAILED_STARTS_ERROR" ]
     then
         err "ERROR: Reached failed starts threshold!"
         err "       You have to manually restart the server"
         err "       when it crashed after start too often."
         return 0
     fi
+    if [ "$failed_starts" -ge "$MAX_FAILED_STARTS_WARNING" ]
+    then
+        wrn "WARNING: Server failed to start $failed_starts times!"
+        wrn "         Server will not start before there is a new commit"
+        wait_for_new_mod_commit
+    fi
     return 1
+}
+
+function wait_for_new_mod_commit() {
+    local old_commit
+    (
+        cd "$CFG_GIT_PATH_MOD" || exit 1
+        old_commit="$(git rev-parse HEAD)"
+        while true
+        do
+            git pull
+            if [ "$old_commit" != "$(git rev-parse HEAD)" ]
+            then
+                return
+            fi
+            log "waiting for new mod update ..."
+            sleep 30
+        done
+    )
 }
 
