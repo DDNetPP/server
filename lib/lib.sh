@@ -350,3 +350,17 @@ function update_configs() {
     fi
 }
 
+function archive_logs() {
+    if [ ! -f gmon.out ]
+    then
+        return
+    fi
+    mkdir -p logs/gmon
+    local dst
+    dst=logs/gmon/gmon_"$(date '+%F_%H-%M')".out
+    log "archiving $dst ..."
+    mv gmon.out "$dst"
+}
+
+archive_logs
+
