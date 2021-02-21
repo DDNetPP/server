@@ -347,6 +347,7 @@ function archive_gmon() {
             wrn "missing dependency $(tput bold)gprof2dot$(tput sgr0) and $(tput bold)dot$(tput sgr0)"
             wrn "skipping callgraph generation..."
         else
+            log "generating gprof callgraph ..."
             gprof ./"$CFG_BIN" | gprof2dot | dot -Tpng -o gprof.png
             save_copy gprof.png "$CFG_POST_LOGS_DIR"
         fi
