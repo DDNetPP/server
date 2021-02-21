@@ -348,18 +348,18 @@ function archive_gmon() {
             wrn "skipping callgraph generation..."
         else
             log "generating gprof callgraph ..."
-            gprof ./"$CFG_BIN" | gprof2dot | dot -Tpng -o gprof.png
-            save_copy gprof.png "$CFG_POST_LOGS_DIR"
+            gprof ./"$CFG_BIN" | gprof2dot | dot -Tsvg -o gprof.svg
+            save_copy gprof.svg "$CFG_POST_LOGS_DIR"
         fi
         dst=logs/gmon/gmon_"$ts".out
         log "archiving $dst ..."
         mv gmon.out "$dst"
     fi
-    if [ -f gprof.png ]
+    if [ -f gprof.svg ]
     then
-        dst=logs/gprof/gprof_"$ts".png
+        dst=logs/gprof/gprof_"$ts".svg
         log "archiving $dst ..."
-        mv gprof.png "$dst"
+        mv gprof.svg "$dst"
     fi
 }
 
