@@ -71,3 +71,39 @@ function wait_for_new_mod_commit() {
     )
 }
 
+function generate_and_post_gmon() {
+    if [ ! -f gmon.out ]
+    then
+        return
+    fi
+    mkdir -p logs/gmon
+    local dst
+    local ts
+    ts="$(date '+%F_%H-%M')"
+    if [ ! -x "$(command -v gprof2dot)" ] || [ ! -x "$(command -v dot)" ]
+    then
+        wrn "missing dependency $(tput bold)gprof2dot$(tput sgr0) and $(tput bold)dot$(tput sgr0)"
+        wrn "skipping callgraph generation..."
+    else
+        gprof ./"$CFG_BIN" | gprof2dot | dot -Tpng -o gprof_"$ts".png
+        save_copy gprof_"$ts".png "$CFG_POST_LOGS_DIR"/gprof
+    fi
+    archive_gmon "$ts"
+}
+
+function post_logs() {
+    if [ "$CFG_POST_LOGS_DIR" == "" ]
+    then
+        archive_gmon "$(date '+%F_%H-%M')"
+        return
+    fi
+    log "copying logs to $CFG_POST_LOGS_DIR"
+    p=logs/crashes
+    save_copy "$p/status.txt" "$CFG_POST_LOGS_DIR"
+    save_copy "$p/raw_build.txt" "$CFG_POST_LOGS_DIR"
+    save_copy "$p/log_gdb.txt" "$CFG_POST_LOGS_DIR"
+    save_copy "$p/full_gdb.txt" "$CFG_POST_LOGS_DIR"
+    save_copy crashes.txt "$CFG_POST_LOGS_DIR"
+    generate_and_post_gmon
+}
+

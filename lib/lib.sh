@@ -70,20 +70,6 @@ function save_copy() {
     cp "$1" "$2"
 }
 
-function post_logs() {
-    if [ "$CFG_POST_LOGS_DIR" == "" ]
-    then
-        return
-    fi
-    log "copying logs to $CFG_POST_LOGS_DIR"
-    p=logs/crashes
-    save_copy "$p/status.txt" "$CFG_POST_LOGS_DIR"
-    save_copy "$p/raw_build.txt" "$CFG_POST_LOGS_DIR"
-    save_copy "$p/log_gdb.txt" "$CFG_POST_LOGS_DIR"
-    save_copy "$p/full_gdb.txt" "$CFG_POST_LOGS_DIR"
-    save_copy crashes.txt "$CFG_POST_LOGS_DIR"
-}
-
 function check_warnings() {
     local port
     local num_cores
@@ -350,17 +336,18 @@ function update_configs() {
     fi
 }
 
-function archive_logs() {
+function archive_gmon() {
+    # usage:
+    # archive_gmon "$(date '+%F_%H-%M')"
     if [ ! -f gmon.out ]
     then
         return
     fi
     mkdir -p logs/gmon
     local dst
-    dst=logs/gmon/gmon_"$(date '+%F_%H-%M')".out
+    local ts="$1"
+    dst=logs/gmon/gmon_"$ts".out
     log "archiving $dst ..."
     mv gmon.out "$dst"
 }
-
-archive_logs
 

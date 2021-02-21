@@ -38,6 +38,7 @@ del_file "lib/tmp/failed_starts.txt"
 
 check_deps
 check_running
+archive_gmon "$(date '+%F_%H-%M')"
 
 function install_cstd() {
     if [ "$UID" == "0" ]
