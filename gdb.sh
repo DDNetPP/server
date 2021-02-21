@@ -12,7 +12,7 @@ source lib/lib.sh
 check_deps
 check_running
 install_dep gdb
-archive_gmon "$(date '+%F_%H-%M')"
+archive_gmon
 
 logfile="$LOGS_PATH_FULL_TW/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S)${CFG_LOG_EXT}"
 cache_logpath "$logfile"

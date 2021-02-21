@@ -51,7 +51,7 @@ do
     fi
 done
 
-archive_gmon "$(date '+%F_%H-%M')"
+archive_gmon
 
 if [ "$arg_tmp_map_url" != "" ]
 then

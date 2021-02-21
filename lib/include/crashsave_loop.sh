@@ -26,6 +26,7 @@ source lib/lib.sh
 source lib/include/lib_loop.sh
 
 restart_side_runner
+archive_gmon
 
 if is_cfg CFG_GDB_DUMP_CORE
 then

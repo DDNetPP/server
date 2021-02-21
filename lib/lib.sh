@@ -337,17 +337,28 @@ function update_configs() {
 }
 
 function archive_gmon() {
-    # usage:
-    # archive_gmon "$(date '+%F_%H-%M')"
-    if [ ! -f gmon.out ]
-    then
-        return
-    fi
-    mkdir -p logs/gmon
+    mkdir -p logs/{gmon,gprof}
     local dst
-    local ts="$1"
-    dst=logs/gmon/gmon_"$ts".out
-    log "archiving $dst ..."
-    mv gmon.out "$dst"
+    local ts="$(date '+%F_%H-%M')"
+    if [ -f gmon.out ]
+    then
+        if [ ! -x "$(command -v gprof2dot)" ] || [ ! -x "$(command -v dot)" ]
+        then
+            wrn "missing dependency $(tput bold)gprof2dot$(tput sgr0) and $(tput bold)dot$(tput sgr0)"
+            wrn "skipping callgraph generation..."
+        else
+            gprof ./"$CFG_BIN" | gprof2dot | dot -Tpng -o gprof.png
+            save_copy gprof.png "$CFG_POST_LOGS_DIR"
+        fi
+        dst=logs/gmon/gmon_"$ts".out
+        log "archiving $dst ..."
+        mv gmon.out "$dst"
+    fi
+    if [ -f gprof.png ]
+    then
+        dst=logs/gprof/gprof_"$ts".png
+        log "archiving $dst ..."
+        mv gprof.png "$dst"
+    fi
 }
 

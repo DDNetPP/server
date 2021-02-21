@@ -14,7 +14,6 @@ del_file "lib/tmp/failed_starts.txt"
 check_deps
 check_running
 get_sid
-archive_gmon "$(date '+%F_%H-%M')"
 
 while true;
 do
