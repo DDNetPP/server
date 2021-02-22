@@ -189,7 +189,7 @@ function cmake_update() {
             cp data/maps/*.map "${SCRIPT_ROOT}/maps"
         fi
 
-        update_configs "${SCRIPT_ROOT}"
+        update_configs
 
         if [ "$CFG_TEST_RUN" == "1" ] || [ "$CFG_TEST_RUN" == "true" ]
         then

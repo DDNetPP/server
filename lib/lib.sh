@@ -1,6 +1,7 @@
 #!/bin/bash
 
-export SCRIPT_ROOT="$(pwd)"
+SCRIPT_ROOT="$(pwd)"
+export SCRIPT_ROOT
 
 source lib/include/logger.sh
 source lib/include/editor.sh
@@ -312,13 +313,7 @@ function check_deps() {
 }
 
 function update_configs() {
-    # TODO:
-    # https://github.com/DDNetPP/server/issues/29
-    local path="$1"
-    if [ "$path" != "" ]
-    then
-        cd "$path" || exit 1
-    fi
+    cd "$SCRIPT_ROOT" || exit 1
     if [[ -d cfg/ ]] && [[ -d cfg/.git ]]
     then
         log "found config directory cfg/"
@@ -326,12 +321,20 @@ function update_configs() {
         cd cfg || exit 1
         git_save_pull
     fi
-    cd .. || exit 1
+    cd "$SCRIPT_ROOT" || exit 1
     if [[ -d votes/ ]] && [[ -d votes/.git ]]
     then
         log "found config directory votes/"
-        log "updating configs ..."
+        log "updating votes ..."
         cd votes || exit 1
+        git_save_pull
+    fi
+    cd "$SCRIPT_ROOT" || exit 1
+    if [[ -d cnf/ ]] && [[ -d cnf/.git ]]
+    then
+        log "found settings directory cnf/"
+        log "updating settings ..."
+        cd cnf || exit 1
         git_save_pull
     fi
 }
@@ -339,7 +342,8 @@ function update_configs() {
 function archive_gmon() {
     mkdir -p logs/{gmon,gprof}
     local dst
-    local ts="$(date '+%F_%H-%M')"
+    local ts
+    ts="$(date '+%F_%H-%M')"
     if [ -f gmon.out ]
     then
         if [ ! -x "$(command -v gprof2dot)" ] || [ ! -x "$(command -v dot)" ]
