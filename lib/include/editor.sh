@@ -39,14 +39,16 @@ function edit_file() {
     PS3='Select a text editor: '
     select opt in "${options[@]}"
     do
-        if [[ " ${options[@]} " =~ " ${opt} " ]]
-        then
-            selected_editor="$opt"
-            eval "$selected_editor $file"
-            return
-        else
-            echo "invalid option $REPLY"
-        fi
+        for o in "${options[@]}"
+        do
+            if [[ "$o" == "$opt" ]]
+            then
+                selected_editor="$opt"
+                eval "$selected_editor $file"
+                return
+            fi
+        done
+        echo "invalid option $REPLY"
     done
 }
 

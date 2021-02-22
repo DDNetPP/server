@@ -38,10 +38,10 @@ function check_logsize() {
         return
     fi
     local lines
-    lines="$(wc -l < "$logf")"
-    if [ "$?" != "0" ] || [ "$lines" == "" ]
+    if ! lines="$(wc -l < "$logf")" || [ "$lines" == "" ]
     then
         err "ERROR: failed to compute logsize of file '$logf'"
+        exit 1
     elif [ "$lines" -gt "$MAX_LOG_SIZE" ]
     then
         wrn "WARNING: logfile reached maximum size lines $lines/$MAX_LOG_SIZE"
@@ -82,7 +82,7 @@ fi
 custom_gdb=""
 if [ "$CFG_GDB_CMDS" != "" ]
 then
-    custom_gdb="-ex='echo (gdb) $CFG_GDB_CMDS\n' -ex='$CFG_GDB_CMDS'"
+    custom_gdb="-ex='echo (gdb) $CFG_GDB_CMDS\\n' -ex='$CFG_GDB_CMDS'"
     log "custom gdb command '$custom_gdb'"
 fi
 
@@ -97,11 +97,11 @@ $CFG_ENV_RUNTIME gdb -ex='set confirm off' \
     -ex='set logging off' \
     -ex="set logging file $p/full_gdb.txt" \
     -ex='set logging on' \
-    -ex='echo (gdb) bt full\n' -ex='bt full' \
-    -ex='echo (gdb) info registers\n' -ex='info registers' \
-    -ex='echo (gdb) x/20i \$rip-20\n' -ex='x/20i \$rip-20' \
-    -ex='echo (gdb) list\n' -ex='list' \
-    -ex='echo (gdb) info threads\n' -ex='info threads' \
+    -ex='echo (gdb) bt full\\n' -ex='bt full' \
+    -ex='echo (gdb) info registers\\n' -ex='info registers' \
+    -ex='echo (gdb) x/20i \$rip-20\\n' -ex='x/20i \$rip-20' \
+    -ex='echo (gdb) list\\n' -ex='list' \
+    -ex='echo (gdb) info threads\\n' -ex='info threads' \
     $custom_gdb \
     $gdb_corefile_cmd \
     -ex=quit --args \

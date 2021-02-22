@@ -80,7 +80,7 @@ then
     mapname="$(basename "$mapname" .map)"
     log "downloading map '$mapname' ..."
     wget "$arg_tmp_map_url"
-    cd ../../
+    cd ../../ || exit 1
     read -rp 'password: ' pass
     log "starting server with password '$pass' ..."
     ./"$CFG_BIN" "sv_map tmp/$mapname;password $pass"
