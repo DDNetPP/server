@@ -3,7 +3,7 @@ shopt -s extglob # used for trailing slashes globbing
 
 # init variables
 aSettingsFiles=()
-settings_file="server.cnf"
+current_settings_file="server.cnf"
 line_num=0
 aSettStr=();aSettVal=();aSettValid=()
 aSettStr+=("git_root");aSettVal+=("/home/$USER/git");aSettValid+=('')
@@ -36,12 +36,12 @@ aSettStr+=("env_runtime");aSettVal+=("");aSettValid+=('')
 aSettStr+=("logfile_extension");aSettVal+=(".log");aSettValid+=('')
 
 function create_settings() {
-    if [ -f $settings_file ];
+    if [ -f $current_settings_file ];
     then
         return
     fi
     local i
-    log "FileError: '$settings_file' not found"
+    log "FileError: '$current_settings_file' not found"
     read -p "Do you want to create one? [y/N]" -n 1 -r
     echo 
     if [[ $REPLY =~ ^[Yy]$ ]]
@@ -53,10 +53,14 @@ function create_settings() {
             do
                 echo "${aSettStr[$i]}=${aSettVal[$i]}"
             done
-        } > "$settings_file"
-        edit_file "$settings_file"
+        } > "$current_settings_file"
+        edit_file "$current_settings_file"
     fi
     exit 1
+}
+
+function settings_err() {
+    err "SettingsError: $(tput bold)$current_settings_file:$line_num$(tput sgr0) $1"
 }
 
 function parse_settings_line() {
@@ -65,12 +69,12 @@ function parse_settings_line() {
         if [ "$sett" == "compiled_binary_name" ]
         then
             wrn "WARNING: 'compiled_binary_name' is deprecated by 'compiled_teeworlds_name'"
-            wrn "         please fix at $settings_file:$line_num"
+            wrn "         please fix at $current_settings_file:$line_num"
             sett=compiled_teeworlds_name
         elif [ "$sett" == "gitpath_src" ]
         then
             wrn "WARNING: 'gitpath_src' is deprecated by 'git_root'"
-            wrn "         please fix at $settings_file:$line_num"
+            wrn "         please fix at $current_settings_file:$line_num"
             sett=git_root
         fi
         local i
@@ -86,7 +90,7 @@ function parse_settings_line() {
                 valid_pattern=${aSettValid[$i]}
                 if [[ "$valid_pattern" != "" ]] && [[ ! "$val" =~ $valid_pattern ]]
                 then
-                    err "SettingsError: invalid value '$val' for setting '$sett'"
+                    settings_err "invalid value '$val' for setting '$sett'"
                     err "               values have to match $valid_pattern"
                     exit 1
                 fi
@@ -94,7 +98,7 @@ function parse_settings_line() {
                 return
             fi
         done
-        err "SettingsError: unkown setting $sett"
+        settings_err "unkown setting '$(tput bold)$sett$(tput sgr0)'"
         exit 1
 }
 
@@ -108,13 +112,15 @@ function parse_settings_cmd() {
     then
         echo "$(tput bold)[settings]$(tput sgr0) $*"
     else
-        err "SettingsError: unkown command $cmd"
+        settings_err "unkown command '$(tput bold)$cmd$(tput sgr0)'"
         exit 1
     fi
 }
 
 function read_settings_file() {
     local filename="$1"
+    current_settings_file="$filename"
+    line_num=0
     local i
     local split_line
     local cmd_and_args
@@ -122,7 +128,7 @@ function read_settings_file() {
     do
         if [ "$i" == "$filename" ]
         then
-            err "SettingsError: trying to include $filename recursively"
+            settings_err "trying to include $filename recursively"
             exit 1
         fi
     done
@@ -180,7 +186,7 @@ function is_cfg() {
 }
 
 create_settings # create fresh if null
-read_settings_file "$settings_file"
+read_settings_file "$current_settings_file"
 
 # Settings:
 # - git root            0
