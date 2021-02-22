@@ -4,6 +4,7 @@ SCRIPT_ROOT="$(pwd)"
 export SCRIPT_ROOT
 
 source lib/include/logger.sh
+source lib/include/common.sh
 source lib/include/editor.sh
 source lib/include/tw_config.sh
 source lib/include/port.sh

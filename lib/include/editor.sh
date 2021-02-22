@@ -1,29 +1,14 @@
 #!/bin/bash
 
+function callback_editor() {
+    local file="$1"
+    local editor="$2"
+    eval "$editor $file"
+}
+
 function edit_file() {
     local file=$1
-    local options
-    local lines
-    local selected_editor
-    local aEditors
-    options=()
-    lines=0
-    selected_editor=""
-    aEditors=("vim" "vi" "nano" "emacs" "ne" "cat");
-    if [ -z "$EDITOR" ] && [ "$EDITOR" != "" ]
-    then
-        aEditors+=("$EDITOR")
-    fi
-    for editor in "${aEditors[@]}"
-    do
-        options+=("$editor")
-        lines=$((lines+1))
-    done
-    if [ $lines -eq 1 ]
-    then
-        exit 0
-    fi
-
+    local selected_editor=""
     if [ "$CFG_EDITOR" != "" ]
     then
         selected_editor="$CFG_EDITOR"
@@ -36,19 +21,8 @@ function edit_file() {
         eval "$selected_editor $file"
         return
     fi
-    PS3='Select a text editor: '
-    select opt in "${options[@]}"
-    do
-        for o in "${options[@]}"
-        do
-            if [[ "$o" == "$opt" ]]
-            then
-                selected_editor="$opt"
-                eval "$selected_editor $file"
-                return
-            fi
-        done
-        echo "invalid option $REPLY"
-    done
+    fzf_select \
+        "Select a text editor: " "callback_editor $file" \
+        vim vi nano emacs ne cat
 }
 
