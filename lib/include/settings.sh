@@ -2,6 +2,7 @@
 shopt -s extglob # used for trailing slashes globbing
 
 # init variables
+aSettingsFiles=()
 settings_file="server.cnf"
 line_num=0
 aSettStr=();aSettVal=();aSettValid=()
@@ -97,8 +98,35 @@ function parse_settings_line() {
         exit 1
 }
 
+function parse_settings_cmd() {
+    local cmd="$1"
+    shift
+    if [ "$cmd" == "include" ]
+    then
+        read_settings_file "$1"
+    elif [ "$cmd" == "echo" ]
+    then
+        echo "$(tput bold)[settings]$(tput sgr0) $*"
+    else
+        err "SettingsError: unkown command $cmd"
+        exit 1
+    fi
+}
+
 function read_settings_file() {
+    local filename="$1"
     local i
+    local split_line
+    local cmd_and_args
+    for i in "${aSettingsFiles[@]}"
+    do
+        if [ "$i" == "$filename" ]
+        then
+            err "SettingsError: trying to include $filename recursively"
+            exit 1
+        fi
+    done
+    aSettingsFiles+=("$filename")
     while read -r line
     do
         line_num="$((line_num + 1))"
@@ -109,8 +137,14 @@ function read_settings_file() {
         then
             continue # ignore empty lines
         fi
-        line_set=""
-        line_val=""
+        local line_set=""
+        local line_val=""
+        if ! echo "$line"| grep -q '='
+        then
+            IFS=' ' read -ra cmd_and_args <<< "$line"
+            parse_settings_cmd "${cmd_and_args[@]}"
+            continue
+        fi
         IFS='=' read -ra split_line <<< "$line"
         for i in "${!split_line[@]}"
         do
@@ -128,7 +162,7 @@ function read_settings_file() {
             fi
         done
         parse_settings_line "$line_set" "$line_val"
-    done < "$settings_file"
+    done < "$filename"
 }
 
 function is_cfg() {
@@ -146,7 +180,7 @@ function is_cfg() {
 }
 
 create_settings # create fresh if null
-read_settings_file
+read_settings_file "$settings_file"
 
 # Settings:
 # - git root            0
