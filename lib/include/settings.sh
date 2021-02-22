@@ -63,6 +63,10 @@ function settings_err() {
     err "SettingsError: $(tput bold)$current_settings_file:$line_num$(tput sgr0) $1"
 }
 
+function settings_err_tab() {
+    err "               $1"
+}
+
 function parse_settings_line() {
         local sett=$1
         local val=$2
@@ -107,6 +111,12 @@ function parse_settings_cmd() {
     shift
     if [ "$cmd" == "include" ]
     then
+        if [ ! -f "$1" ]
+        then
+            settings_err "include command failed"
+            settings_err_tab "no such file $(tput bold)$1$(tput sgr0)"
+            exit 1
+        fi
         read_settings_file "$1"
     elif [ "$cmd" == "echo" ]
     then
