@@ -84,7 +84,7 @@ function warn_dir_size() {
     then
         return
     fi
-    if du -hd 1 "$dir" | tail -n1 | awk '{print $1}' | grep -q K
+    if du -hd 1 "$dir" | tail -n1 | awk '{print $1}' | grep -q G
     then
         {
             wrn "WARNING: directory $(tput bold)$dir$(tput sgr0) is measured in gigabytes"
