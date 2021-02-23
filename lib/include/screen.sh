@@ -11,9 +11,10 @@ function proc_in_screen() {
     for screen_pid in $(screen -ls | grep ached | awk '{ print $1 }' | cut -d'.' -f1)
     do
         proc_pid="$(ps -el | grep "$screen_pid" | tail -n1 | awk '{ print $4 }')"
-        # go 2 levels deeper to search for the running proc
+        # go 3 levels deeper to search for the running proc
         # screen -> ./gdb.sh -> gdb
-        for _ in {1..2}
+        # screen -> loop_gdb.sh > gdb_loop.sh -> gdb
+        for _ in {1..3}
         do
             proc_pid="$(ps -el | grep "$proc_pid" | tail -n1 | awk '{ print $4 }')"
         done
