@@ -191,7 +191,7 @@ function cmake_update() {
 
         update_configs
 
-        if [ "$CFG_TEST_RUN" == "1" ] || [ "$CFG_TEST_RUN" == "true" ]
+        if is_cfg CFG_TEST_RUN
         then
             log "test if server can start ..."
             cd "${SCRIPT_ROOT}" || exit 1

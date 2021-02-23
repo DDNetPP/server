@@ -87,7 +87,7 @@ then
 fi
 
 ./update.sh > "$p/raw_build.txt"
-if [ "$CFG_CSTD" == "1" ]
+if is_cfg CFG_CSTD
 then
     url="$(cstd "$p/raw_build.txt")"
     echo "echo $url" > paste.txt
