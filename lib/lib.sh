@@ -72,6 +72,30 @@ function save_copy() {
     cp "$1" "$2"
 }
 
+function warn_dir_size() {
+    local dir="$1"
+    local size
+    local cache=./lib/tmp/size_"$dir".txt
+    if [ -f "$cache" ]
+    then
+        rm "$cache"
+    fi
+    if [ ! -d "$dir" ]
+    then
+        return
+    fi
+    if du -hd 1 "$dir" | tail -n1 | awk '{print $1}' | grep -q K
+    then
+        {
+            wrn "WARNING: directory $(tput bold)$dir$(tput sgr0) is measured in gigabytes"
+            while IFS= read -r size
+            do
+                wrn "         $size"
+            done < <(du -hd 1 "$dir")
+        } > "$cache"
+    fi
+}
+
 function check_warnings() {
     local port
     local num_cores
@@ -79,6 +103,16 @@ function check_warnings() {
     twcfg.check_cfg
     mkdir -p lib/tmp
     mkdir -p lib/var
+    warn_dir_size bin &
+    warn_dir_size cfg &
+    warn_dir_size cnf &
+    warn_dir_size core_dumps &
+    warn_dir_size lib &
+    warn_dir_size logs &
+    warn_dir_size maps &
+    wait
+    touch ./lib/tmp/size_null.txt
+    cat ./lib/tmp/size_*.txt
     if [ -f failed_sql.sql ]
     then
         wrn "WARNING: file found 'failed_sql.sql'"
