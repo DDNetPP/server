@@ -85,3 +85,8 @@ function post_logs() {
     save_copy crashes.txt "$CFG_POST_LOGS_DIR"
 }
 
+function pre_loop_run() {
+    check_dir_size
+    restart_side_runner
+    archive_gmon
+}

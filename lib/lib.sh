@@ -72,8 +72,31 @@ function save_copy() {
     cp "$1" "$2"
 }
 
+function delete_files_except_latest() {
+    local dir="$1"
+    local num_keep="$2"
+    if [ ! -d "$dir" ]
+    then
+        return
+    fi
+    local num_files
+    num_files="$(find "$dir" | wc -l)"
+    num_files="$((num_files-2))"
+    if [ "$num_files" -lt "$num_keep" ]
+    then
+        return
+    fi
+    # https://stackoverflow.com/a/47593062
+    find "$dir" -type f -printf '%T@\t%p\n' |
+        sort -t $'\t' -g |
+        head -n -"$num_keep" |
+        cut -d $'\t' -f 2- |
+        xargs rm
+}
+
 function warn_dir_size() {
     local dir="$1"
+    local delete="$2"
     local size
     local cache=./lib/tmp/size_"$dir".txt
     if [ -f "$cache" ]
@@ -92,8 +115,36 @@ function warn_dir_size() {
             do
                 wrn "         $size"
             done < <(du -hd 1 "$dir")
+            local num_files
+            num_files="$(find "$dir" | wc -l)"
+            num_files="$((num_files-2))"
+            if [ "$delete" == "1" ] && is_cfg CFG_AUTO_CLEANUP_OLD_LOCAL_DATA
+            then
+                if [ "$num_files" -lt "5" ]
+                then
+                    wrn "CLEANUP:"
+                    wrn "         failed to cleanup! Latest 5 files alone are too big!"
+                    return
+                fi
+                log "CLEANUP:"
+                log "         removing all files from '$(tput bold)$dir$(tput sgr0)' except latest 5"
+                delete_files_except_latest "$dir" 5
+            fi
         } > "$cache"
     fi
+}
+
+function check_dir_size() {
+    warn_dir_size bin/backup 1 &
+    warn_dir_size cfg 0 &
+    warn_dir_size cnf 0 &
+    warn_dir_size core_dumps 1 &
+    warn_dir_size lib 0 &
+    warn_dir_size logs 0 &
+    warn_dir_size maps  0&
+    wait
+    touch ./lib/tmp/size_null.txt
+    cat ./lib/tmp/size_*.txt
 }
 
 function check_warnings() {
@@ -101,18 +152,9 @@ function check_warnings() {
     local num_cores
     check_server_dir
     twcfg.check_cfg
+    check_dir_size
     mkdir -p lib/tmp
     mkdir -p lib/var
-    warn_dir_size bin &
-    warn_dir_size cfg &
-    warn_dir_size cnf &
-    warn_dir_size core_dumps &
-    warn_dir_size lib &
-    warn_dir_size logs &
-    warn_dir_size maps &
-    wait
-    touch ./lib/tmp/size_null.txt
-    cat ./lib/tmp/size_*.txt
     if [ -f failed_sql.sql ]
     then
         wrn "WARNING: file found 'failed_sql.sql'"
@@ -122,7 +164,7 @@ function check_warnings() {
     then
         num_cores="$(find core_dumps/ | wc -l)"
         num_cores="$((num_cores - 1))"
-        if [ "$num_cores" != "" ] && [ "$num_cores" -gt "0" ]
+        if [ "$num_cores" != "" ] && [ "$num_cores" -gt "5" ]
         then
             wrn "WARNING: $num_cores core dumps found!"
             wrn "         ckeck core_dumps/ directory"
@@ -334,7 +376,6 @@ function check_logdir() {
 function check_deps() {
     check_gitpath
     check_logdir
-    check_warnings
 
     if [ "$CFG_SERVER_TYPE" == "teeworlds" ] && [ ! -f "$CFG_BIN" ]
     then

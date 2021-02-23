@@ -10,6 +10,7 @@ fi
 source lib/lib.sh
 
 check_deps
+check_warnings
 check_running
 install_dep gdb
 archive_gmon
