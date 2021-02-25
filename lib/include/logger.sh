@@ -10,6 +10,9 @@ function err() {
     then
         log_err "$2"
         echo -e "[${Red}error${Reset}] $2"
+    elif [ "$#" == 2 ] && [ "$1" == "-n" ]
+    then
+        echo -ne "[${Red}error${Reset}] $2"
     else
         echo -e "[${Red}error${Reset}] $1"
     fi
