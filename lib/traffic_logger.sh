@@ -2,6 +2,8 @@
 
 # TODO: make this a proper side runner that can be turned on and off in cnf
 
+mkdir -p logs/pcap
+
 while true
 do
     ./lib/network.sh --plain -t 3 src dst > logs/pcap/traffic.txt.tmp
