@@ -138,7 +138,7 @@ function cmake_update() {
     if [ "$arg_git_branch" != "" ]
     then
         log "checking out branch specified in cfg $arg_git_branch ..."
-        git add .. || exit 1
+        git add . || exit 1
         git reset --hard || exit 1
         git checkout "$arg_git_branch"
     fi
