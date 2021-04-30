@@ -141,6 +141,7 @@ function cmake_update() {
         git add . || exit 1
         git reset --hard || exit 1
         git checkout "$arg_git_branch"
+	git pull
     fi
     if [ "$arg_git_commit" != "" ]
     then
