@@ -1,6 +1,6 @@
 #!/bin/bash
 # F-DDrace accounts parser
-# https://github.com/fokkonaut/F-DDrace/blob/c620a26fe72dfd6ce749e270acfd3d6c9e7cd901/src/game/server/gamecontext.cpp#L4397-L4439
+# https://github.com/fokkonaut/F-DDrace/blob/79e3a5f49bd1efa59e34ffcbeb0cc62ee3fc8e0e/src/game/server/gamecontext.cpp#L4600-L4645
 
 if [ ! -f lib/lib.sh ]
 then
@@ -19,7 +19,7 @@ fi
 
 FDDR_PURGE_FILE="${FDDR_PURGE_FILE:-/tmp/fddr-purge.txt}"
 FDDR_ACC_PATH="${FDDR_ACC_PATH:-./accounts}"
-FDDR_NUM_LINES=42
+FDDR_NUM_LINES=45
 FDDR_MIN_NAME_LEN=3
 FDDR_MAX_NAME_LEN=20
 FDDR_MIN_PW_LEN=3
@@ -77,6 +77,9 @@ function fddr.reset_vars() {
     acc_taser_battery="0"
     acc_contact=""
     acc_timeout_code=""
+    acc_security_pin=""
+    acc_register_date=""
+    acc_last_login_date=""
 }
 
 function fddr.parse_account() {
@@ -177,6 +180,12 @@ function fddr.parse_account() {
             acc_contact="$line"
         elif [ "$linenum" == "42" ]; then
             acc_timeout_code="$line"
+        elif [ "$linenum" == "43" ]; then
+            acc_security_pin="$line"
+        elif [ "$linenum" == "44" ]; then
+            acc_register_date="$line"
+        elif [ "$linenum" == "45" ]; then
+            acc_last_login_date="$line"
         else
             err "Error: too many lines $linenum/$FDDR_NUM_LINES"
             err "       $acc_path"
@@ -245,6 +254,15 @@ function fddr.write_account() {
         linenum="$((linenum+1))"; echo "$acc_expiredate_vip"
         linenum="$((linenum+1))"; echo "$acc_portal_rifle"
         linenum="$((linenum+1))"; echo "$acc_expire_date_portal_rifle"
+        linenum="$((linenum+1))"; echo "$acc_version"
+        linenum="$((linenum+1))"; echo "$acc_addr"
+        linenum="$((linenum+1))"; echo "$acc_last_addr"
+        linenum="$((linenum+1))"; echo "$acc_taser_battery"
+        linenum="$((linenum+1))"; echo "$acc_contact"
+        linenum="$((linenum+1))"; echo "$acc_timeout_code"
+        linenum="$((linenum+1))"; echo "$acc_security_pin"
+        linenum="$((linenum+1))"; echo "$acc_register_date"
+        linenum="$((linenum+1))"; echo "$acc_last_login_date"
     } > "$file_path"
     if [ "$linenum" != "$FDDR_NUM_LINES" ]
     then
@@ -266,6 +284,7 @@ function fddr.print_account() {
     else
         echo "  password: **"
     fi
+    echo "  pin: $acc_security_pin"
     echo "  port: $acc_port loggedin: $acc_logged_in"
     echo "  clientID: $acc_client_id disabled: $acc_disabled"
     echo "  euros: $acc_euros vip: $acc_vip vip-expire: $acc_expiredate_vip"
@@ -273,6 +292,8 @@ function fddr.print_account() {
     echo "meta:"
     echo "  version: $acc_version"
     echo "  addr: $acc_addr last addr: $acc_last_addr"
+    echo "  register date: $acc_register_date"
+    echo "  last login date: $acc_last_login_date"
     echo "  contact: $acc_contact"
     echo "  timoutcode: $acc_timeout_code"
     echo "stats:"
@@ -359,6 +380,11 @@ function fddr.check_database() {
         if ! [[ "${acc_client_id}" =~ ^(-)?[0-9]{1,2}$ ]]
         then
             wrn "Invalid client id '$acc_client_id' $(basename "$acc_path")"
+            fddr_warnings="$((fddr_warnings+1))"
+        fi
+        if ! [[ "${acc_security_pin}" =~ ^[0-9]{4}$ ]]
+        then
+            wrn "Invalid security pin '$acc_security_pin' $(basename "$acc_path")"
             fddr_warnings="$((fddr_warnings+1))"
         fi
         # lines
