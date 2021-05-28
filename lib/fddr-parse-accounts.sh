@@ -23,7 +23,7 @@ FDDR_NUM_LINES=45
 FDDR_MIN_NAME_LEN=3
 FDDR_MAX_NAME_LEN=20
 FDDR_MIN_PW_LEN=3
-FDDR_MAX_PW_LEN=20
+FDDR_MAX_PW_LEN=128
 
 declare -A fddr_a_lines
 declare -A fddr_a_names
@@ -78,8 +78,8 @@ function fddr.reset_vars() {
     acc_contact=""
     acc_timeout_code=""
     acc_security_pin=""
-    acc_register_date=""
-    acc_last_login_date=""
+    acc_register_date="0"
+    acc_last_login_date="0"
 }
 
 function fddr.parse_account() {
@@ -382,9 +382,21 @@ function fddr.check_database() {
             wrn "Invalid client id '$acc_client_id' $(basename "$acc_path")"
             fddr_warnings="$((fddr_warnings+1))"
         fi
-        if ! [[ "${acc_security_pin}" =~ ^[0-9]{4}$ ]]
+        if [[ ! "${acc_security_pin}" =~ ^[0-9]{4}$ ]] && [[ "$acc_security_pin" != "" ]]
         then
             wrn "Invalid security pin '$acc_security_pin' $(basename "$acc_path")"
+            fddr_warnings="$((fddr_warnings+1))"
+        fi
+	# dates are unix epoche so the length of 10 will become invalid Saturday, November 20, 2286 5:46:40 PM
+	# in case someone wonders in 265 years why this breaks... just replace {10} with {10,11} :D
+        if [[ ! "${acc_register_date}" =~ ^[0-9]{10}$ ]] && [[ "${acc_register_date}" != "0" ]]
+        then
+            wrn "Invalid register date '$acc_register_date' $(basename "$acc_path")"
+            fddr_warnings="$((fddr_warnings+1))"
+        fi
+        if [[ ! "${acc_last_login_date}" =~ ^[0-9]{10}$ ]] && [[ "${acc_last_login_date}" != "0" ]]
+        then
+            wrn "Invalid last login date '$acc_last_login_date' $(basename "$acc_path")"
             fddr_warnings="$((fddr_warnings+1))"
         fi
         # lines
