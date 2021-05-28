@@ -12,7 +12,7 @@ _fddr-parse-accounts_list_accounts() {
 _fddr-parse-accounts_complete() {
     COMPREPLY=()
     local cur="${COMP_WORDS[COMP_CWORD]}"
-    local commands="show parse rewrite check get_var get_vars"
+    local commands="show show_vars parse rewrite check get_var get_vars filter"
     if [[ "$COMP_CWORD" -gt "1" ]]
     then
         case "${COMP_WORDS[1]}" in
@@ -22,6 +22,17 @@ _fddr-parse-accounts_complete() {
                     _fddr-parse-accounts_list_accounts "$cur"
                 else
                     _filedir
+                fi
+                ;;
+            show_vars)
+                if [ "$COMP_CWORD" -eq "2" ]
+                then
+                    _fddr-parse-accounts_list_accounts "$cur"
+                else
+                    for var in $(${COMP_WORDS[0]} get_vars)
+                    do
+                        COMPREPLY+=($(compgen -W "$var" -- "$cur"))
+                    done
                 fi
                 ;;
             get_var)

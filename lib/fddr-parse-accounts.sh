@@ -632,11 +632,11 @@ then
     echo "CMD:"
     tput sgr0
     echo "  show <account>"
-    echo "  show_vars <account> '<var..>'"
+    echo "  show_vars <account> <var..>"
     echo "  parse"
     echo "  rewrite"
     echo "  check"
-    echo "  get_var <var> <accounts..>"
+    echo "  get_var <var> <account..>"
     echo "  get_vars"
     echo "  filter 'variable operator value'"
     tput bold
@@ -692,7 +692,13 @@ then
 	fi
 	arg_name="$(basename "$1")"
 	shift
-	arg_vars="$1"
+	arg_vars=''
+	while [ "$#" -gt "1" ]
+	do
+		arg_vars+="$1 "
+		shift
+	done
+	arg_vars+="$1"
 	shift
 elif [ "$1" == "parse" ]
 then
