@@ -35,6 +35,17 @@ _fddr-parse-accounts_complete() {
                     done
                 fi
                 ;;
+            filter)
+                if [ "$COMP_CWORD" -eq "2" ]
+                then
+                    for var in $(${COMP_WORDS[0]} get_vars)
+                    do
+                        COMPREPLY+=($(compgen -W "'$var" -- "'$cur"))
+                    done
+                else
+                    _filedir
+                fi
+                ;;
             get_var)
                 if [ "$COMP_CWORD" -gt "2" ]
                 then

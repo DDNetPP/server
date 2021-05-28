@@ -638,7 +638,7 @@ then
     echo "  check"
     echo "  get_var <var> <account..>"
     echo "  get_vars"
-    echo "  filter 'variable operator value'"
+    echo "  filter 'variable operator value' ['show <var..>']"
     tput bold
     echo "ENV:"
     tput sgr0
