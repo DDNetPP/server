@@ -683,17 +683,17 @@ then
     shift
 elif [ "$1" == "show_vars" ]
 then
-    shift
-    fddr_cmd=show_vars
-    if [ "$1" == "" ]
-    then
-        echo "Usage: $(basename "$0") show_vars <account> <var..>"
-        exit 1
-    fi
-    arg_name="$(basename "$1")"
-    shift
-    arg_vars="$1"
-    shift
+	shift
+	fddr_cmd=show_vars
+	if [ "$1" == "" ]
+	then
+		echo "Usage: $(basename "$0") show_vars <account> <var..>"
+		exit 1
+	fi
+	arg_name="$(basename "$1")"
+	shift
+	arg_vars="$1"
+	shift
 elif [ "$1" == "parse" ]
 then
     shift
