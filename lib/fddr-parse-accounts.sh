@@ -17,6 +17,29 @@ then
     exit 1
 fi
 
+if [ ! -f /usr/share/bash-completion/completions/fddr-parse-accounts.sh ]
+then
+	if [ -f ./lib/completions/fddr-parse-accounts.sh.bash.completion ]
+	then
+		log "installing bash completion ..."
+		if [ "$UID" == "0" ]
+		then
+			cp \
+				./lib/completions/fddr-parse-accounts.sh.bash.completion \
+				/usr/share/bash-completion/completions/fddr-parse-accounts.sh
+		elif [ -x "$(command -v sudo)" ]
+		then
+			sudo cp \
+				./lib/completions/fddr-parse-accounts.sh.bash.completion \
+				/usr/share/bash-completion/completions/fddr-parse-accounts.sh
+		else
+			wrn "missing permission to install completion"
+		fi
+	else
+		wrn "bash completion not found"
+	fi
+fi
+
 FDDR_PURGE_FILE="${FDDR_PURGE_FILE:-/tmp/fddr-purge.txt}"
 FDDR_ACC_PATH="${FDDR_ACC_PATH:-./accounts}"
 FDDR_NUM_LINES=45
