@@ -35,6 +35,7 @@ aSettStr+=("env_build");aSettVal+=("");aSettValid+=('')
 aSettStr+=("env_runtime");aSettVal+=("");aSettValid+=('')
 aSettStr+=("logfile_extension");aSettVal+=(".log");aSettValid+=('')
 aSettStr+=("auto_cleanup_old_local_data");aSettVal+=("0");aSettValid+=('(0|no|off|false|1|yes|on|true)')
+aSettStr+=("gitpath_antibot");aSettVal+=("");aSettValid+=('')
 
 function create_settings() {
     if [ -f $current_settings_file ];
@@ -227,6 +228,7 @@ read_settings_file "$current_settings_file"
 # - env runtime         24
 # - log extension       25
 # - auto cleanup old    26
+# - gitpath antibot     27
 
 export CFG_GIT_ROOT="${aSettVal[0]}"
 export CFG_GIT_PATH_MOD="${aSettVal[1]}"
@@ -258,6 +260,7 @@ export CFG_ENV_BUILD="${aSettVal[23]}"
 export CFG_ENV_RUNTIME="${aSettVal[24]}"
 export CFG_LOG_EXT="${aSettVal[25]}"
 export CFG_AUTO_CLEANUP_OLD_LOCAL_DATA="${aSettVal[26]}"
+export CFG_GITPATH_ANTIBOT="${aSettVal[27]}"
 
 if [ "$CFG_SERVER_TYPE" == "tem" ]
 then

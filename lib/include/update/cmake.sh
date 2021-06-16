@@ -148,6 +148,16 @@ function cmake_update() {
         log "checking out commit specified in cfg $arg_git_commit ..."
         git checkout "$arg_git_commit"
     fi
+    if [ "$CFG_GITPATH_ANTIBOT" != "" ]
+    then
+        log "patching antibot ..."
+        (
+            cd "$CFG_GITPATH_ANTIBOT" || exit 1
+            git pull
+        )
+        cp "$CFG_GITPATH_ANTIBOT"/*.h src/antibot/
+        cp "$CFG_GITPATH_ANTIBOT"/*.cpp src/antibot/
+    fi
     bin_commit="$(git rev-parse HEAD)"
     mkdir -p build || { err "Error: creating dir build/"; exit 1; }
     cd build || { err "Could not enter build/ directory"; exit 1; }
@@ -163,6 +173,12 @@ function cmake_update() {
         git add .. || exit 1
         git reset --hard || exit 1
         git checkout "$current_branch"
+    fi
+    if [ "$CFG_GITPATH_ANTIBOT" != "" ]
+    then
+        log "cleaning up antibot patch ..."
+        git add ../src/antibot
+        git reset --hard HEAD
     fi
     if [ ! -f "$arg_compiled_bin" ]
     then
