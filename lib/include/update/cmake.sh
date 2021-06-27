@@ -179,6 +179,11 @@ function cmake_update() {
         log "cleaning up antibot patch ..."
         git add ../src/antibot
         git reset --hard HEAD
+	if [ -f "$CFG_GITPATH_ANTIBOT"/libantibot.so ]
+	then
+		log "move libantibot.so ..."
+		cp "$CFG_GITPATH_ANTIBOT"/libantibot.so .
+	fi
     fi
     if [ ! -f "$arg_compiled_bin" ]
     then
