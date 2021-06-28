@@ -36,3 +36,5 @@ jobs:
       - name: Unit tests
         run: ./lib/run_tests.sh
 
+      - name: Integration tests
+        run: ./lib/test/integration_test.sh
