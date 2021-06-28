@@ -19,7 +19,7 @@ jobs:
         run: sudo apt-get install -y shellcheck figlet screen expect gdb
 
       - name: Shellcheck
-        run: find . -type f -name "*.sh" -exec shellcheck -x {} \;
+        run: find . -type f -name '*.sh' -print0 | xargs -0 shellcheck
 
       - name: Minimal setup
         run: |
