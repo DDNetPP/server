@@ -36,6 +36,6 @@ read -rd '' sql << EOF
     ('$MapName','$SrvType','$Mapper',$((Points)),$((Stars)),'$(get_date)'); 
 EOF
 
-echo "$sql" | mysql -u bbnet -p$1 bbnet
+echo "$sql" | mysql -u bbnet -p"$1" bbnet
 ./lib/list_maps.sh "$1"
 

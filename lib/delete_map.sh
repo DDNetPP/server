@@ -27,6 +27,6 @@ read -rd '' sql << EOF
     DELETE FROM \`record_maps\` WHERE Map = '$MapName';
 EOF
 
-echo "$sql" | mysql -u bbnet -p$1 bbnet
+echo "$sql" | mysql -u bbnet -p"$1" bbnet
 ./lib/list_maps.sh "$1"
 

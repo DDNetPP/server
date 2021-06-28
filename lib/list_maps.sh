@@ -7,5 +7,5 @@ then
     exit
 fi
 
-echo "SELECT * FROM record_maps;" | mysql -u bbnet -p$1 bbnet
+echo "SELECT * FROM record_maps;" | mysql -u bbnet -p"$1" bbnet
 

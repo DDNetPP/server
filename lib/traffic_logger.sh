@@ -6,8 +6,8 @@ LOGFILE="${1:-logs/traffic.txt}"
 
 while true
 do
-    ./lib/network.sh --plain -t 3 src dst > "$LOGFILE".tmp
-    cp "$LOGFILE".tmp "$LOGFILE"
-    sleep 1
+	./lib/network.sh --plain -t 3 src dst > "$LOGFILE".tmp
+	cp "$LOGFILE".tmp "$LOGFILE"
+	sleep 1
 done
 

@@ -2,8 +2,8 @@
 
 function callback_editor() {
     local file="$1"
-    local editor="$2"
-    eval "$editor $file"
+    local _editor="$2"
+    eval "$_editor $file"
 }
 
 function edit_file() {
