@@ -151,7 +151,7 @@ then
     exit 1
 fi
 
-./update.sh > "$p/raw_build.txt"
+./update.sh &> "$p/raw_build.txt"
 if is_cfg CFG_CSTD
 then
     url="$(cstd "$p/raw_build.txt")"
