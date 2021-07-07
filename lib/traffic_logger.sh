@@ -12,7 +12,7 @@ fi
 source lib/lib.sh
 
 LOGFILE="${1:-logs/traffic.txt}"
-CHECK_DDOS_INTERVAL=-1
+CHECK_DDOS_INTERVAL=1
 DDOS_TRESHOLD=6
 
 current_interval=0
@@ -31,13 +31,33 @@ function log_ddos() {
 	then
 		return
 	fi
-	server_ip=#TODO: get server ip from bindaddr or fallback to hostname -i
-	server_port=#TODO
+	server_ip="$(get_tw_config bindaddr 127.0.0.1)"
+	server_port="$(get_tw_config sv_port 8303)"
+	if [ "$server_ip" == "127.0.0.1" ]
+	then
+		if [ ! "$(command -v hostname)" ]
+		then
+			err "Error: command $(tput bold)hostname$(tput sgr0) not found"
+			err "	    could not determine ip address"
+			return
+		fi
+		server_ip="$(hostname -i)"
+	fi
+	if [ "$server_ip" == "" ]
+	then
+		err "could not determine ip address"
+		return
+	fi
 	lines="$(sed '1,/^KEYWORD$/d' "$logfile" | wc -l)"
 	players="$(
 		curl https://master1.ddnet.tw/ddnet/15/servers.json |
 		jq ".[][] | select(.addresses[0] == \"tw-0.6+udp://$server_ip:$server_port\").info.clients | length"
 	)" || { wrn "could not fetch server info"; return; }
+	if [ "$players" == "" ]
+	then
+		wrn "could not fetch server info"
+		return
+	fi
 	if [ "$((lines-DDOS_TRESHOLD))" -gt "$players" ]
 	then
 		log "ddos detected players=$players ips=$lines"
@@ -47,7 +67,7 @@ function log_ddos() {
 			cat "$logfile"
 		} > "$ddos_log"
 	fi
-	log "check ddos players=$players ips=$lines"
+	log "check ddos players=$players ips=$lines (treshold=$DDOS_TRESHOLD)"
 }
 
 while true
@@ -55,7 +75,7 @@ do
 	./lib/network.sh --plain -t 3 src dst > "$LOGFILE".tmp
 	cp "$LOGFILE".tmp "$LOGFILE"
 	current_interval="$((current_interval+1))"
-	if [ "$current_interval" -gt "$CHECK_DDOS_INTERVAL" ]
+	if [ "$current_interval" -ge "$CHECK_DDOS_INTERVAL" ]
 	then
 		log_ddos "$LOGFILE"
 		current_interval=0
