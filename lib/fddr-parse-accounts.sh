@@ -349,6 +349,8 @@ function fddr.get_var() {
 
 function fddr.get_vars() {
     fddr.reset_vars
+    # TODO: remove shellcheck magic comment when github actions updated
+    # shellcheck disable=SC2154
     for var in "${!acc_@}"
     do
         echo "$var"
