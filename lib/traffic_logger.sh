@@ -50,7 +50,7 @@ function log_ddos() {
 	then
 		return
 	fi
-	lines="$(sed '1,/^KEYWORD$/d' "$logfile" | wc -l)"
+	lines="$(sed '1,/^DESTINATION$/d' "$logfile" | wc -l)"
 	players="$(
 		curl https://master1.ddnet.tw/ddnet/15/servers.json |
 		jq ".[][] | select(.addresses[0] == \"tw-0.6+udp://$server_ip:$server_port\").info.clients | length"
