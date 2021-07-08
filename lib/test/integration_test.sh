@@ -141,6 +141,23 @@ function test_loop_gdb() {
 	# TODO: run the server and check if it restarts
 }
 
+function test_status_size_check() {
+	create_server "status_size"
+	mkdir -p logs/ddos
+	local x
+	for x in {1..150}
+	do
+		head -c 10MB /dev/urandom > logs/ddos/ddos_"$x".txtA
+	done
+	echo 'auto_cleanup_old_local_data=1' >> server.cnf
+	./status.sh
+	if ./status.sh | grep -q WARNING
+	then
+		echo "Error: ./status.sh threw a WARNING"
+		fail
+	fi
+}
+
 function create_server() {
 	if [ "$#" != "1" ]
 	then
@@ -166,6 +183,7 @@ function create_server() {
 
 test_exec_all_servers
 test_loop_gdb
+test_status_size_check
 
 clear_testdir
 
