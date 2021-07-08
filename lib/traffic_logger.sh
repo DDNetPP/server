@@ -42,6 +42,20 @@ fi
 
 mkdir -p logs/ddos
 
+function post_log() {
+	if [ "$CFG_POST_LOGS_DIR" == "" ]
+	then
+		return
+	fi
+	local logfile
+	logfile="$1"
+	log "copying logs to $CFG_POST_LOGS_DIR"
+	{
+		echo "$logfile"
+		cat "$logfile"
+	} > "$CFG_POST_LOGS_DIR"/ddos.txt
+}
+
 function log_ddos() {
 	local logfile
 	local lines
@@ -78,6 +92,7 @@ function log_ddos() {
 			echo "$player_ips" | awk '{ print "\t" $1 }'
 			cat "$logfile"
 		} > "$ddos_log"
+		post_log "$ddos_log"
 	fi
 	log "check ddos players=$players ips=$lines (treshold=$DDOS_TRESHOLD)"
 }
