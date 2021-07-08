@@ -26,7 +26,7 @@ function get_player_ips() {
 	# subshell to swallow all background process messages
 	(
 		./lib/econ-output.exp \
-			localhost \
+			"$(get_tw_config ec_bindaddr localhost)" \
 			"$(get_tw_config ec_port 8303)" \
 			"$(get_tw_config ec_password pass)" \
 			status \
