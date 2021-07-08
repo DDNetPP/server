@@ -120,7 +120,7 @@ function warn_dir_size() {
     local dir="$1"
     local delete="$2"
     local size
-    local cache=./lib/tmp/size_"$dir".txt
+    local cache=./lib/tmp/size_"${dir//\//_}".txt
     if [ -f "$cache" ]
     then
         rm "$cache"
@@ -162,6 +162,7 @@ function check_dir_size() {
     warn_dir_size cnf 0 &
     warn_dir_size core_dumps 1 &
     warn_dir_size lib 0 &
+    warn_dir_size logs/ddos 1 &
     warn_dir_size logs 0 &
     warn_dir_size maps  0&
     wait
