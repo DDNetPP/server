@@ -35,6 +35,7 @@ function get_player_ips() {
 		sleep 3
 		pkill -f "id=$kill_id"
 	) &> /dev/null
+	# shellcheck disable=SC2016
 	rg --color never -No ': id=.* addr=<\{(.*):.*\}>' -r '$1' lib/tmp/status_"$USER".txt
 }
 
