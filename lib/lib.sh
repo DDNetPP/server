@@ -31,11 +31,11 @@ function get_player_ips() {
 			"$(get_tw_config ec_password pass)" \
 			status \
 			id="$kill_id" | \
-			strings > lib/tmp/status.txt &
+			strings > lib/tmp/status_"$USER".txt &
 		sleep 3
 		pkill -f "id=$kill_id"
 	) &> /dev/null
-	rg --color never -No ': id=.* addr=<\{(.*):.*\}>' -r '$1' lib/tmp/status.txt
+	rg --color never -No ': id=.* addr=<\{(.*):.*\}>' -r '$1' lib/tmp/status_"$USER".txt
 }
 
 function del_file() {
