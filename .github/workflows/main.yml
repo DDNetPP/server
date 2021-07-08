@@ -32,6 +32,9 @@ jobs:
             echo "editor=touch"
           } > server.cnf
           mkdir -p /home/$USER/.teeworlds/dumps/TeeworldsLogs/test-srv/logs
+          git config --global user.email "you@example.com"
+          git config --global user.name "Your Name"
+          git config --global init.defaultBranch master
 
       - name: Unit tests
         run: ./lib/run_tests.sh
