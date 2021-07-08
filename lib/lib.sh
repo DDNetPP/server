@@ -16,6 +16,28 @@ source lib/include/git.sh
 source lib/include/logs.sh
 source lib/include/screen.sh
 
+function get_player_ips() {
+	if [ ! "$(command -v rg)" ]
+	then
+		return
+	fi
+	local kill_id
+	kill_id="$(od -xN16 /dev/urandom | awk -v OFS=- '{print $2$3,$4,$5,$6,$7$8$9; exit}')"
+	# subshell to swallow all background process messages
+	(
+		./lib/econ-output.exp \
+			localhost \
+			"$(get_tw_config ec_port 8303)" \
+			"$(get_tw_config ec_password pass)" \
+			status \
+			id="$kill_id" | \
+			strings > lib/tmp/status.txt &
+		sleep 3
+		pkill -f "id=$kill_id"
+	) &> /dev/null
+	rg --color never -No ': id=.* addr=<\{(.*):.*\}>' -r '$1' lib/tmp/status.txt
+}
+
 function del_file() {
     local file="$1"
     if [ -f "$file" ]
