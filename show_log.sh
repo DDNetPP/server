@@ -20,8 +20,13 @@ do
 		echo "options:"
 		echo "  -h          show this help"
 		echo "  -f          follows log using tail -f"
+		echo "	--tem	    ignore logname when used as TeeworldsEconMod input"
 		echo "  logname     directory in ./logs/logname for local log types"
 		exit 0
+	elif [ "$arg" == "--tem" ]
+	then
+		follow=-f
+		break
 	elif [ "$arg" == "-f" ]
 	then
 		follow=-f
