@@ -105,7 +105,7 @@ do
         figlet "$d"
         echo -e "navigating to: \\033[1m$(pwd)\\033[0m"
         echo -e "executing: \\033[1m$shell_command\\033[0m"
-        $shell_command || handle_error
+        eval "$shell_command" || handle_error
     )
 done
 
