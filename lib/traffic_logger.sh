@@ -104,7 +104,10 @@ do
 	current_interval="$((current_interval+1))"
 	if [ "$current_interval" -ge "$CHECK_DDOS_INTERVAL" ]
 	then
-		# log_ddos "$LOGFILE"
+		if is_cfg CFG_LOG_DDOS
+		then
+			log_ddos "$LOGFILE"
+		fi
 		current_interval=0
 	fi
 	sleep 1

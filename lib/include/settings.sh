@@ -36,6 +36,7 @@ aSettStr+=("env_runtime");aSettVal+=("");aSettValid+=('')
 aSettStr+=("logfile_extension");aSettVal+=(".log");aSettValid+=('')
 aSettStr+=("auto_cleanup_old_local_data");aSettVal+=("0");aSettValid+=('(0|no|off|false|1|yes|on|true)')
 aSettStr+=("gitpath_antibot");aSettVal+=("");aSettValid+=('')
+aSettStr+=("log_ddos");aSettVal+=("0");aSettValid+=('(0|no|off|false|1|yes|on|true)')
 
 function create_settings() {
     if [ -f $current_settings_file ];
@@ -201,34 +202,35 @@ create_settings # create fresh if null
 read_settings_file "$current_settings_file"
 
 # Settings:
-# - git root            0
-# - gitpath mod         1
-# - gitpath bot         2
-# - gitpath log         3
-# - server name         4
-# - teeworlds bin name  5
-# - bot bin name        6
-# - cmake flags         7
-# - error logs          8
-# - error logs api      9
-# - editor              10
-# - gdb commands        11
-# - gdb dump core       12
-# - use cstd paste      13
-# - post logs dir       14
-# - git force pull      15
-# - test run            16
-# - test run port       17
-# - git commit          18
-# - git branch          19
-# - server type         20
-# - tem settings        21
-# - tem path            22
-# - env build           23
-# - env runtime         24
-# - log extension       25
-# - auto cleanup old    26
-# - gitpath antibot     27
+# - git root		0
+# - gitpath mod		1
+# - gitpath bot		2
+# - gitpath log		3
+# - server name		4
+# - teeworlds bin name	5
+# - bot bin name	6
+# - cmake flags		7
+# - error logs		8
+# - error logs api	9
+# - editor		10
+# - gdb commands	11
+# - gdb dump core	12
+# - use cstd paste	13
+# - post logs dir	14
+# - git force pull	15
+# - test run		16
+# - test run port	17
+# - git commit		18
+# - git branch		19
+# - server type		20
+# - tem settings	21
+# - tem path		22
+# - env build		23
+# - env runtime		24
+# - log extension	25
+# - auto cleanup old	26
+# - gitpath antibot	27
+# - log ddos		28
 
 export CFG_GIT_ROOT="${aSettVal[0]}"
 export CFG_GIT_PATH_MOD="${aSettVal[1]}"
@@ -261,6 +263,7 @@ export CFG_ENV_RUNTIME="${aSettVal[24]}"
 export CFG_LOG_EXT="${aSettVal[25]}"
 export CFG_AUTO_CLEANUP_OLD_LOCAL_DATA="${aSettVal[26]}"
 export CFG_GITPATH_ANTIBOT="${aSettVal[27]}"
+export CFG_LOG_DDOS="${aSettVal[28]}"
 
 if [ "$CFG_SERVER_TYPE" == "tem" ]
 then
