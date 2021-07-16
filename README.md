@@ -1,5 +1,5 @@
 # server
-A template repo for the actual server.
+Scripts to run production teeworlds servers.
 
 ## Setup
 
