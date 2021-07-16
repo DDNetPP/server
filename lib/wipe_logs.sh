@@ -26,7 +26,8 @@ elif [ "$1" == "--all" ] || [ "$1" == "-a" ]
 then
 	./lib/exec_all_servers.sh "./lib/$(basename "$0")"
 	exit 0
-else
+elif [ "$#" -gt "0" ]
+then
 	show_help
 	exit 1
 fi
@@ -56,18 +57,19 @@ function wipe_tw_logs() {
 	max_height="$((max_height-10))"
 	for logfile in "$LOGS_PATH_FULL/"*
 	do
+		if [ "$size" -gt "150" ]
+		then
+			continue
+		fi
 		log " <===> $(tput bold)$(basename "$(pwd)")$(tput sgr0) <===>"
 		size="$(wc -l "$logfile" | cut -d' ' -f1)"
-		if [ "$size" -lt "150" ]
+		if [ "$size" -gt "$max_height" ]
 		then
-			if [ "$size" -gt "$max_height" ]
-			then
-				head -n "$((max_height/2))" "$logfile"
-				echo "[..]"
-				tail -n "$((max_height/2))" "$logfile"
-			else
-				cat "$logfile"
-			fi
+			head -n "$((max_height/2))" "$logfile"
+			echo "[..]"
+			tail -n "$((max_height/2))" "$logfile"
+		else
+			cat "$logfile"
 		fi
 		log "delete $logfile? [y/N]"
 		yn=""
