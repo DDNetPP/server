@@ -97,10 +97,36 @@ function log_ddos() {
 	log "check ddos players=$players ips=$lines (treshold=$DDOS_TRESHOLD)"
 }
 
+function show_known_ips() {
+	local logfile="$1"
+	local ip_db="$2"
+	local line
+	local ip
+	if [ ! -f "$ip_db" ]
+	then
+		return
+	fi
+	while read -r line
+	do
+		if [ "$(echo "$line" | xargs)" == "" ]
+		then
+			continue
+		fi
+		ip="$(echo "$line" | cut -d' ' -f1)"
+		# TODO: get this IO out of the loop
+		# this is possible thousands of IO calls per function call
+		sed "s/$ip/$line/" "$logfile" > "$logfile".tmp
+		mv "$logfile".tmp "$logfile"
+	done < "$ip_db"
+
+}
+
 while true
 do
 	./lib/network.sh --plain -t 3 src dst > "$LOGFILE".tmp
 	cp "$LOGFILE".tmp "$LOGFILE"
+	show_known_ips "$LOGFILE" ./lib/known_ips.txt
+	show_known_ips "$LOGFILE" ./lib/data/known_ips.txt
 	current_interval="$((current_interval+1))"
 	if [ "$current_interval" -ge "$CHECK_DDOS_INTERVAL" ]
 	then
