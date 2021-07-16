@@ -175,7 +175,7 @@ function check_warnings() {
     local port
     local num_cores
     check_server_dir
-    twcfg.check_cfg
+    twcfg.check_cfg_full
     check_dir_size
     mkdir -p lib/tmp
     mkdir -p lib/var
@@ -207,7 +207,6 @@ function check_warnings() {
             wrn ""
         fi
     fi
-    twcfg.include_exec "autoexec.cfg" > lib/tmp/compiled.cfg
     port="$(wc -l < <(grep '^sv_port ' lib/tmp/compiled.cfg))"
     if [ "$port" != "" ] && [ "$port" -gt "1" ]
     then

@@ -3,6 +3,36 @@
 twcfg_line=0
 twcfg_last_line="firstline"
 
+function tw_configs() {
+	local flag="$1"
+	local line
+	grep -r "MACRO_CONFIG_.*CFGFLAG_$flag" src/ --include={variables.h,config_variables.h} | LC_ALL=C sort | while IFS= read -r line
+	do
+		line="$(echo "$line" | cut -d'(' -f2 | cut -d',' -f2)"
+		echo "${line:1}"
+	done
+}
+
+function tw_commands() {
+	local flag="$1"
+	local line
+	grep -roh "Register(\".*CFGFLAG_$flag" src/ | LC_ALL=C sort | while IFS= read -r line
+	do
+		line="$(echo "$line" | cut -d'(' -f2 | cut -d'"' -f2)"
+		echo "$line"
+	done
+}
+
+function generate_tw_syntax() {
+	(
+		cd "$CFG_GIT_PATH_MOD" || exit 1
+		tw_configs CLIENT
+		tw_configs SERVER
+		tw_commands CLIENT
+		tw_commands SERVER
+	) > lib/tmp/mod_syntax.cfg
+}
+
 function add_cfg_template() {
 	local cfg_type
 	cfg_type=$1
@@ -60,6 +90,10 @@ function select_cfg_template() {
 	done
 }
 
+function twcfg.check_cfg_full() {
+	twcfg.check_cfg
+	twcfg.check_syntax
+}
 
 function twcfg.check_cfg() {
 	if [ ! -f autoexec.cfg ]
@@ -79,8 +113,47 @@ function twcfg.check_cfg() {
 	fi
 }
 
+function twcfg.check_syntax() {
+	twcfg_line=0
+	generate_tw_syntax
+	twcfg.include_exec "autoexec.cfg" --check-syntax
+}
+
+function twcfg.check_syntax_line() {
+	local line="$1"
+	local line_num="$2"
+	local config_file="$3"
+	local key
+	if [ ! -f lib/tmp/mod_syntax.cfg ]
+	then
+		return
+	fi
+	key="$(echo "$line" | cut -d' ' -f1 | xargs)"
+	# value="$(echo "$line" | cut -d' ' -f2- | xargs)"
+	# echo "key='$key' value='$value'"
+	if [ "$key" == "" ] || [ "${key::1}" == "#" ]
+	then
+		return
+	fi
+	if grep -q "^$key$" lib/tmp/mod_syntax.cfg
+	then
+		return
+	fi
+	err "Error: syntax error in $(tput bold)$config_file:$line_num$(tput sgr0)"
+	err ""
+	err "       $line"
+	err -n "       "
+	for ((i=0;i<${#key};i++))
+	do
+		printf '^'
+	done
+	printf '\n'
+	err "       invalid config/command not found in the mod code"
+}
+
 function twcfg.include_exec() {
 	local config="$1"
+	local check_syntax="$2"
 	twcfg.check_cfg
 	if [ ! -f "$config" ]
 	then
@@ -89,14 +162,21 @@ function twcfg.include_exec() {
 		err "  file not found: $config" >&2
 		exit 1
 	fi
+	# shellcheck disable=SC2094
+	# https://github.com/koalaman/shellcheck/issues/1368
 	while read -r line
 	do
 		twcfg_last_line="$line"
 		if [[ "$line" =~ ^exec\ \"?(.*\.cfg) ]]
 		then
-			twcfg.include_exec "${BASH_REMATCH[1]}"
+			twcfg.include_exec "${BASH_REMATCH[1]}" "$check_syntax"
 		else
-			echo "$line"
+			if [ "$check_syntax" != "" ]
+			then
+				twcfg.check_syntax_line "$line" "$twcfg_line" "$config"
+			else
+				echo "$line"
+			fi
 		fi
 		twcfg_line="$((twcfg_line + 1))"
 	done < "$config"
