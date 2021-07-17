@@ -4,12 +4,18 @@ twcfg_line=0
 twcfg_last_line="firstline"
 
 function tw_configs() {
-	local flag="$1"
+	local flag
 	local line
-	grep -r "MACRO_CONFIG_.*CFGFLAG_$flag" src/ --include={variables.h,config_variables.h} | LC_ALL=C sort | while IFS= read -r line
+	for flag in "$@"
 	do
-		line="$(echo "$line" | cut -d'(' -f2 | cut -d',' -f2)"
-		echo "${line:1}"
+		grep -r "MACRO_CONFIG_.*CFGFLAG_$flag" \
+			src/ \
+			--include={variables.h,config_variables.h} |
+			LC_ALL=C sort | while IFS= read -r line
+		do
+			line="$(echo "$line" | cut -d'(' -f2 | cut -d',' -f2)"
+			echo "${line:1}"
+		done
 	done
 }
 
@@ -26,8 +32,7 @@ function tw_commands() {
 function generate_tw_syntax() {
 	(
 		cd "$CFG_GIT_PATH_MOD" || exit 1
-		tw_configs CLIENT
-		tw_configs SERVER
+		tw_configs CLIENT SERVER ECON
 		tw_commands CLIENT
 		tw_commands SERVER
 	) > lib/tmp/mod_syntax.cfg
