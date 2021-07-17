@@ -7,10 +7,14 @@
 SID_FILE=lib/var/.server_id
 OLD_SID_FILE=lib/.server_id # backwards compability
 
+function generate_uuid() {
+	od -xN16 /dev/urandom | awk -v OFS=- '{print $2$3,$4,$5,$6,$7$8$9; exit}'
+}
+
 function generate_sid() {
-    server_id="$(od -xN16 /dev/urandom | awk -v OFS=- '{print $2$3,$4,$5,$6,$7$8$9; exit}')"
-    echo "$server_id" > "$SID_FILE"
-    log "generated new server UUID '$server_id'"
+	server_id="$(generate_uuid)"
+	echo "$server_id" > "$SID_FILE"
+	log "generated new server UUID '$server_id'"
 }
 
 function get_sid() {

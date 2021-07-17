@@ -26,6 +26,20 @@ do
 	elif [ "$arg" == "--tem" ]
 	then
 		follow=-f
+		uuid="$(generate_uuid)"
+		current_file="$(get_latest_logfile)"
+		show_latest_log "$follow" "$logpath" --id="$uuid" &
+		while true
+		do
+			if [ "$current_file" != "$(get_latest_logfile)" ]
+			then
+				pkill -f "--id=$uuid"
+				pkill -f "tail.*$current_file"
+				current_file="$(get_latest_logfile)"
+				show_latest_log "$follow" "$logpath" --id="$uuid" &
+			fi
+			sleep 1
+		done
 		break
 	elif [ "$arg" == "-f" ]
 	then
