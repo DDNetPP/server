@@ -52,7 +52,6 @@ function show_latest_log() {
 	# path to use custom log dir instead of cfg gitpath
 	local arg
 	local arg_follow=0
-	local arg_id
 	local logpath
 	logpath="$LOGS_PATH_FULL"
 	for arg in "$@"
