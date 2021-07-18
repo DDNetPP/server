@@ -27,6 +27,7 @@ status.txt
 chillerbotFC_*
 lib/tmp
 lib/var
+lib/plugins
 bin/
 cfg/
 votes/
