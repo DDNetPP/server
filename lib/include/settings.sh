@@ -37,6 +37,7 @@ aSettStr+=("logfile_extension");aSettVal+=(".log");aSettValid+=('')
 aSettStr+=("auto_cleanup_old_local_data");aSettVal+=("0");aSettValid+=('(0|no|off|false|1|yes|on|true)')
 aSettStr+=("gitpath_antibot");aSettVal+=("");aSettValid+=('')
 aSettStr+=("log_ddos");aSettVal+=("0");aSettValid+=('(0|no|off|false|1|yes|on|true)')
+aSettStr+=("unix_user");aSettVal+=("$USER");aSettValid+=('')
 
 function create_settings() {
     if [ -f $current_settings_file ];
@@ -231,6 +232,7 @@ read_settings_file "$current_settings_file"
 # - auto cleanup old	26
 # - gitpath antibot	27
 # - log ddos		28
+# - unix user		29
 
 export CFG_GIT_ROOT="${aSettVal[0]}"
 export CFG_GIT_PATH_MOD="${aSettVal[1]}"
@@ -264,6 +266,7 @@ export CFG_LOG_EXT="${aSettVal[25]}"
 export CFG_AUTO_CLEANUP_OLD_LOCAL_DATA="${aSettVal[26]}"
 export CFG_GITPATH_ANTIBOT="${aSettVal[27]}"
 export CFG_LOG_DDOS="${aSettVal[28]}"
+export CFG_UNIX_USER="${aSettVal[29]}"
 
 if [ "$CFG_SERVER_TYPE" == "tem" ]
 then
