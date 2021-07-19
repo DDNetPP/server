@@ -5,39 +5,61 @@ shopt -s extglob # used for trailing slashes globbing
 aSettingsFiles=()
 current_settings_file="server.cnf"
 line_num=0
-aSettStr=();aSettVal=();aSettValid=()
-aSettStr+=("git_root");aSettVal+=("/home/$USER/git");aSettValid+=('')
-aSettStr+=("gitpath_mod");aSettVal+=("/home/$USER/git/mod");aSettValid+=('')
-aSettStr+=("gitpath_bot");aSettVal+=("/home/$USER/git/chillerbot-h7");aSettValid+=('')
-aSettStr+=("gitpath_log");aSettVal+=("/home/$USER/.teeworlds/dumps/TeeworldsLogs");aSettValid+=('')
-aSettStr+=("server_name");aSettVal+=("teeworlds");aSettValid+=('')
-aSettStr+=("compiled_teeworlds_name");aSettVal+=("teeworlds_srv");aSettValid+=('')
-aSettStr+=("compiled_bot_name");aSettVal+=("chillerbot-z7");aSettValid+=('')
-aSettStr+=("cmake_flags");aSettVal+=("-DCMAKE_BUILD_TYPE=Debug");aSettValid+=('')
-aSettStr+=("error_logs");aSettVal+=("1");aSettValid+=('(0|1|2)') # 0=off 1=no duplicates 2=duplicates
-# aSettStr+=("error_logs_api");aSettVal+=("curl -d \"{\\\"err\\\":\\\"\$err\\\"}\" -H 'Content-Type: application/json' http://localhost:80/api")
-aSettStr+=("error_logs_api");aSettVal+=("test");aSettValid+=('')
-aSettStr+=("editor");aSettVal+=("");aSettValid+=('')
-aSettStr+=("gdb_cmds");aSettVal+=("");aSettValid+=('')
-aSettStr+=("gdb_dump_core");aSettVal+=("0");aSettValid+=('(0|no|off|false|1|yes|on|true)')
-# aSettStr+=("is_debug");aSettVal+=("1");aSettValid+=('')
-aSettStr+=("cstd");aSettVal+=("0");aSettValid+=('(0|no|off|false|1|yes|on|true)')
-aSettStr+=("post_logs_dir");aSettVal+=("");aSettValid+=('')
-aSettStr+=("git_force_pull");aSettVal+=("0");aSettValid+=('(0|no|off|false|1|yes|on|true)')
-aSettStr+=("test_run");aSettVal+=("0");aSettValid+=('(0|no|off|false|1|yes|on|true)')
-aSettStr+=("test_run_port");aSettVal+=("8303");aSettValid+=('')
-aSettStr+=("git_commit");aSettVal+=("");aSettValid+=('')
-aSettStr+=("git_branch");aSettVal+=("");aSettValid+=('')
-aSettStr+=("server_type");aSettVal+=("teeworlds");aSettValid+=('(tem|teeworlds)')
-aSettStr+=("tem_settings");aSettVal+=("tem.settings");aSettValid+=('')
-aSettStr+=("tem_path");aSettVal+=("/home/$USER/git/TeeworldsEconMod");aSettValid+=('')
-aSettStr+=("env_build");aSettVal+=("");aSettValid+=('')
-aSettStr+=("env_runtime");aSettVal+=("");aSettValid+=('')
-aSettStr+=("logfile_extension");aSettVal+=(".log");aSettValid+=('')
-aSettStr+=("auto_cleanup_old_local_data");aSettVal+=("0");aSettValid+=('(0|no|off|false|1|yes|on|true)')
-aSettStr+=("gitpath_antibot");aSettVal+=("");aSettValid+=('')
-aSettStr+=("log_ddos");aSettVal+=("0");aSettValid+=('(0|no|off|false|1|yes|on|true)')
-aSettStr+=("unix_user");aSettVal+=("$USER");aSettValid+=('')
+aSettStr=()
+aSettVal=()
+aSettValid=()
+
+function load_settings() {
+	local init="$1"
+	local settings_file="$2"
+	local cfg_upper
+	local cfg_lower
+	local default_value
+	local validation
+	local index=0
+	while read -r line
+	do
+		if [[ "$line" =~ [[:space:]]*# ]]
+		then
+			continue
+		fi
+		if [[ "$(echo "$line" | xargs)" == "" ]]
+		then
+			continue
+		fi
+		cfg_upper="$(echo "$line" | awk -F',' '{ print $1 }')"
+		cfg_upper="${cfg_upper:1:-1}"
+		cfg_lower="$(echo "$line" | awk -F',' '{ print $2 }')"
+		cfg_lower="${cfg_lower:2:-1}"
+		default_value="$(echo "$line" | awk -F',' '{ print $3 }')"
+		default_value="${default_value:2:-1}"
+		validation="$(echo "$line" | awk -F',' '{ print $4 }')"
+		validation="${validation:2:-1}"
+		if [ "$init" == "1" ]
+		then
+			if [ "$cfg_upper" == "CFG_CMAKE_FLAGS" ]
+			then
+				eval "read -r -a $cfg_upper <<< \"$default_value\""
+				eval "export $cfg_upper"
+			else
+				eval "export $cfg_upper=\"$default_value\""
+			fi
+			# echo "upper=$cfg_upper lower=$cfg_lower default=$default_value validation=$validation"
+			aSettStr+=("$cfg_lower")
+			aSettVal+=("$default_value")
+			aSettValid+=("$allowed_pattern")
+		else
+			if [ "$cfg_upper" == "CFG_CMAKE_FLAGS" ]
+			then
+				eval "read -r -a $cfg_upper <<< \"${aSettVal[$index]}\""
+				eval "export $cfg_upper"
+			else
+				eval "export $cfg_upper=\"${aSettVal[$index]}\""
+			fi
+		fi
+		index="$((index+1))"
+	done < "$settings_file"
+}
 
 function create_settings() {
     if [ -f $current_settings_file ];
@@ -199,74 +221,25 @@ function is_cfg() {
     return 1
 }
 
+# load syntax
+load_settings 1 ./lib/include/settings.txt
+for plugin in ./lib/plugins/*/
+do
+	[ -d "$plugin" ] || continue
+
+	load_settings 1 "$plugin"settings.txt
+done
+
+# load user configs
 create_settings # create fresh if null
-read_settings_file "$current_settings_file"
+read_settings_file "$current_settings_file" # get values from file
+load_settings 0 ./lib/include/settings.txt # save values to env vars
+for plugin in ./lib/plugins/*/
+do
+	[ -d "$plugin" ] || continue
 
-# Settings:
-# - git root		0
-# - gitpath mod		1
-# - gitpath bot		2
-# - gitpath log		3
-# - server name		4
-# - teeworlds bin name	5
-# - bot bin name	6
-# - cmake flags		7
-# - error logs		8
-# - error logs api	9
-# - editor		10
-# - gdb commands	11
-# - gdb dump core	12
-# - use cstd paste	13
-# - post logs dir	14
-# - git force pull	15
-# - test run		16
-# - test run port	17
-# - git commit		18
-# - git branch		19
-# - server type		20
-# - tem settings	21
-# - tem path		22
-# - env build		23
-# - env runtime		24
-# - log extension	25
-# - auto cleanup old	26
-# - gitpath antibot	27
-# - log ddos		28
-# - unix user		29
-
-export CFG_GIT_ROOT="${aSettVal[0]}"
-export CFG_GIT_PATH_MOD="${aSettVal[1]}"
-export CFG_GIT_PATH_BOT="${aSettVal[2]}"
-export CFG_LOGS_PATH="${aSettVal[3]}"
-export CFG_SRV_NAME="${aSettVal[4]}"
-export CFG_COMPILED_BIN="${aSettVal[5]}"
-export CFG_COMPILED_BIN_BOT="${aSettVal[6]}"
-# https://github.com/koalaman/shellcheck/wiki/Sc2086
-# https://github.com/koalaman/shellcheck/wiki/SC2206
-read -r -a CFG_CMAKE_FLAGS <<< "${aSettVal[7]}"
-export CFG_ERROR_LOGS="${aSettVal[8]}" # 0=off 1=no duplicated 2=duplicates
-export CFG_ERROR_LOGS_API="${aSettVal[9]}" # shell command that gets executed on error
-export CFG_EDITOR="${aSettVal[10]}"
-export CFG_GDB_CMDS="${aSettVal[11]}"
-export CFG_GDB_DUMP_CORE="${aSettVal[12]}"
-# export CFG_DEBUG="${aSettVal[13]}" # debug depends on cmake flags
-export CFG_CSTD="${aSettVal[13]}"
-export CFG_POST_LOGS_DIR="${aSettVal[14]}"
-export CFG_GIT_FORCE_PULL="${aSettVal[15]}"
-export CFG_TEST_RUN="${aSettVal[16]}"
-export CFG_TEST_RUN_PORT="${aSettVal[17]}"
-export CFG_GIT_COMMIT="${aSettVal[18]}"
-export CFG_GIT_BRANCH="${aSettVal[19]}"
-export CFG_SERVER_TYPE="${aSettVal[20]}"
-export CFG_TEM_SETTINGS="${aSettVal[21]}"
-export CFG_TEM_PATH="${aSettVal[22]}"
-export CFG_ENV_BUILD="${aSettVal[23]}"
-export CFG_ENV_RUNTIME="${aSettVal[24]}"
-export CFG_LOG_EXT="${aSettVal[25]}"
-export CFG_AUTO_CLEANUP_OLD_LOCAL_DATA="${aSettVal[26]}"
-export CFG_GITPATH_ANTIBOT="${aSettVal[27]}"
-export CFG_LOG_DDOS="${aSettVal[28]}"
-export CFG_UNIX_USER="${aSettVal[29]}"
+	load_settings 0 "$plugin"settings.txt
+done
 
 if [ "$CFG_SERVER_TYPE" == "tem" ]
 then
