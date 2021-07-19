@@ -226,6 +226,7 @@ load_settings 1 ./lib/include/settings.txt
 for plugin in ./lib/plugins/*/
 do
 	[ -d "$plugin" ] || continue
+	[ -f "$plugin"settings.txt ] || continue
 
 	load_settings 1 "$plugin"settings.txt
 done
@@ -237,6 +238,7 @@ load_settings 0 ./lib/include/settings.txt # save values to env vars
 for plugin in ./lib/plugins/*/
 do
 	[ -d "$plugin" ] || continue
+	[ -f "$plugin"settings.txt ] || continue
 
 	load_settings 0 "$plugin"settings.txt
 done
