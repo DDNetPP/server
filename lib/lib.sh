@@ -187,7 +187,7 @@ function check_duplicated_uuid() {
 			exit 0
 		fi
 		comp_uuid="$(cat "$SID_FILE")"
-		if [ "$comp_uuid" == "$server_id" ]
+		if [ "$comp_uuid" == "$SERVER_UUID" ]
 		then
 			wrn "Warning: same server uuid used in $(tput bold)$d$(tput sgr0)"
 			wrn "         make sure two directorys have never the same uuid"
@@ -337,15 +337,15 @@ function restart_side_runner() {
     fi
     trap "stop_side_runner;exit" EXIT
     log "restarting side_runner.sh"
-    pkill -f "side_runner.sh $server_id"
-    ./lib/var/side_runner.sh "$server_id" > logs/side_runner.log 2>&1 &
+    pkill -f "side_runner.sh $SERVER_UUID"
+    ./lib/var/side_runner.sh "$SERVER_UUID" > logs/side_runner.log 2>&1 &
 }
 
 function stop_side_runner() {
-    if pgrep -f "side_runner.sh $server_id"
+    if pgrep -f "side_runner.sh $SERVER_UUID"
     then
         log "stopping side_runner.sh"
-        pkill -f "side_runner.sh $server_id"
+        pkill -f "side_runner.sh $SERVER_UUID"
     fi
 }
 

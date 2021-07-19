@@ -96,18 +96,18 @@ then
     cd "$CFG_TEM_PATH" || exit 1
     if [ "$arg_is_interactive" == "1" ]
     then
-        ./start_tem.sh "$CFG_TEM_SETTINGS" "#sid:$server_id"
+        ./start_tem.sh "$CFG_TEM_SETTINGS" "#sid:$SERVER_UUID"
     else
-        nohup ./start_tem.sh "$CFG_TEM_SETTINGS" "#sid:$server_id" > "$logfile" 2>&1 &
+        nohup ./start_tem.sh "$CFG_TEM_SETTINGS" "#sid:$SERVER_UUID" > "$logfile" 2>&1 &
     fi
 else # teeworlds
     logfile="$LOGS_PATH_FULL/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S)${log_ext}"
     cache_logpath "$logfile"
 
-    run_cmd="$CFG_ENV_RUNTIME nohup ./$CFG_BIN \"#sid:$server_id\" > $logfile 2>&1 &"
+    run_cmd="$CFG_ENV_RUNTIME nohup ./$CFG_BIN \"#sid:$SERVER_UUID\" > $logfile 2>&1 &"
     if [ "$arg_is_interactive" == "1" ]
     then
-        run_cmd="$CFG_ENV_RUNTIME ./$CFG_BIN \"#sid:$server_id\""
+        run_cmd="$CFG_ENV_RUNTIME ./$CFG_BIN \"#sid:$SERVER_UUID\""
     fi
     log "running:"
     tput bold

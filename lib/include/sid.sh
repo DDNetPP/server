@@ -12,9 +12,9 @@ function generate_uuid() {
 }
 
 function generate_sid() {
-	server_id="$(generate_uuid)"
-	echo "$server_id" > "$SID_FILE"
-	log "generated new server UUID '$server_id'"
+	SERVER_UUID="$(generate_uuid)"
+	echo "$SERVER_UUID" > "$SID_FILE"
+	log "generated new server UUID '$SERVER_UUID'"
 }
 
 function get_sid() {
@@ -35,14 +35,14 @@ function get_sid() {
             return
         fi
     fi
-    server_id="$(cat "$SID_FILE")"
-    if [ "$server_id" == "" ]
+    SERVER_UUID="$(cat "$SID_FILE")"
+    if [ "$SERVER_UUID" == "" ]
     then
         wrn "server id empty generating new one..."
         generate_sid
         return
     fi
-    len="${#server_id}"
+    len="${#SERVER_UUID}"
     if [ $((len)) -ne 36 ]
     then
         wrn "unexpected UUID length found"

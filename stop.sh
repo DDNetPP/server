@@ -42,7 +42,7 @@ function kill_by_name() {
 
 proc_str="./$CFG_BIN"
 
-if proc_in_screen "$server_id"
+if proc_in_screen "$SERVER_UUID"
 then
     log "consider using screen to stop the process"
     log "do you really want to kill the server? [y/N]"
@@ -55,12 +55,12 @@ then
     fi
 fi
 
-if pgrep -f "$server_id" > /dev/null
+if pgrep -f "$SERVER_UUID" > /dev/null
 then
-    pkill -f "$server_id"
-    log "stopped server with id '$server_id'"
+    pkill -f "$SERVER_UUID"
+    log "stopped server with id '$SERVER_UUID'"
 else
-    wrn "no server with this id found '$server_id'"
+    wrn "no server with this id found '$SERVER_UUID'"
 fi
 
 sleep 0.5 # give server time to shutdown

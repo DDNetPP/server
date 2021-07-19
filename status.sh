@@ -11,10 +11,10 @@ source lib/lib.sh
 
 check_warnings
 
-if pgrep -f "$server_id" > /dev/null
+if pgrep -f "$SERVER_UUID" > /dev/null
 then
-    suc -n "server is up and running '$server_id'"
-    if proc_in_screen "$server_id" >/dev/null
+    suc -n "server is up and running '$SERVER_UUID'"
+    if proc_in_screen "$SERVER_UUID" >/dev/null
     then
         tput bold
         echo " (SCREEN)"
@@ -25,7 +25,7 @@ then
     check_logpath
     exit
 else
-    wrn "no server with this id found '$server_id'"
+    wrn "no server with this id found '$SERVER_UUID'"
 fi
 
 show_procs

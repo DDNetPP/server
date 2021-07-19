@@ -89,7 +89,7 @@ jobs_dir_off="$JOB_PATH/$scope/off"
 job="$jobs_dir_on/$jobname"
 job_off="$jobs_dir_off/$jobname"
 job_on="$jobs_dir_on/$jobname"
-job_id="job-$scope-$jobname-$server_id"
+job_id="job-$scope-$jobname-$SERVER_UUID"
 if [ ! -f "$job" ]
 then
 	job="$jobs_dir_off/$jobname"
