@@ -171,12 +171,43 @@ function check_dir_size() {
     cat ./lib/tmp/size_*.txt
 }
 
+function check_duplicated_uuid() {
+	local d
+	local comp_uuid
+	local current_dir
+	current_dir="../$(basename "$(pwd)")/"
+	for d in ../*/
+	do
+	    (
+		cd "$d" || exit 1
+		check_server_dir > /dev/null 2>&1
+		if [ "$current_dir" == "$d" ]
+		then
+			# skip this instance
+			exit 0
+		fi
+		comp_uuid="$(cat "$SID_FILE")"
+		if [ "$comp_uuid" == "$server_id" ]
+		then
+			wrn "Warning: same server uuid used in $(tput bold)$d$(tput sgr0)"
+			wrn "         make sure two directorys have never the same uuid"
+			wrn "         otherwise you might stop servers you do not want to stop"
+			wrn "         fix it by shutting down the server and deleting the uuid"
+			wrn ""
+			wrn "           $(tput bold)./stop.sh && rm $SID_FILE$(tput sgr0)"
+			wrn ""
+		fi
+	    )
+	done
+}
+
 function check_warnings() {
     local port
     local num_cores
     check_server_dir
     twcfg.check_cfg_full
     check_dir_size
+    check_duplicated_uuid
     mkdir -p lib/tmp
     mkdir -p lib/var
     if [ -f failed_sql.sql ]
