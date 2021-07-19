@@ -16,7 +16,6 @@ function load_settings() {
 	local cfg_lower
 	local default_value
 	local validation
-	local index=0
 	while read -r line
 	do
 		if [[ "$line" =~ [[:space:]]*# ]]
@@ -51,13 +50,13 @@ function load_settings() {
 		else
 			if [ "$cfg_upper" == "CFG_CMAKE_FLAGS" ]
 			then
-				eval "read -r -a $cfg_upper <<< \"${aSettVal[$index]}\""
+				eval "read -r -a $cfg_upper <<< \"${aSettVal[$settings_index]}\""
 				eval "export $cfg_upper"
 			else
-				eval "export $cfg_upper=\"${aSettVal[$index]}\""
+				eval "export $cfg_upper=\"${aSettVal[$settings_index]}\""
 			fi
 		fi
-		index="$((index+1))"
+		settings_index="$((settings_index+1))"
 	done < "$settings_file"
 }
 
@@ -222,6 +221,7 @@ function is_cfg() {
 }
 
 # load syntax
+settings_index=0
 load_settings 1 ./lib/include/settings.txt
 for plugin in ./lib/plugins/*/
 do
@@ -234,6 +234,7 @@ done
 # load user configs
 create_settings # create fresh if null
 read_settings_file "$current_settings_file" # get values from file
+settings_index=0
 load_settings 0 ./lib/include/settings.txt # save values to env vars
 for plugin in ./lib/plugins/*/
 do
