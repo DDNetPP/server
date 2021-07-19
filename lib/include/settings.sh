@@ -47,7 +47,7 @@ function load_settings() {
 			# echo "upper=$cfg_upper lower=$cfg_lower default=$default_value validation=$validation"
 			aSettStr+=("$cfg_lower")
 			aSettVal+=("$default_value")
-			aSettValid+=("$allowed_pattern")
+			aSettValid+=("$validation")
 		else
 			if [ "$cfg_upper" == "CFG_CMAKE_FLAGS" ]
 			then
@@ -118,7 +118,7 @@ function parse_settings_line() {
                     val="${val%%+(/)}" # strip trailing slash
                 fi
                 valid_pattern=${aSettValid[$i]}
-                if [[ "$valid_pattern" != "" ]] && [[ ! "$val" =~ $valid_pattern ]]
+                if [[ "$valid_pattern" != "" ]] && [[ ! "$val" =~ ^$valid_pattern$ ]]
                 then
                     settings_err "invalid value '$val' for setting '$sett'"
                     err "               values have to match $valid_pattern"
