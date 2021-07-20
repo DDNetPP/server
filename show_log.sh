@@ -33,7 +33,7 @@ do
 		do
 			if [ "$current_file" != "$(get_latest_logfile)" ]
 			then
-				pkill -f "--id=$uuid"
+				pkill -f "id=$uuid"
 				pkill -f "tail.*$current_file"
 				current_file="$(get_latest_logfile)"
 				show_latest_log "$follow" "$logpath" --id="$uuid" &
