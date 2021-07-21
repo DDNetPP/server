@@ -27,7 +27,7 @@
 "CFG_ENV_RUNTIME", "env_runtime", "", ""
 "CFG_LOG_EXIT", "logfile_extension", ".log", ""
 "CFG_AUTO_CLEANUP_OLD_LOCAL_DATA", "auto_cleanup_old_local_data", "0", "(0|no|off|false|1|yes|on|true)"
-"CFG_GITHPATH_ANTIBOT", "gitpath_antibot", "", ""
+"CFG_GITPATH_ANTIBOT", "gitpath_antibot", "", ""
 "CFG_LOG_DDOS", "log_ddos", "0", "(0|no|off|false|1|yes|on|true)"
 "CFG_UNIX_USER", "unix_user", "$USER", ""
 
