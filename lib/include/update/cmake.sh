@@ -159,6 +159,19 @@ function cmake_update() {
 		cp "$CFG_GITPATH_ANTIBOT"/*.cpp src/antibot/
 	fi
 	bin_commit="$(git rev-parse HEAD)"
+	local cmake_cache="$SCRIPT_ROOT/lib/tmp/cmake_flags.txt"
+	if [ -f "$cmake_cache" ]
+	then
+		if [ "${arg_cmake_flags[*]}" != "$(cat "$cmake_cache")" ]
+		then
+			log "cmake flags changed:"
+			log " old='$(cat "$cmake_cache")'"
+			log " new='${arg_cmake_flags[*]}'"
+			log "deleting build directory ..."
+			rm -rf build
+		fi
+	fi
+	echo "${arg_cmake_flags[*]}" > "$cmake_cache"
 	mkdir -p build || { err "Error: creating dir build/"; exit 1; }
 	cd build || { err "Could not enter build/ directory"; exit 1; }
 	branch="$(git branch | sed -n '/\* /s///p')"
