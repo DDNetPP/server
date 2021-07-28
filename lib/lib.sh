@@ -469,6 +469,16 @@ function update_configs() {
 		cd cnf || exit 1
 		git_save_pull
 	fi
+	for plugin in ./lib/plugins/*/
+	do
+		cd "$SCRIPT_ROOT" || exit 1
+		[ -d "$plugin" ] || continue
+		[ -d "$plugin".git ] || continue
+
+		log "updating plugin $(tput bold)$(basename "$plugin")$(tput sgr0) ..."
+		cd "$plugin" || exit 1
+		git_save_pull
+	done
 }
 
 function archive_gmon() {
