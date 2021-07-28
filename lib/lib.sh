@@ -330,15 +330,17 @@ function show_procs_name() {
 }
 
 function restart_side_runner() {
-    if [ ! -f "./lib/var/side_runner.sh" ]
-    then
-        wrn "side runner not found"
-        return
-    fi
-    trap "stop_side_runner;exit" EXIT
-    log "restarting side_runner.sh"
-    pkill -f "side_runner.sh $SERVER_UUID"
-    ./lib/var/side_runner.sh "$SERVER_UUID" > logs/side_runner.log 2>&1 &
+	trap "stop_side_runner;exit" EXIT
+	log "restarting side_runners .."
+	pkill -f "side_runner.sh $SERVER_UUID"
+	for plugin in ./lib/plugins/*/
+	do
+		[ -d "$plugin" ] || continue
+		[ -f "$plugin"side_runner.sh ] || continue
+
+		log "starting side runner $(basename "$plugin")/side_runner.sh .."
+		"$plugin"side_runner.sh "$SERVER_UUID" > logs/side_runner_"$(basename "$plugin")".log 2>&1 &
+	done
 }
 
 function stop_side_runner() {
