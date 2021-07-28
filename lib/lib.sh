@@ -393,17 +393,17 @@ function check_directory() {
 }
 
 function check_gitpath() {
-    if [ "$CFG_GIT_PATH_MOD" == "" ]
-    then
-        err "gitpath mod is empty"
-        exit 1
-    elif [ "$CFG_LOGS_PATH" == "" ]
-    then
-        err "gitpath log is empty"
-        exit 1
-    fi
-    check_directory "$CFG_GIT_PATH_MOD"
-    check_directory "$CFG_LOGS_PATH"
+	if [ "$CFG_GIT_PATH_MOD" == "" ]
+	then
+		err "gitpath mod is empty"
+		exit 1
+	elif [ "$CFG_LOGS_PATH" == "" ]
+	then
+		err "gitpath log is empty"
+		exit 1
+	fi
+	check_directory "$CFG_GIT_PATH_MOD"
+	check_directory "$CFG_LOGS_PATH"
 }
 
 function check_logdir() {
@@ -430,72 +430,72 @@ function check_logdir() {
 }
 
 function check_deps() {
-    check_gitpath
-    check_logdir
+	check_gitpath
+	check_logdir
 
-    if [ "$CFG_SERVER_TYPE" == "teeworlds" ] && [ ! -f "$CFG_BIN" ]
-    then
-        err "server binary '$CFG_BIN' not found!"
-        err "make sure the binary and your current path match"
-        err "try ./update.sh to fetch the new binary"
-        exit 1
-    fi
+	if [ "$CFG_SERVER_TYPE" == "teeworlds" ] && [ ! -f "$CFG_BIN" ]
+	then
+		err "server binary '$CFG_BIN' not found!"
+		err "make sure the binary and your current path match"
+		err "try ./update.sh to fetch the new binary"
+	exit 1
+	fi
 
-    twcfg.check_cfg
+	twcfg.check_cfg
 }
 
 function update_configs() {
-    cd "$SCRIPT_ROOT" || exit 1
-    if [[ -d cfg/ ]] && [[ -d cfg/.git ]]
-    then
-        log "found config directory cfg/"
-        log "updating configs ..."
-        cd cfg || exit 1
-        git_save_pull
-    fi
-    cd "$SCRIPT_ROOT" || exit 1
-    if [[ -d votes/ ]] && [[ -d votes/.git ]]
-    then
-        log "found config directory votes/"
-        log "updating votes ..."
-        cd votes || exit 1
-        git_save_pull
-    fi
-    cd "$SCRIPT_ROOT" || exit 1
-    if [[ -d cnf/ ]] && [[ -d cnf/.git ]]
-    then
-        log "found settings directory cnf/"
-        log "updating settings ..."
-        cd cnf || exit 1
-        git_save_pull
-    fi
+	cd "$SCRIPT_ROOT" || exit 1
+	if [[ -d cfg/ ]] && [[ -d cfg/.git ]]
+	then
+		log "found config directory cfg/"
+		log "updating configs ..."
+		cd cfg || exit 1
+		git_save_pull
+	fi
+	cd "$SCRIPT_ROOT" || exit 1
+	if [[ -d votes/ ]] && [[ -d votes/.git ]]
+	then
+		log "found config directory votes/"
+		log "updating votes ..."
+		cd votes || exit 1
+		git_save_pull
+	fi
+	cd "$SCRIPT_ROOT" || exit 1
+	if [[ -d cnf/ ]] && [[ -d cnf/.git ]]
+	then
+		log "found settings directory cnf/"
+		log "updating settings ..."
+		cd cnf || exit 1
+		git_save_pull
+	fi
 }
 
 function archive_gmon() {
-    mkdir -p logs/{gmon,gprof}
-    local dst
-    local ts
-    ts="$(date '+%F_%H-%M')"
-    if [ -f gmon.out ]
-    then
-        if [ ! -x "$(command -v gprof2dot)" ] || [ ! -x "$(command -v dot)" ]
-        then
-            wrn "missing dependency $(tput bold)gprof2dot$(tput sgr0) and $(tput bold)dot$(tput sgr0)"
-            wrn "skipping callgraph generation..."
-        else
-            log "generating gprof callgraph ..."
-            gprof ./"$CFG_BIN" | gprof2dot | dot -Tsvg -o gprof.svg
-            save_copy gprof.svg "$CFG_POST_LOGS_DIR"
-        fi
-        dst=logs/gmon/gmon_"$ts".out
-        log "archiving $dst ..."
-        mv gmon.out "$dst"
-    fi
-    if [ -f gprof.svg ]
-    then
-        dst=logs/gprof/gprof_"$ts".svg
-        log "archiving $dst ..."
-        mv gprof.svg "$dst"
-    fi
+	mkdir -p logs/{gmon,gprof}
+	local dst
+	local ts
+	ts="$(date '+%F_%H-%M')"
+	if [ -f gmon.out ]
+	then
+		if [ ! -x "$(command -v gprof2dot)" ] || [ ! -x "$(command -v dot)" ]
+		then
+			wrn "missing dependency $(tput bold)gprof2dot$(tput sgr0) and $(tput bold)dot$(tput sgr0)"
+			wrn "skipping callgraph generation..."
+		else
+			log "generating gprof callgraph ..."
+			gprof ./"$CFG_BIN" | gprof2dot | dot -Tsvg -o gprof.svg
+			save_copy gprof.svg "$CFG_POST_LOGS_DIR"
+		fi
+		dst=logs/gmon/gmon_"$ts".out
+		log "archiving $dst ..."
+		mv gmon.out "$dst"
+	fi
+	if [ -f gprof.svg ]
+	then
+		dst=logs/gprof/gprof_"$ts".svg
+		log "archiving $dst ..."
+		mv gprof.svg "$dst"
+	fi
 }
 
