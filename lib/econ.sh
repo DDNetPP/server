@@ -29,6 +29,7 @@ then
     exit 1
 fi
 
+ec_bindaddr="$(get_tw_config ec_bindaddr localhost)"
 ec_port="$(get_tw_config ec_port 0)"
 ec_password="$(get_tw_config ec_password "")"
 
@@ -50,5 +51,5 @@ then
     exit 1
 fi
 
-./lib/econ-exec.exp localhost "$ec_port" "$ec_password" "$*"
+./lib/econ-exec.exp "$ec_bindaddr" "$ec_port" "$ec_password" "$*"
 
