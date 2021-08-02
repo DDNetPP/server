@@ -28,13 +28,14 @@ do
 		follow=-f
 		uuid="$(generate_uuid)"
 		current_file="$(get_latest_logfile)"
-		show_latest_log "$follow" "$logpath" --id="$uuid" &
+		parent_pid="$$"
+		show_latest_log "$follow" "$logpath" --id="$uuid" > /proc/"$parent_pid"/fd/0 &
 		while true
 		do
 			if [ "$current_file" != "$(get_latest_logfile)" ]
 			then
-				pkill -f "id=$uuid"
-				pkill -f "tail.*$current_file"
+				pkill --signal SIGTERM -f "id=$uuid"
+				pkill --signal SIGTERM -f "tail.*$current_file"
 				current_file="$(get_latest_logfile)"
 				show_latest_log "$follow" "$logpath" --id="$uuid" &
 			fi
