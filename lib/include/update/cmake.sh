@@ -207,6 +207,10 @@ function cmake_update() {
 		exit 1
 	fi
 
+	(
+		cd "${SCRIPT_ROOT}" || exit 1
+		generate_tw_syntax --force
+	)
 	if [ "$arg_type" == "teeworlds" ]
 	then
 		if [ -f "${SCRIPT_ROOT}/${CFG_BIN}" ]

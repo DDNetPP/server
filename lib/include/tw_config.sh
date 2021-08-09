@@ -30,6 +30,11 @@ function tw_commands() {
 }
 
 function generate_tw_syntax() {
+	if [ -f lib/tmp/mod_syntax.cfg ] && [ "$1" != "--force" ]
+	then
+		return
+	fi
+	log "generate autoexe.cfg syntax for the current mod ..."
 	(
 		cd "$CFG_GIT_PATH_MOD" || exit 1
 		tw_configs CLIENT SERVER ECON
