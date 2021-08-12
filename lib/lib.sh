@@ -15,6 +15,7 @@ source lib/include/settings.sh
 source lib/include/git.sh
 source lib/include/logs.sh
 source lib/include/screen.sh
+source lib/include/audit_code.sh
 
 function get_player_ips() {
 	if [ ! "$(command -v rg)" ]

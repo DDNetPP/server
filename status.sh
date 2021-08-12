@@ -10,6 +10,7 @@ fi
 source lib/lib.sh
 
 check_warnings
+audit_code
 
 if pgrep -f "$SERVER_UUID" > /dev/null
 then
