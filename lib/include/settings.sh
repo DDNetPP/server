@@ -16,23 +16,11 @@ function load_settings() {
 	local cfg_lower
 	local default_value
 	local validation
-	while read -r line
+	while IFS=, read -r cfg_upper cfg_lower default_value validation
 	do
-		if [[ "$line" =~ [[:space:]]*# ]]
-		then
-			continue
-		fi
-		if [[ "$(echo "$line" | xargs)" == "" ]]
-		then
-			continue
-		fi
-		cfg_upper="$(echo "$line" | awk -F',' '{ print $1 }')"
 		cfg_upper="${cfg_upper:1:-1}"
-		cfg_lower="$(echo "$line" | awk -F',' '{ print $2 }')"
 		cfg_lower="${cfg_lower:2:-1}"
-		default_value="$(echo "$line" | awk -F',' '{ print $3 }')"
 		default_value="${default_value:2:-1}"
-		validation="$(echo "$line" | awk -F',' '{ print $4 }')"
 		validation="${validation:2:-1}"
 		if [ "$init" == "1" ]
 		then
@@ -57,7 +45,7 @@ function load_settings() {
 			fi
 		fi
 		settings_index="$((settings_index+1))"
-	done < "$settings_file"
+	done < <(grep -v '^[[:space:]]*#' "$settings_file" | grep '[^",]')
 }
 
 function create_settings() {

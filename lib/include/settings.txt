@@ -6,7 +6,7 @@
 "CFG_COMPILED_BIN", "compiled_teeworlds_name", "teeworlds_srv", ""
 "CFG_COMPILED_BIN_BOT", "compiled_bot_name", "chillerbot-z7", ""
 "CFG_CMAKE_FLAGS", "cmake_flags", "-DCMAKE_BUILD_TYPE=Debug", ""
- # 0=off 1=no duplicates 2=duplicat
+# 0=off 1=no duplicates 2=duplicates
 "CFG_ERROR_LOGS", "error_logs", "1", "(0|1|2)"
 # "curl -d \"{\\\"err\\\":\\\"\$err\\\"}\" -H 'Content-Type: application/json' http://localhost:80/api"
 "CFG_ERROR_LOGS_API", "error_logs_api", "test", ""
