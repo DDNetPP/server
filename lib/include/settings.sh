@@ -16,20 +16,23 @@ function load_settings() {
 	local cfg_lower
 	local default_value
 	local validation
+	local val
 	while IFS=, read -r cfg_upper cfg_lower default_value validation
 	do
 		cfg_upper="${cfg_upper:1:-1}"
 		cfg_lower="${cfg_lower:2:-1}"
 		default_value="${default_value:2:-1}"
 		validation="${validation:2:-1}"
+		val="${aSettVal[$settings_index]}"
+		val="${val//\'/\'\\\'\'}"
 		if [ "$init" == "1" ]
 		then
 			if [ "$cfg_upper" == "CFG_CMAKE_FLAGS" ]
 			then
-				eval "read -r -a $cfg_upper <<< \"$default_value\""
+				eval "read -r -a $cfg_upper <<< '$default_value'"
 				eval "export $cfg_upper"
 			else
-				eval "export $cfg_upper=\"$default_value\""
+				eval "export $cfg_upper='$default_value'"
 			fi
 			# echo "upper=$cfg_upper lower=$cfg_lower default=$default_value validation=$validation"
 			aSettStr+=("$cfg_lower")
@@ -38,10 +41,10 @@ function load_settings() {
 		else
 			if [ "$cfg_upper" == "CFG_CMAKE_FLAGS" ]
 			then
-				eval "read -r -a $cfg_upper <<< \"${aSettVal[$settings_index]}\""
+				eval "read -r -a $cfg_upper <<< '$val'"
 				eval "export $cfg_upper"
 			else
-				eval "export $cfg_upper=\"${aSettVal[$settings_index]}\""
+				eval "export $cfg_upper='$val'"
 			fi
 		fi
 		settings_index="$((settings_index+1))"
