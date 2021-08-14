@@ -430,9 +430,32 @@ function check_logdir() {
     fi
 }
 
+function check_lib_teeworlds() {
+	if [ -x "$(command -v tw_get_ip_by_name)" ]
+	then
+		return
+	fi
+	if [ -d "$HOME"/.lib-crash/lib-teeworlds ]
+	then
+		return
+	fi
+	log "installing lib-crash/lib-teeworlds ..."
+	git clone git@github.com:lib-crash/lib-teeworlds "$HOME"/.lib-crash/lib-teeworlds
+	if [ ! -f ~/.bashrc ]
+	then
+		return
+	fi
+	if ! grep -q '^export PATH.*lib-crash/lib-teeworlds/bin' ~/.bashrc
+	then
+		log "adding lib-crash/lib-teeworlds/bin to PATH ..."
+		echo 'export PATH="$PATH:$HOME/.lib-crash/lib-teeworlds/bin"' >> ~/.bashrc
+	fi
+}
+
 function check_deps() {
 	check_gitpath
 	check_logdir
+	check_lib_teeworlds
 
 	if [ "$CFG_SERVER_TYPE" == "teeworlds" ] && [ ! -f "$CFG_BIN" ]
 	then
