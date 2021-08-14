@@ -1,7 +1,7 @@
 #!/bin/bash
 
 function audit_wrn() {
-	echo -e "[${Yellow}code-audit${Reset}] $1"
+	echo -e "[${YELLOW}code-audit${RESET}] $1"
 }
 
 function audit_code_popen() {

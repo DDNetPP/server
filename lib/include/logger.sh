@@ -1,42 +1,37 @@
 #!/bin/bash
 
-Reset='\033[0m'
-Red='\033[0;31m'
-Green='\033[0;32m'
-Yellow='\033[0;33m'
-
 function err() {
     if [ "$#" == 2 ] && [ "$1" == "--log" ]
     then
         log_err "$2"
-        echo -e "[${Red}error${Reset}] $2"
+        echo -e "[${RED}error${RESET}] $2"
     elif [ "$#" == 2 ] && [ "$1" == "-n" ]
     then
-        echo -ne "[${Red}error${Reset}] $2"
+        echo -ne "[${RED}error${RESET}] $2"
     else
-        echo -e "[${Red}error${Reset}] $1"
+        echo -e "[${RED}error${RESET}] $1"
     fi
 }
 
 function log() {
     if [ "$#" == 2 ] && [ "$1" == "-n" ]
     then
-      echo -ne "[${Yellow}*${Reset}] $2"
+      echo -ne "[${YELLOW}*${RESET}] $2"
     else
-      echo -e "[${Yellow}*${Reset}] $1"
+      echo -e "[${YELLOW}*${RESET}] $1"
     fi
 }
 
 function wrn() {
-      echo -e "[${Yellow}!${Reset}] $1"
+      echo -e "[${YELLOW}!${RESET}] $1"
 }
 
 function suc() {
     if [ "$#" == 2 ] && [ "$1" == "-n" ]
     then
-      echo -ne "[${Green}+${Reset}] $2"
+      echo -ne "[${GREEN}+${RESET}] $2"
     else
-      echo -e "[${Green}+${Reset}] $1"
+      echo -e "[${GREEN}+${RESET}] $1"
     fi
 }
 

@@ -3,6 +3,7 @@
 SCRIPT_ROOT="$(pwd)"
 export SCRIPT_ROOT
 
+source lib/include/colors.sh
 source lib/include/logger.sh
 source lib/include/common.sh
 source lib/include/editor.sh
@@ -448,6 +449,7 @@ function check_lib_teeworlds() {
 	if ! grep -q '^export PATH.*lib-crash/lib-teeworlds/bin' ~/.bashrc
 	then
 		log "adding lib-crash/lib-teeworlds/bin to PATH ..."
+		# shellcheck disable=SC2016
 		echo 'export PATH="$PATH:$HOME/.lib-crash/lib-teeworlds/bin"' >> ~/.bashrc
 	fi
 }

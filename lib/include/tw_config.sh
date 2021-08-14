@@ -125,7 +125,7 @@ function twcfg.check_cfg() {
 
 function twcfg.check_syntax() {
 	twcfg_line=0
-	generate_tw_syntax
+	generate_tw_syntax --cache
 	twcfg.include_exec "autoexec.cfg" --check-syntax
 }
 
