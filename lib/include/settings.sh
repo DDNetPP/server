@@ -92,7 +92,7 @@ function parse_settings_line() {
                     err "               values have to match $valid_pattern"
                     exit 1
                 fi
-                assign="${aSettVar[$i]}=$val"
+                assign="${aSettVar[$i]}='$val'"
 		eval "$assign"
                 return
             fi
