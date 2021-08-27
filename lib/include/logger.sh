@@ -2,6 +2,14 @@
 
 function _log() {
 	echo -ne "$1"
+	if [ "$CFG_POST_LOGS_DIR" == "" ]
+	then
+		return
+	fi
+	if [ -d "$CFG_POST_LOGS_DIR" ]
+	then
+		echo -ne "$1" >> "$CFG_POST_LOGS_DIR"/server_log.txt
+	fi
 }
 
 function err() {
