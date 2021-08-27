@@ -176,11 +176,15 @@ function cmake_update() {
 	cd build || { err "Could not enter build/ directory"; exit 1; }
 	branch="$(git branch | sed -n '/\* /s///p')"
 
+	local build_fail=0
 	local build_cmd="$CFG_ENV_BUILD cmake .. ${arg_cmake_flags[*]}"
 	log "$(tput bold)$build_cmd$(tput sgr0)"
 	eval "$build_cmd" || \
-		{ err --log "build failed at $branch $bin_commit (cmake)"; exit 1; }
-	make "-j$(get_cores)" || { err --log "build failed at $branch $(git rev-parse HEAD) (make)"; exit 1; }
+		{ err --log "build failed at $branch $bin_commit (cmake)"; build_fail=1; }
+	if [ "$build_fail" == "0" ]
+	then
+		make "-j$(get_cores)" || { err --log "build failed at $branch $(git rev-parse HEAD) (make)"; build_fail=1; }
+	fi
 	if [ "$arg_git_commit" != "" ] || [ "$arg_git_branch" != "" ]
 	then
 		git add .. || exit 1
@@ -197,6 +201,11 @@ function cmake_update() {
 			log "move libantibot.so ..."
 			cp "$CFG_GITPATH_ANTIBOT"/libantibot.so .
 		fi
+	fi
+	if [ "$build_fail" == "1" ]
+	then
+		err --log "build failed."
+		exit 1
 	fi
 	if [ ! -f "$arg_compiled_bin" ]
 	then
@@ -251,4 +260,5 @@ function cmake_update() {
 
 	cd "${SCRIPT_ROOT}" || exit 1
 }
+
 
