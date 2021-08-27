@@ -1,37 +1,41 @@
 #!/bin/bash
 
+function _log() {
+	echo -ne "$1"
+}
+
 function err() {
 	if [ "$#" == 2 ] && [ "$1" == "--log" ]
 	then
 		log_err "$2"
-		echo -e "[${RED}error${RESET}] $2"
+		_log "[${RED}error${RESET}] $2\n"
 	elif [ "$#" == 2 ] && [ "$1" == "-n" ]
 	then
-		echo -ne "[${RED}error${RESET}] $2"
+		_log "[${RED}error${RESET}] $2"
 	else
-		echo -e "[${RED}error${RESET}] $1"
+		_log "[${RED}error${RESET}] $1\n"
 	fi
 }
 
 function log() {
 	if [ "$#" == 2 ] && [ "$1" == "-n" ]
 	then
-		echo -ne "[${YELLOW}*${RESET}] $2"
+		_log "[${YELLOW}*${RESET}] $2"
 	else
-		echo -e "[${YELLOW}*${RESET}] $1"
+		_log "[${YELLOW}*${RESET}] $1\n"
 	fi
 }
 
 function wrn() {
-	echo -e "[${YELLOW}!${RESET}] $1"
+	_log "[${YELLOW}!${RESET}] $1\n"
 }
 
 function suc() {
 	if [ "$#" == 2 ] && [ "$1" == "-n" ]
 	then
-		echo -ne "[${GREEN}+${RESET}] $2"
+		_log "[${GREEN}+${RESET}] $2"
 	else
-		echo -e "[${GREEN}+${RESET}] $1"
+		_log "[${GREEN}+${RESET}] $1\n"
 	fi
 }
 
