@@ -90,3 +90,9 @@ function pre_loop_run() {
     restart_side_runner
     archive_gmon
 }
+
+function pos_loop_run() {
+	save_move nul logs
+	save_move delay.txt logs
+}
+

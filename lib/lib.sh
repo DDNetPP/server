@@ -80,21 +80,38 @@ function get_cores() {
     echo "$cores"
 }
 
+function save_move() {
+	if [[ ! -f "$1" ]]
+	then
+		return
+	elif [[ "$1" == "$2" ]]
+	then
+		wrn "tried to move '$1' -> '$2'"
+		return
+	elif [[ ! -d "$2" ]]
+	then
+		err "Error: save move failed"
+		err "       destination '$2' is not a directory"
+		return
+	fi
+	mv "$1" "$2"
+}
+
 function save_copy() {
-    if [[ ! -f "$1" ]]
-    then
-        return
-    elif [[ "$1" == "$2" ]]
-    then
-        wrn "tried to copy '$1' -> '$2'"
-        return
-    elif [[ ! -d "$2" ]]
-    then
-        err "Error: save copy failed"
-        err "       destination '$2' is not a directory"
-        return
-    fi
-    cp "$1" "$2"
+	if [[ ! -f "$1" ]]
+	then
+		return
+	elif [[ "$1" == "$2" ]]
+	then
+		wrn "tried to copy '$1' -> '$2'"
+		return
+	elif [[ ! -d "$2" ]]
+	then
+		err "Error: save copy failed"
+		err "       destination '$2' is not a directory"
+		return
+	fi
+	cp "$1" "$2"
 }
 
 function delete_files_except_latest() {

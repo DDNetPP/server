@@ -151,6 +151,8 @@ then
     exit 1
 fi
 
+post_loop_run
+
 ./update.sh &> "$p/raw_build.txt"
 if is_cfg CFG_CSTD
 then
