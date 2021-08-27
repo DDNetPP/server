@@ -6,49 +6,26 @@ aSettingsFiles=()
 current_settings_file="server.cnf"
 line_num=0
 aSettStr=()
+aSettVar=()
 aSettVal=()
 aSettValid=()
 
-function load_settings() {
-	local init="$1"
-	local settings_file="$2"
-	local cfg_upper
-	local cfg_lower
-	local default_value
-	local validation
-	local val
-	while IFS=, read -r cfg_upper cfg_lower default_value validation
-	do
-		cfg_upper="${cfg_upper:1:-1}"
-		cfg_lower="${cfg_lower:2:-1}"
-		default_value="${default_value:2:-1}"
-		validation="${validation:2:-1}"
-		val="${aSettVal[$settings_index]}"
-		val="${val//\'/\'\\\'\'}"
-		if [ "$init" == "1" ]
-		then
-			if [ "$cfg_upper" == "CFG_CMAKE_FLAGS" ]
-			then
-				eval "read -r -a $cfg_upper <<< '$default_value'"
-				eval "export $cfg_upper"
-			else
-				eval "export $cfg_upper='$default_value'"
-			fi
-			# echo "upper=$cfg_upper lower=$cfg_lower default=$default_value validation=$validation"
-			aSettStr+=("$cfg_lower")
-			aSettVal+=("$default_value")
-			aSettValid+=("$validation")
-		else
-			if [ "$cfg_upper" == "CFG_CMAKE_FLAGS" ]
-			then
-				eval "read -r -a $cfg_upper <<< '$val'"
-				eval "export $cfg_upper"
-			else
-				eval "export $cfg_upper='$val'"
-			fi
-		fi
-		settings_index="$((settings_index+1))"
-	done < <(grep -v '^[[:space:]]*#' "$settings_file" | grep '[^",]')
+function def_var() {
+	local cfg_upper="$1"
+	local cfg_lower="$2"
+	local default_value="$3"
+	local validation="$4"
+	if [ "$cfg_upper" == "CFG_CMAKE_FLAGS" ]
+	then
+		eval "read -r -a $cfg_upper <<< '$default_value'"
+		eval "export $cfg_upper"
+	else
+		eval "export $cfg_upper='$default_value'"
+	fi
+	aSettStr+=("$cfg_lower")
+	aSettVar+=("$cfg_upper")
+	aSettVal+=("$default_value")
+	aSettValid+=("$validation")
 }
 
 function create_settings() {
@@ -86,6 +63,7 @@ function settings_err_tab() {
 function parse_settings_line() {
         local sett=$1
         local val=$2
+	local assign
         if [ "$sett" == "compiled_binary_name" ]
         then
             wrn "WARNING: 'compiled_binary_name' is deprecated by 'compiled_teeworlds_name'"
@@ -114,7 +92,8 @@ function parse_settings_line() {
                     err "               values have to match $valid_pattern"
                     exit 1
                 fi
-                aSettVal[$i]="$val"
+                assign="${aSettVar[$i]}=$val"
+		eval "$assign"
                 return
             fi
         done
@@ -212,28 +191,19 @@ function is_cfg() {
 }
 
 # load syntax
-settings_index=0
-load_settings 1 ./lib/include/settings.txt
+source ./lib/include/vars.sh
 for plugin in ./lib/plugins/*/
 do
 	[ -d "$plugin" ] || continue
-	[ -f "$plugin"settings.txt ] || continue
+	[ -f "$plugin"vars.sh ] || continue
 
-	load_settings 1 "$plugin"settings.txt
+	# shellcheck source=./lib/include/vars.sh
+	source "$plugin"vars.sh
 done
 
 # load user configs
 create_settings # create fresh if null
 read_settings_file "$current_settings_file" # get values from file
-settings_index=0
-load_settings 0 ./lib/include/settings.txt # save values to env vars
-for plugin in ./lib/plugins/*/
-do
-	[ -d "$plugin" ] || continue
-	[ -f "$plugin"settings.txt ] || continue
-
-	load_settings 0 "$plugin"settings.txt
-done
 
 if [ "$CFG_SERVER_TYPE" == "tem" ]
 then
