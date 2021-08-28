@@ -16,12 +16,17 @@ for arg in "$@"
 do
 	if [ "$arg" == "--help" ] || [ "$1" == "-h" ]
 	then
-		echo "usage: ./show_log.sh [logname] [-f] [logname]"
+		echo "usage: ./show_log.sh [logname] [OPTION] [logname]"
 		echo "options:"
 		echo "  -h          show this help"
 		echo "  -f          follows log using tail -f"
-		echo "	--tem	    ignore logname when used as TeeworldsEconMod input"
+		echo "  --filepath  print the file path to the logfile and nothing else"
+		echo "  --tem       ignore logname when used as TeeworldsEconMod input"
 		echo "  logname     directory in ./logs/logname for local log types"
+		exit 0
+	elif [ "$arg" == "--filepath" ]
+	then
+		get_latest_logfile
 		exit 0
 	elif [ "$arg" == "--tem" ]
 	then
