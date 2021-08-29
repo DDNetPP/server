@@ -10,8 +10,6 @@ fi
 source lib/lib.sh
 
 PORT="$(get_tw_config sv_port 8303)"
-# TODO: hmm other users can look at this file and get ips and tw creds
-#       but sudo process has trouble writing to /home so yikes
 CAPPATH=/tmp
 CAPFILE="$CAPPATH"/tmp-port-"$PORT".pcap
 arg_plain=0
