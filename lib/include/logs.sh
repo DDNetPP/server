@@ -42,7 +42,8 @@ function cache_logpath() {
 }
 
 function get_latest_logfile() {
-	find "$LOGS_PATH_FULL" | sort | tail -n1
+	local logpath="${1:-$LOGS_PATH_FULL}"
+	find "$logpath" | sort | tail -n1
 }
 
 function show_latest_log() {
@@ -72,7 +73,7 @@ function show_latest_log() {
 		err "log path not found '$logpath'"
 		exit 1
 	fi
-	latest_log="$(get_latest_logfile)"
+	latest_log="$(get_latest_logfile "$logpath")"
 	if [ ! -f "$latest_log" ]
 	then
 		wrn "there are no logfiles yet."
