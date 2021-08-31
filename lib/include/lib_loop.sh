@@ -91,7 +91,7 @@ function pre_loop_run() {
     archive_gmon
 }
 
-function pos_loop_run() {
+function post_loop_run() {
 	save_move nul logs
 	save_move delay.txt logs
 }
