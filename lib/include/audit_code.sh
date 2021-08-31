@@ -16,9 +16,13 @@ function audit_code_popen() {
 
 function audit_code_system() {
 	local match
-	# TODO: following line is not matched
-	#       system(aBuf); // _system
-	match="$(grep -rPn '(system[\s]*$|system\()' src | grep -v '//.*system' | grep -v '_system')"
+	local double_system
+	match="$(grep -rPn '(system[\s]*$|system\()' src)"
+	# always keeping double sys makes sure that its not bypassed by this line
+	# system(aBuf); // fake comment system(aBuf);
+	double_system="$(echo "$match" | grep 'system.*system')"
+	match="$(echo "$match" | grep -v '//.*system' | grep -v '_system')"
+	match+="$(echo "$match"; echo "$double_system" | sort | uniq)"
 	if [ "$match" != "" ]
 	then
 		audit_wrn "$(tput bold)WARNING$(tput sgr0): found system call"
