@@ -34,6 +34,7 @@ function generate_tw_syntax() {
 	then
 		return
 	fi
+	mkdir -p ./lib/tmp
 	log "generate autoexe.cfg syntax for the current mod ..."
 	(
 		cd "$CFG_GIT_PATH_MOD" || exit 1
