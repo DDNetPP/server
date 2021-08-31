@@ -57,6 +57,10 @@ function show_latest_log() {
 	logpath="$LOGS_PATH_FULL"
 	for arg in "$@"
 	do
+		if [ "$arg" == "" ]
+		then
+			continue
+		fi
 		if [ "$arg" == "-f" ]
 		then
 			arg_follow=1
