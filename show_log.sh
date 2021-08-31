@@ -57,7 +57,12 @@ done
 
 if [ "$arg_print" == "1" ]
 then
-	get_latest_logfile "./logs/$arg_logpath"
+	if [ "$arg_logpath" == "" ]
+	then
+		get_latest_logfile
+	else
+		get_latest_logfile "./logs/$arg_logpath"
+	fi
 	exit 0
 fi
 
