@@ -144,7 +144,7 @@ function test_loop_gdb() {
 	./update.sh
 	./loop_gdb.sh --yes --test &> ./logs/test_gdb.txt &
 	echo -n "[*] test loop_gdb.sh ."
-	for _ in {1..15}
+	for _ in {1..20}
 	do
 		printf '.'
 		sleep 1
