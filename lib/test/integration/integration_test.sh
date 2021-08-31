@@ -2,6 +2,7 @@
 # script that tests this scripts repo
 
 root_dir="$(pwd)"
+integration_root_dir="${root_dir}/lib/test/integration"
 testdir="$root_dir"/lib/tmp/tests
 
 if [ ! -d .git/ ] || [ ! -d lib/ ] || [ ! -f lib/lib.sh ]
@@ -29,12 +30,13 @@ EOF
 read -rd '' servercnf << EOF
 git_root=~/git
 gitpath_mod=$testdir/git/mod
-gitpath_log=/tmp/TestLogs
+gitpath_log=$testdir/git/logs
 server_name=testsrv-9988
 compiled_teeworlds_name=teeworlds_srv
 cmake_flags=-DCMAKE_BUILD_TYPE=Debug
 error_logs=0
-error_logs_api=curl -d "{\"err\":\"\$err\"}" -H 'Content-Type: application/json' http://localhost:80/api
+# error_logs_api=curl -d "{\"err\":\"\$err\"}" -H 'Content-Type: application/json' http://localhost:80/api
+error_logs_api=test
 EOF
 
 read -rd '' crashmod_main << EOF
@@ -126,19 +128,40 @@ function test_exec_all_servers() {
 function test_loop_gdb() {
 	create_server "loop_gdb"
 	cd "$testdir" || fail
+	local num_logs=0
+	local _=0
 	mkdir -p git/mod
 	(
 		cd git/mod || exit 1
 		git init
 		echo "$crashmod_main" > main.cpp
 		echo "$crashmod_cmakelist" > CMakeLists.txt
+		cp -r "$integration_root_dir/src" .
 		git add .
 		git commit -m "initial commit"
 	) || fail
 	cd loop_gdb || fail
 	./update.sh
-	# yes | ./loop_gdb.sh
-	# TODO: run the server and check if it restarts
+	./loop_gdb.sh --yes --test &> ./logs/test_gdb.txt &
+	echo -n "[*] test loop_gdb.sh ."
+	for _ in {1..15}
+	do
+		printf '.'
+		sleep 1
+	done
+	pkill -f './loop_gdb.sh --yes --test'
+	num_logs="$(find "$(./lib/eval_lib.sh "echo \$CFG_LOGS_PATH")" -type f | wc -l)"
+	if [ "$num_logs" -gt "2" ]
+	then
+		echo " OK"
+	else
+		echo " FAIL"
+		cat ./logs/test_gdb.txt
+		echo "Error: loop_gdb.sh did not create enough logfiles"
+		echo "       found $num_logs logs expected 3"
+		echo "       did the server restart properly?"
+		fail
+	fi
 }
 
 function test_status_size_check() {
