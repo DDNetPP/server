@@ -393,23 +393,30 @@ function check_running() {
 }
 
 function check_directory() {
-    local dir="$1"
-    if [ ! -d "$dir" ]
-    then
-        err "directory not found '$dir'"
-        echo ""
-        log "do you want to create one? [y/N]"
-        read -r -n 1 yn
-        echo ""
-        if [[ "$yn" =~ [yY] ]]
-        then
-            log "creating '$dir' directory..."
-            mkdir -p "$dir"
-        else
-            err "no '$dir' folder found. stopping..."
-            exit 1
-        fi
-    fi
+	local yes="$1"
+	local dir="$2"
+	if [ ! -d "$dir" ]
+	then
+		err "directory not found '$dir'"
+		echo ""
+		log "do you want to create one? [y/N]"
+		if [ "$yes" == "--yes" ] || [ "$yes" == "-y" ]
+		then
+			yn=yes
+			echo "yes"
+		else
+			read -r -n 1 yn
+		fi
+		echo ""
+		if [[ "$yn" =~ [yY] ]]
+		then
+			log "creating '$dir' directory..."
+			mkdir -p "$dir"
+		else
+			err "no '$dir' folder found. stopping..."
+			exit 1
+		fi
+	fi
 }
 
 function check_gitpath() {
@@ -422,31 +429,37 @@ function check_gitpath() {
 		err "gitpath log is empty"
 		exit 1
 	fi
-	check_directory "$CFG_GIT_PATH_MOD"
-	check_directory "$CFG_LOGS_PATH"
+	check_directory "$1" "$CFG_GIT_PATH_MOD"
+	check_directory "$1" "$CFG_LOGS_PATH"
 }
 
 function check_logdir() {
-    if [ -d "$LOGS_PATH_FULL" ]
-    then
-        if [ ! -d "$CFG_LOGS_PATH/.git" ]
-        then
-            wrn "WARNING: log path is not a git repository"
-        fi
-        return # log path found all fine
-    fi
-    err "log path not found '$LOGS_PATH_FULL'"
-    log "do you want to create this directory? [y/N]"
-    yn=""
-    read -r -n 1 yn
-    echo ""
-    if [[ "$yn" =~ [yY] ]]
-    then
-        mkdir -p "$LOGS_PATH_FULL" && suc "created logs directory"
-    else
-        log "stopped."
-        exit 1
-    fi
+	if [ -d "$LOGS_PATH_FULL" ]
+	then
+		if [ ! -d "$CFG_LOGS_PATH/.git" ]
+		then
+			wrn "WARNING: log path is not a git repository"
+		fi
+		return # log path found all fine
+	fi
+	err "log path not found '$LOGS_PATH_FULL'"
+	log "do you want to create this directory? [y/N]"
+	local yn=""
+	if [ "$1" == "--yes" ] || [ "$1" = "-y" ]
+	then
+		yn=yes
+		echo "yes"
+	else
+		read -r -n 1 yn
+	fi
+	echo ""
+	if [[ "$yn" =~ [yY] ]]
+	then
+		mkdir -p "$LOGS_PATH_FULL" && suc "created logs directory"
+	else
+		log "stopped."
+		exit 1
+	fi
 }
 
 function check_lib_teeworlds() {
@@ -473,8 +486,8 @@ function check_lib_teeworlds() {
 }
 
 function check_deps() {
-	check_gitpath
-	check_logdir
+	check_gitpath "$1"
+	check_logdir "$1"
 	check_lib_teeworlds
 
 	if [ "$CFG_SERVER_TYPE" == "teeworlds" ] && [ ! -f "$CFG_BIN" ]
