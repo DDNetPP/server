@@ -17,6 +17,7 @@ source lib/include/git.sh
 source lib/include/logs.sh
 source lib/include/screen.sh
 source lib/include/audit_code.sh
+source lib/include/traffic_logger.sh
 
 function get_player_ips() {
 	if [ ! "$(command -v rg)" ]
