@@ -9,7 +9,7 @@ fi
 
 source lib/lib.sh
 
-check_deps
+check_deps "$1"
 check_warnings
 check_running
 install_dep gdb

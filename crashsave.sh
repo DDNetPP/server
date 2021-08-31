@@ -11,7 +11,7 @@ source lib/lib.sh
 
 del_file "lib/tmp/failed_starts.txt"
 
-check_deps
+check_deps "$1"
 check_running
 get_sid
 
