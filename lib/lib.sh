@@ -18,6 +18,8 @@ source lib/include/logs.sh
 source lib/include/screen.sh
 source lib/include/audit_code.sh
 source lib/include/traffic_logger.sh
+# UNUSED for now...
+# source lib/include/external/dylanaraps/pure-bash-bible.sh
 
 function get_player_ips() {
 	if [ ! "$(command -v rg)" ]
