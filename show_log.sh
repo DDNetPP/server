@@ -47,7 +47,7 @@ do
 					pkill -f "id=$uuid"
 					pkill -f "tail.*$current_file"
 					current_file="$(get_latest_logfile)"
-					show_latest_log "$arg_follow" "$arg_logpath" --id="$uuid" &
+					exit 0
 				fi
 				sleep 1
 			done
