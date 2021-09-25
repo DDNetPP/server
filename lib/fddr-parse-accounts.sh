@@ -47,6 +47,8 @@ FDDR_MIN_NAME_LEN=3
 FDDR_MAX_NAME_LEN=20
 FDDR_MIN_PW_LEN=3
 FDDR_MAX_PW_LEN=128
+FDDR_ACCFLAG_ZOOMCURSOR="$((1<<0))"
+FDDR_ACCFLAG_PLOTSPAWN="$((1<<1))"
 
 declare -A fddr_a_lines
 declare -A fddr_a_names
@@ -103,6 +105,8 @@ function fddr.reset_vars() {
     acc_security_pin=""
     acc_register_date="0"
     acc_last_login_date="0"
+    acc_flags="0"
+    acc_email=""
 }
 
 function fddr.parse_account() {
@@ -209,6 +213,10 @@ function fddr.parse_account() {
             acc_register_date="$line"
         elif [ "$linenum" == "45" ]; then
             acc_last_login_date="$line"
+        elif [ "$linenum" == "46" ]; then
+            acc_flags="$line"
+        elif [ "$linenum" == "47" ]; then
+            acc_email="$line"
         else
             err "Error: too many lines $linenum/$FDDR_NUM_LINES"
             err "       $acc_path"
@@ -286,6 +294,8 @@ function fddr.write_account() {
         linenum="$((linenum+1))"; echo "$acc_security_pin"
         linenum="$((linenum+1))"; echo "$acc_register_date"
         linenum="$((linenum+1))"; echo "$acc_last_login_date"
+        linenum="$((linenum+1))"; echo "$acc_flags"
+        linenum="$((linenum+1))"; echo "$acc_email"
     } > "$file_path"
     if [ "$linenum" != "$FDDR_NUM_LINES" ]
     then
@@ -295,49 +305,60 @@ function fddr.write_account() {
 }
 
 function fddr.print_account() {
-    path="$1"
-    fddr.parse_account "$path"
-    echo "[ === '$acc_username' === ]"
-    echo "essential:"
-    echo "  file: $path"
-    echo "  last playername: $acc_last_playername"
-    if [ "$fddr_show_password" == "1" ]
-    then
-        echo "  password: $acc_password"
-    else
-        echo "  password: **"
-    fi
-    echo "  pin: $acc_security_pin"
-    echo "  port: $acc_port loggedin: $acc_logged_in"
-    echo "  clientID: $acc_client_id disabled: $acc_disabled"
-    echo "  euros: $acc_euros vip: $acc_vip vip-expire: $acc_expiredate_vip"
-    echo "  portalrifle: $acc_portal_rifle portal-rifle-expire: $acc_expire_date_portal_rifle"
-    echo "meta:"
-    echo "  version: $acc_version"
-    echo "  addr: $acc_addr last addr: $acc_last_addr"
-    echo "  register date: $acc_register_date"
-    echo "  last login date: $acc_last_login_date"
-    echo "  contact: $acc_contact"
-    echo "  timoutcode: $acc_timeout_code"
-    echo "stats:"
-    echo "  level: $acc_level xp: $acc_xp"
-    echo "  money: $acc_money police: $acc_police"
-    echo "  $acc_money0"
-    echo "  $acc_money1"
-    echo "  $acc_money2"
-    echo "  $acc_money3"
-    echo "  $acc_money4"
-    echo "  taserlevel: $acc_taser_level"
-    echo "  tasterbattery: $acc_taser_battery"
-    echo "  spwanweapon0: $acc_spawn_weapon0"
-    echo "  spwanweapon1: $acc_spawn_weapon1"
-    echo "  spwanweapon2: $acc_spawn_weapon2"
-    echo "  spooky ghost: $acc_spooky_ghost"
-    echo "  ninjajetpack: $acc_ninjajetpack"
-    echo "  kills: $acc_kills deaths: $acc_deaths"
-    echo "  blockpoints: $acc_block_points spree: $acc_killingspree_record"
-    echo "  survival k=$acc_survival_kills d=$acc_survival_deaths wins=$acc_survival_wins"
-    echo "  insta k=$acc_instagib_kills d=$acc_instagib_deaths wins=$acc_instagib_wins"
+	path="$1"
+	fddr.parse_account "$path"
+	echo "[ === '$acc_username' === ]"
+	echo "essential:"
+	echo "  file: $path"
+	echo "  last playername: $acc_last_playername"
+	if [ "$fddr_show_password" == "1" ]
+	then
+		echo "  password: $acc_password"
+	else
+		echo "  password: **"
+	fi
+	echo "  pin: $acc_security_pin"
+	echo "  port: $acc_port loggedin: $acc_logged_in"
+	echo "  clientID: $acc_client_id disabled: $acc_disabled"
+	echo "  euros: $acc_euros vip: $acc_vip vip-expire: $acc_expiredate_vip"
+	echo "  portalrifle: $acc_portal_rifle portal-rifle-expire: $acc_expire_date_portal_rifle"
+	echo "meta:"
+	echo "  version: $acc_version"
+	echo "  addr: $acc_addr last addr: $acc_last_addr"
+	echo "  register date: $acc_register_date"
+	echo "  last login date: $acc_last_login_date"
+	echo "  contact: $acc_contact"
+	echo "  email: $acc_email"
+	echo -n "  flags: $acc_flags"
+	if [[ "$((FDDR_ACCFLAG_PLOTSPAWN & acc_flags))" == "1" ]]
+	then
+		echo -n " PLOTSPAWN"
+	fi
+	if [[ "$((FDDR_ACCFLAG_ZOOMCURSOR & acc_flags))" == "1" ]]
+	then
+		echo -n " ZOOMCURSOR"
+	fi
+	echo ""
+	echo "  timoutcode: $acc_timeout_code"
+	echo "stats:"
+	echo "  level: $acc_level xp: $acc_xp"
+	echo "  money: $acc_money police: $acc_police"
+	echo "  $acc_money0"
+	echo "  $acc_money1"
+	echo "  $acc_money2"
+	echo "  $acc_money3"
+	echo "  $acc_money4"
+	echo "  taserlevel: $acc_taser_level"
+	echo "  tasterbattery: $acc_taser_battery"
+	echo "  spwanweapon0: $acc_spawn_weapon0"
+	echo "  spwanweapon1: $acc_spawn_weapon1"
+	echo "  spwanweapon2: $acc_spawn_weapon2"
+	echo "  spooky ghost: $acc_spooky_ghost"
+	echo "  ninjajetpack: $acc_ninjajetpack"
+	echo "  kills: $acc_kills deaths: $acc_deaths"
+	echo "  blockpoints: $acc_block_points spree: $acc_killingspree_record"
+	echo "  survival k=$acc_survival_kills d=$acc_survival_deaths wins=$acc_survival_wins"
+	echo "  insta k=$acc_instagib_kills d=$acc_instagib_deaths wins=$acc_instagib_wins"
 }
 
 function fddr.get_var() {
@@ -422,6 +443,16 @@ function fddr.check_database() {
         if [[ ! "${acc_last_login_date}" =~ ^[0-9]{10}$ ]] && [[ "${acc_last_login_date}" != "0" ]]
         then
             wrn "Invalid last login date '$acc_last_login_date' $(basename "$acc_path")"
+            fddr_warnings="$((fddr_warnings+1))"
+        fi
+        if [[ ! "${acc_flags}" =~ ^-?[0-9]+$ ]]
+        then
+            wrn "Invalid flags '$acc_flags' $(basename "$acc_path")"
+            fddr_warnings="$((fddr_warnings+1))"
+        fi
+        if [[ ! "${acc_email}" =~ ^[a-zA-Z0-9.\-@]+$ ]] && [[ "$acc_email" != "" ]]
+        then
+            wrn "Invalid email '$acc_email' $(basename "$acc_path")"
             fddr_warnings="$((fddr_warnings+1))"
         fi
         # lines
