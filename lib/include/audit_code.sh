@@ -21,9 +21,11 @@ _audit_code_system_whitelisted_systems=(
 	'** implementation is available on the host platform, the mutex subsystem'
 	'** CAPI3REF: Memory Allocation Subsystem'
 	'** matches the request for a function with nArg arguments in a system'
-	'** synced to disk. The journal file still exists in the file-system'
+	'** synced to disk. The journal file still exists in the file-system '
 	'** Convert a filename from whatever the underlying operating system'
 	'** assert() macro is enabled, each call into the Win32 native heap subsystem'
+	'** selection of the appropriate locking style based on the filesystem'
+	'** This file contains pre-processor directives related to operating system'
 
 )
 _audit_code_system_whitelisted_buffers=(
