@@ -61,44 +61,46 @@ function settings_err_tab() {
 }
 
 function parse_settings_line() {
-        local sett=$1
-        local val=$2
+	local sett=$1
+	local val=$2
 	local assign
-        if [ "$sett" == "compiled_binary_name" ]
-        then
-            wrn "WARNING: 'compiled_binary_name' is deprecated by 'compiled_teeworlds_name'"
-            wrn "         please fix at $current_settings_file:$line_num"
-            sett=compiled_teeworlds_name
-        elif [ "$sett" == "gitpath_src" ]
-        then
-            wrn "WARNING: 'gitpath_src' is deprecated by 'git_root'"
-            wrn "         please fix at $current_settings_file:$line_num"
-            sett=git_root
-        fi
-        local i
-        for i in "${!aSettStr[@]}"
-        do
-            if  [ "$sett" == "${aSettStr[$i]}" ]
-            then
-                # printf "[setting] (%s)%-16s=  %s\\n" "$i" "$sett" "$val"
-                if [[ "${aSettStr[$i]}" =~ path ]]
-                then
-                    val="${val%%+(/)}" # strip trailing slash
-                fi
-                valid_pattern=${aSettValid[$i]}
-                if [[ "$valid_pattern" != "" ]] && [[ ! "$val" =~ ^$valid_pattern$ ]]
-                then
-                    settings_err "invalid value '$val' for setting '$sett'"
-                    err "               values have to match $valid_pattern"
-                    exit 1
-                fi
-                assign="${aSettVar[$i]}='$val'"
-		eval "$assign"
-                return
-            fi
-        done
-        settings_err "unkown setting '$(tput bold)$sett$(tput sgr0)'"
-        exit 1
+	if [ "$sett" == "compiled_binary_name" ]
+	then
+		wrn "WARNING: 'compiled_binary_name' is deprecated by 'compiled_teeworlds_name'"
+		wrn "         please fix at $current_settings_file:$line_num"
+		sett=compiled_teeworlds_name
+	elif [ "$sett" == "gitpath_src" ]
+	then
+		wrn "WARNING: 'gitpath_src' is deprecated by 'git_root'"
+		wrn "         please fix at $current_settings_file:$line_num"
+		sett=git_root
+	fi
+	local i
+	for i in "${!aSettStr[@]}"
+	do
+		if  [ "$sett" == "${aSettStr[$i]}" ]
+		then
+			# printf "[setting] (%s)%-16s=  %s\\n" "$i" "$sett" "$val"
+			if [[ "${aSettStr[$i]}" =~ path ]]
+			then
+				val="${val%%+(/)}" # strip trailing slash
+			fi
+			valid_pattern=${aSettValid[$i]}
+			if [[ "$valid_pattern" != "" ]] && [[ ! "$val" =~ ^$valid_pattern$ ]]
+			then
+				settings_err "invalid value '$val' for setting '$sett'"
+				err "               values have to match $valid_pattern"
+				exit 1
+			fi
+			# escape single quotes
+			val="${val//\'/\'\\\'\'}"
+			assign="${aSettVar[$i]}='$val'"
+			eval "$assign"
+			return
+		fi
+	done
+	settings_err "unkown setting '$(tput bold)$sett$(tput sgr0)'"
+	exit 1
 }
 
 function parse_settings_cmd() {
