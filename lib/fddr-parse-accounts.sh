@@ -59,179 +59,179 @@ fddr_is_verbose=0
 fddr_show_password=0
 
 function fddr.reset_vars() {
-    acc_port=""
-    acc_logged_in="0"
-    acc_disabled="0"
-    acc_password=""
-    acc_username=""
-    acc_client_id="-1"
-    acc_level="0"
-    acc_xp="0"
-    acc_money="0"
-    acc_kills="0"
-    acc_deaths="0"
-    acc_police="0"
-    acc_survival_kills="0"
-    acc_survival_wins="0"
-    acc_spooky_ghost="0"
-    acc_money0=""
-    acc_money1=""
-    acc_money2=""
-    acc_money3=""
-    acc_money4=""
-    acc_vip="0"
-    acc_block_points="0"
-    acc_instagib_kills="0"
-    acc_instagib_wins="0"
-    acc_spawn_weapon0="0"
-    acc_spawn_weapon1="0"
-    acc_spawn_weapon2="0"
-    acc_ninjajetpack="0"
-    acc_last_playername=""
-    acc_survival_deaths="0"
-    acc_instagib_deaths="0"
-    acc_taser_level="0"
-    acc_killingspree_record="0"
-    acc_euros="0"
-    acc_expiredate_vip="0"
-    acc_portal_rifle="0"
-    acc_expire_date_portal_rifle="0"
-    acc_version=""
-    acc_addr=""
-    acc_last_addr=""
-    acc_taser_battery="0"
-    acc_contact=""
-    acc_timeout_code=""
-    acc_security_pin=""
-    acc_register_date="0"
-    acc_last_login_date="0"
-    acc_flags="0"
-    acc_email=""
+	acc_port=""
+	acc_logged_in="0"
+	acc_disabled="0"
+	acc_password=""
+	acc_username=""
+	acc_client_id="-1"
+	acc_level="0"
+	acc_xp="0"
+	acc_money="0"
+	acc_kills="0"
+	acc_deaths="0"
+	acc_police="0"
+	acc_survival_kills="0"
+	acc_survival_wins="0"
+	acc_spooky_ghost="0"
+	acc_money0=""
+	acc_money1=""
+	acc_money2=""
+	acc_money3=""
+	acc_money4=""
+	acc_vip="0"
+	acc_block_points="0"
+	acc_instagib_kills="0"
+	acc_instagib_wins="0"
+	acc_spawn_weapon0="0"
+	acc_spawn_weapon1="0"
+	acc_spawn_weapon2="0"
+	acc_ninjajetpack="0"
+	acc_last_playername=""
+	acc_survival_deaths="0"
+	acc_instagib_deaths="0"
+	acc_taser_level="0"
+	acc_killingspree_record="0"
+	acc_euros="0"
+	acc_expiredate_vip="0"
+	acc_portal_rifle="0"
+	acc_expire_date_portal_rifle="0"
+	acc_version=""
+	acc_addr=""
+	acc_last_addr=""
+	acc_taser_battery="0"
+	acc_contact=""
+	acc_timeout_code=""
+	acc_security_pin=""
+	acc_register_date="0"
+	acc_last_login_date="0"
+	acc_flags="0"
+	acc_email=""
 }
 
 function fddr.parse_account() {
-    acc_path=$1
-    if [ ! -f "$acc_path" ]
-    then
-        err "Error: file not found '$acc_path'"
-        exit 1
-    fi
-    fddr.reset_vars
-    linenum=-1
-    while IFS= read -r line
-    do
-        linenum="$((linenum+1))"
-        if [ "$linenum" == "0" ]; then
-            acc_port="$line"
-        elif [ "$linenum" == "1" ]; then
-            acc_logged_in="$line"
-        elif [ "$linenum" == "2" ]; then
-            acc_disabled="$line"
-        elif [ "$linenum" == "3" ]; then
-            acc_password="$line"
-        elif [ "$linenum" == "4" ]; then
-            acc_username="$line"
-        elif [ "$linenum" == "5" ]; then
-            acc_client_id="$line"
-        elif [ "$linenum" == "6" ]; then
-            acc_level="$line"
-        elif [ "$linenum" == "7" ]; then
-            acc_xp="$line"
-        elif [ "$linenum" == "8" ]; then
-            acc_money="$line"
-        elif [ "$linenum" == "9" ]; then
-            acc_kills="$line"
-        elif [ "$linenum" == "10" ]; then
-            acc_deaths="$line"
-        elif [ "$linenum" == "11" ]; then
-            acc_police="$line"
-        elif [ "$linenum" == "12" ]; then
-            acc_survival_kills="$line"
-        elif [ "$linenum" == "13" ]; then
-            acc_survival_wins="$line"
-        elif [ "$linenum" == "14" ]; then
-            acc_spooky_ghost="$line"
-        elif [ "$linenum" == "15" ]; then
-            acc_money0="$line"
-        elif [ "$linenum" == "16" ]; then
-            acc_money1="$line"
-        elif [ "$linenum" == "17" ]; then
-            acc_money2="$line"
-        elif [ "$linenum" == "18" ]; then
-            acc_money3="$line"
-        elif [ "$linenum" == "19" ]; then
-            acc_money4="$line"
-        elif [ "$linenum" == "20" ]; then
-            acc_vip="$line"
-        elif [ "$linenum" == "21" ]; then
-            acc_block_points="$line"
-        elif [ "$linenum" == "22" ]; then
-            acc_instagib_kills="$line"
-        elif [ "$linenum" == "23" ]; then
-            acc_instagib_wins="$line"
-        elif [ "$linenum" == "24" ]; then
-            acc_spawn_weapon0="$line"
-        elif [ "$linenum" == "25" ]; then
-            acc_spawn_weapon1="$line"
-        elif [ "$linenum" == "26" ]; then
-            acc_spawn_weapon2="$line"
-        elif [ "$linenum" == "27" ]; then
-            acc_ninjajetpack="$line"
-        elif [ "$linenum" == "28" ]; then
-            acc_last_playername="$line"
-        elif [ "$linenum" == "29" ]; then
-            acc_survival_deaths="$line"
-        elif [ "$linenum" == "30" ]; then
-            acc_instagib_deaths="$line"
-        elif [ "$linenum" == "31" ]; then
-            acc_taser_level="$line"
-        elif [ "$linenum" == "32" ]; then
-            acc_killingspree_record="$line"
-        elif [ "$linenum" == "33" ]; then
-            acc_euros="$line"
-        elif [ "$linenum" == "34" ]; then
-            acc_expiredate_vip="$line"
-        elif [ "$linenum" == "35" ]; then
-            acc_portal_rifle="$line"
-        elif [ "$linenum" == "36" ]; then
-            acc_expire_date_portal_rifle="$line"
-        elif [ "$linenum" == "37" ]; then
-            acc_version="$line"
-        elif [ "$linenum" == "38" ]; then
-            acc_addr="$line"
-        elif [ "$linenum" == "39" ]; then
-            acc_last_addr="$line"
-        elif [ "$linenum" == "40" ]; then
-            acc_taser_battery="$line"
-        elif [ "$linenum" == "41" ]; then
-            acc_contact="$line"
-        elif [ "$linenum" == "42" ]; then
-            acc_timeout_code="$line"
-        elif [ "$linenum" == "43" ]; then
-            acc_security_pin="$line"
-        elif [ "$linenum" == "44" ]; then
-            acc_register_date="$line"
-        elif [ "$linenum" == "45" ]; then
-            acc_last_login_date="$line"
-        elif [ "$linenum" == "46" ]; then
-            acc_flags="$line"
-        elif [ "$linenum" == "47" ]; then
-            acc_email="$line"
-        else
-            err "Error: too many lines $linenum/$FDDR_NUM_LINES"
-            err "       $acc_path"
-            exit 1
-        fi
-    done < "$acc_path"
-    if [ "$linenum" != "$FDDR_NUM_LINES" ]
-    then
-        if [ "$fddr_is_verbose" == "1" ]
-        then
-            wrn "Warning: invalid line number $linenum/$FDDR_NUM_LINES"
-            wrn "       $acc_path"
-        fi
-        fddr_warnings="$((fddr_warnings+1))"
-    fi
+	acc_path=$1
+	if [ ! -f "$acc_path" ]
+	then
+		err "Error: file not found '$acc_path'"
+		exit 1
+	fi
+	fddr.reset_vars
+	linenum=-1
+	while IFS= read -r line
+	do
+		linenum="$((linenum+1))"
+		if [ "$linenum" == "0" ]; then
+			acc_port="$line"
+		elif [ "$linenum" == "1" ]; then
+			acc_logged_in="$line"
+		elif [ "$linenum" == "2" ]; then
+			acc_disabled="$line"
+		elif [ "$linenum" == "3" ]; then
+			acc_password="$line"
+		elif [ "$linenum" == "4" ]; then
+			acc_username="$line"
+		elif [ "$linenum" == "5" ]; then
+			acc_client_id="$line"
+		elif [ "$linenum" == "6" ]; then
+			acc_level="$line"
+		elif [ "$linenum" == "7" ]; then
+			acc_xp="$line"
+		elif [ "$linenum" == "8" ]; then
+			acc_money="$line"
+		elif [ "$linenum" == "9" ]; then
+			acc_kills="$line"
+		elif [ "$linenum" == "10" ]; then
+			acc_deaths="$line"
+		elif [ "$linenum" == "11" ]; then
+			acc_police="$line"
+		elif [ "$linenum" == "12" ]; then
+			acc_survival_kills="$line"
+		elif [ "$linenum" == "13" ]; then
+			acc_survival_wins="$line"
+		elif [ "$linenum" == "14" ]; then
+			acc_spooky_ghost="$line"
+		elif [ "$linenum" == "15" ]; then
+			acc_money0="$line"
+		elif [ "$linenum" == "16" ]; then
+			acc_money1="$line"
+		elif [ "$linenum" == "17" ]; then
+			acc_money2="$line"
+		elif [ "$linenum" == "18" ]; then
+			acc_money3="$line"
+		elif [ "$linenum" == "19" ]; then
+			acc_money4="$line"
+		elif [ "$linenum" == "20" ]; then
+			acc_vip="$line"
+		elif [ "$linenum" == "21" ]; then
+			acc_block_points="$line"
+		elif [ "$linenum" == "22" ]; then
+			acc_instagib_kills="$line"
+		elif [ "$linenum" == "23" ]; then
+			acc_instagib_wins="$line"
+		elif [ "$linenum" == "24" ]; then
+			acc_spawn_weapon0="$line"
+		elif [ "$linenum" == "25" ]; then
+			acc_spawn_weapon1="$line"
+		elif [ "$linenum" == "26" ]; then
+			acc_spawn_weapon2="$line"
+		elif [ "$linenum" == "27" ]; then
+			acc_ninjajetpack="$line"
+		elif [ "$linenum" == "28" ]; then
+			acc_last_playername="$line"
+		elif [ "$linenum" == "29" ]; then
+			acc_survival_deaths="$line"
+		elif [ "$linenum" == "30" ]; then
+			acc_instagib_deaths="$line"
+		elif [ "$linenum" == "31" ]; then
+			acc_taser_level="$line"
+		elif [ "$linenum" == "32" ]; then
+			acc_killingspree_record="$line"
+		elif [ "$linenum" == "33" ]; then
+			acc_euros="$line"
+		elif [ "$linenum" == "34" ]; then
+			acc_expiredate_vip="$line"
+		elif [ "$linenum" == "35" ]; then
+			acc_portal_rifle="$line"
+		elif [ "$linenum" == "36" ]; then
+			acc_expire_date_portal_rifle="$line"
+		elif [ "$linenum" == "37" ]; then
+			acc_version="$line"
+		elif [ "$linenum" == "38" ]; then
+			acc_addr="$line"
+		elif [ "$linenum" == "39" ]; then
+			acc_last_addr="$line"
+		elif [ "$linenum" == "40" ]; then
+			acc_taser_battery="$line"
+		elif [ "$linenum" == "41" ]; then
+			acc_contact="$line"
+		elif [ "$linenum" == "42" ]; then
+			acc_timeout_code="$line"
+		elif [ "$linenum" == "43" ]; then
+			acc_security_pin="$line"
+		elif [ "$linenum" == "44" ]; then
+			acc_register_date="$line"
+		elif [ "$linenum" == "45" ]; then
+			acc_last_login_date="$line"
+		elif [ "$linenum" == "46" ]; then
+			acc_flags="$line"
+		elif [ "$linenum" == "47" ]; then
+			acc_email="$line"
+		else
+			err "Error: too many lines $linenum/$FDDR_NUM_LINES"
+			err "       $acc_path"
+			exit 1
+		fi
+	done < "$acc_path"
+	if [ "$linenum" != "$FDDR_NUM_LINES" ]
+	then
+		if [ "$fddr_is_verbose" == "1" ]
+		then
+			wrn "Warning: invalid line number $linenum/$FDDR_NUM_LINES"
+			wrn "       $acc_path"
+		fi
+		fddr_warnings="$((fddr_warnings+1))"
+	fi
 }
 
 function fddr.write_account() {
@@ -304,6 +304,16 @@ function fddr.write_account() {
     fi
 }
 
+function fddr.print_timestamp() {
+	local ts="$1"
+	if [ "$ts" == "" ] || [ "$ts" == "0" ]
+	then
+		printf "%s" "$ts"
+		return
+	fi
+	printf "%s (%s)" "$ts" "$(date -d @"$ts")"
+}
+
 function fddr.print_account() {
 	path="$1"
 	fddr.parse_account "$path"
@@ -325,8 +335,8 @@ function fddr.print_account() {
 	echo "meta:"
 	echo "  version: $acc_version"
 	echo "  addr: $acc_addr last addr: $acc_last_addr"
-	echo "  register date: $acc_register_date"
-	echo "  last login date: $acc_last_login_date"
+	echo "  register date: $(fddr.print_timestamp "$acc_register_date")"
+	echo "  last login date: $(fddr.print_timestamp "$acc_last_login_date")"
 	echo "  contact: $acc_contact"
 	echo "  email: $acc_email"
 	echo -n "  flags: $acc_flags"
