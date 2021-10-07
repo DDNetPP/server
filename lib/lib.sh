@@ -21,6 +21,14 @@ source lib/include/traffic_logger.sh
 # UNUSED for now...
 # source lib/include/external/dylanaraps/pure-bash-bible.sh
 
+function is_running_loop() {
+	if pgrep -f "$SERVER_UUID:loop_script" > /dev/null
+	then
+		return 0
+	fi
+	return 1
+}
+
 function get_player_ips() {
 	if [ ! "$(command -v rg)" ]
 	then

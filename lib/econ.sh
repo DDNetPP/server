@@ -44,7 +44,7 @@ then
     exit 1
 fi
 
-if ! pgrep -f "$SERVER_UUID"
+if ! pgrep -f "$SERVER_UUID" > /dev/null
 then
     err "Error: server is not running"
     err "       ./start.sh"

@@ -104,7 +104,7 @@ $CFG_ENV_RUNTIME gdb -ex='set confirm off' \
     $custom_gdb \
     $gdb_corefile_cmd \
     -ex=quit --args \
-    ./$CFG_BIN "logfile $logfile;#sid:$SERVER_UUID"
+    ./$CFG_BIN "logfile $logfile;#sid:$SERVER_UUID:loop_script"
 EOF
 start_ts=$(date '+%Y-%m-%d %H:%M:%S')
 {

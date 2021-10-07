@@ -15,41 +15,46 @@ check_running
 
 
 arg_is_interactive=0
+arg_logs=1
 arg_tmp_map_url=""
 
 for arg in "$@"
 do
-    if [ "$arg" == "--help" ] || [ "$arg" == "-h" ]
-    then
-        echo "usage: ./start.sh [map url] [OPTION]"
-        echo "options:"
-        echo "  -i|--interactive        no logfiles and daemon"
-        echo "map url:"
-        echo ""
-        echo "  when no arguemnt provided a production server is started"
-        echo "  it is writing a logfile and running in the background"
-        echo ""
-        echo "  when the map argument is provided a test server is started"
-        echo "  the map will be downloaded into maps/tmp/mapname.map"
-        echo "  and the server will be started with that map and running in the foreground"
-        echo "  no logfile will be written"
-        exit 0
-    elif [ "${arg::1}" == "-" ]
-    then
-        if [ "$arg" == "-i" ] || [ "$arg" == "--interactive" ]
-        then
-            arg_is_interactive=1
-        else
-            err "invalid argument '$arg' see '--help'"
-            exit 1
-        fi
-    elif [ "$arg_tmp_map_url" == "" ]
-    then
-        arg_tmp_map_url="$arg"
-    else
-        err "unexpected argument '$arg' see '--help'"
-        exit 1
-    fi
+	if [ "$arg" == "--help" ] || [ "$arg" == "-h" ]
+	then
+		echo "usage: ./start.sh [map url] [OPTION]"
+		echo "options:"
+		echo "  -i|--interactive        no logfiles and daemon"
+		echo "  -n|--no            	do not prompt for showing logs"
+		echo "map url:"
+		echo ""
+		echo "  when no arguemnt provided a production server is started"
+		echo "  it is writing a logfile and running in the background"
+		echo ""
+		echo "  when the map argument is provided a test server is started"
+		echo "  the map will be downloaded into maps/tmp/mapname.map"
+		echo "  and the server will be started with that map and running in the foreground"
+		echo "  no logfile will be written"
+		exit 0
+	elif [ "${arg::1}" == "-" ]
+	then
+		if [ "$arg" == "-i" ] || [ "$arg" == "--interactive" ]
+		then
+			arg_is_interactive=1
+		elif [ "$arg" == "-n" ] || [ "$arg" == "--no" ]
+		then
+			arg_logs=0
+		else
+			err "invalid argument '$arg' see '--help'"
+			exit 1
+		fi
+	elif [ "$arg_tmp_map_url" == "" ]
+	then
+		arg_tmp_map_url="$arg"
+	else
+		err "unexpected argument '$arg' see '--help'"
+		exit 1
+	fi
 done
 
 archive_gmon
@@ -91,30 +96,33 @@ fi
 log_ext="${CFG_LOG_EXT:-.log}"
 if [ "$CFG_SERVER_TYPE" == "tem" ]
 then
-    logfile="${SCRIPT_ROOT}/logs/tem/vanilla_tem_$(date +%F_%H-%M-%S)${log_ext}"
-    mkdir -p logs/tem
-    cd "$CFG_TEM_PATH" || exit 1
-    if [ "$arg_is_interactive" == "1" ]
-    then
-        ./start_tem.sh "$CFG_TEM_SETTINGS" "#sid:$SERVER_UUID"
-    else
-        nohup ./start_tem.sh "$CFG_TEM_SETTINGS" "#sid:$SERVER_UUID" > "$logfile" 2>&1 &
-    fi
+	logfile="${SCRIPT_ROOT}/logs/tem/vanilla_tem_$(date +%F_%H-%M-%S)${log_ext}"
+	mkdir -p logs/tem
+	cd "$CFG_TEM_PATH" || exit 1
+	if [ "$arg_is_interactive" == "1" ]
+	then
+		./start_tem.sh "$CFG_TEM_SETTINGS" "#sid:$SERVER_UUID"
+	else
+		nohup ./start_tem.sh "$CFG_TEM_SETTINGS" "#sid:$SERVER_UUID" > "$logfile" 2>&1 &
+	fi
 else # teeworlds
-    logfile="$LOGS_PATH_FULL/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S)${log_ext}"
-    cache_logpath "$logfile"
+	logfile="$LOGS_PATH_FULL/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S)${log_ext}"
+	cache_logpath "$logfile"
 
-    run_cmd="$CFG_ENV_RUNTIME nohup ./$CFG_BIN \"#sid:$SERVER_UUID\" > $logfile 2>&1 &"
-    if [ "$arg_is_interactive" == "1" ]
-    then
-        run_cmd="$CFG_ENV_RUNTIME ./$CFG_BIN \"#sid:$SERVER_UUID\""
-    fi
-    log "running:"
-    tput bold
-    echo "$run_cmd"
-    tput sgr0
-    eval "$run_cmd"
+	run_cmd="$CFG_ENV_RUNTIME nohup ./$CFG_BIN \"#sid:$SERVER_UUID\" > $logfile 2>&1 &"
+	if [ "$arg_is_interactive" == "1" ]
+	then
+		run_cmd="$CFG_ENV_RUNTIME ./$CFG_BIN \"#sid:$SERVER_UUID\""
+	fi
+	log "running:"
+	tput bold
+	echo "$run_cmd"
+	tput sgr0
+	eval "$run_cmd"
 
-    show_log_file "$logfile"
+	if [ "$arg_logs" == "1" ]
+	then
+		show_log_file "$logfile" "$arg_yes"
+	fi
 fi
 
