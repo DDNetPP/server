@@ -28,6 +28,7 @@ function tem_update() {
 }
 
 arg_type=''
+arg_refresh=0
 
 for arg in "$@"
 do
@@ -38,8 +39,9 @@ do
 		echo "  teeworlds   compile a teeworlds server $(print_default teeworlds)"
 		echo "  tem         update a TeeworldsEconMod repo $(print_default tem)"
 		echo "  bot         update side runner bot"
-		echo "otpions:"
+		echo "options:"
 		echo "  -f|--force      force build dirty git tree"
+		echo "  --refresh       only update binary no rebuild (for now teeworlds only)"
 		exit 0
 	elif [ "${arg::1}" != "-" ] && [ "$arg_type" == "" ]
 	then
@@ -51,20 +53,41 @@ do
 			exit 1
 		fi
 		shift
+	elif [ "$arg" == "--refresh" ]
+	then
+		arg_refresh=1
+	else
+		err "Error: unknown argument '$arg' try --help"
+		exit 1
 	fi
 done
 
 if [ "$arg_type" == "bot" ]
 then
+	if [ "$arg_refresh" == "1" ]
+	then
+		err "Error: --refresh is not supported for bot yet"
+		exit 1
+	fi
 	cmake_update_bot "$@"
 	update_configs
 	git_save_pull
 elif [ "$CFG_SERVER_TYPE" == "teeworlds" ] || [ "$arg_type" == "teeworlds" ]
 then
+	if [ "$arg_refresh" == "1" ]
+	then
+		cmake_refresh_teeworlds_binary
+		exit 0
+	fi
 	cmake_update_teeworlds "$@"
 	git_save_pull
 elif [ "$CFG_SERVER_TYPE" == "tem" ] || [ "$arg_type" == "tem" ]
 then
+	if [ "$arg_refresh" == "1" ]
+	then
+		err "Error: --refresh is not supported for tem"
+		exit 1
+	fi
 	tem_update
 	update_configs
 	git_save_pull

@@ -29,6 +29,18 @@ function vartype() {
 	esac
 }
 
+function cmake_refresh_teeworlds_binary() {
+	if [ ! -f "$CFG_GIT_PATH_MOD/build/$CFG_COMPILED_BIN" ]
+	then
+		err "Error: binary not found try ./update.sh"
+		err "       $CFG_GIT_PATH_MOD/build/$CFG_COMPILED_BIN"
+		return
+	fi
+	cp \
+		"$CFG_GIT_PATH_MOD/build/$CFG_COMPILED_BIN" \
+		"${SCRIPT_ROOT}/${CFG_BIN}"
+}
+
 function cmake_update_teeworlds() {
 	cmake_update \
 		"$CFG_GIT_PATH_MOD" \
@@ -228,7 +240,7 @@ function cmake_update() {
 			mkdir -p "${SCRIPT_ROOT}/bin/backup"
 			cp "${SCRIPT_ROOT}/${CFG_BIN}" "${SCRIPT_ROOT}/bin/backup/$bin_old_commit"
 		fi
-		cp "$arg_compiled_bin" "${SCRIPT_ROOT}/${CFG_BIN}"
+		cmake_refresh_teeworlds_binary
 
 		num_maps="$(find ./data/maps -maxdepth 1 -name '*.map' 2>/dev/null | wc -l)"
 		if [ "$num_maps" != 0 ]
