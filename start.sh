@@ -122,7 +122,7 @@ else # teeworlds
 
 	if [ "$arg_logs" == "1" ]
 	then
-		show_log_file "$logfile" "$arg_yes"
+		show_log_file "$logfile"
 	fi
 fi
 
