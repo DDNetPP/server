@@ -359,6 +359,20 @@ function show_procs_name() {
     return 1
 }
 
+function crash_save_tem() {
+	# give server 3 secs to start
+	sleep 3
+	while true
+	do
+		mkdir -p "${SCRIPT_ROOT}/logs/tem"
+		local log_ext="${CFG_LOG_EXT:-.log}"
+		local logfile="${SCRIPT_ROOT}/logs/tem/tem_$(date +%F_%H-%M-%S)${log_ext}"
+		./start_tem.sh "$CFG_TEM_SETTINGS" "#sid:$SERVER_UUID" > "$logfile" 2>&1
+		sleep 5
+	done
+}
+export -f crash_save_tem
+
 function restart_side_runner() {
 	trap "stop_side_runner;exit" EXIT
 	log "restarting side_runners .."
@@ -371,14 +385,27 @@ function restart_side_runner() {
 		log "starting side runner $(basename "$plugin")/side_runner.sh .."
 		"$plugin"side_runner.sh "$SERVER_UUID" > logs/side_runner_"$(basename "$plugin")".log 2>&1 &
 	done
+	if is_cfg CFG_TEM_SIDE_RUNNER
+	then
+		pkill -f "start_tem.sh.*$SERVER_UUID"
+		pkill -f -- "crash_save_tem --uuid=$SERVER_UUID"
+		(
+			cd "$CFG_TEM_PATH" || exit 1
+			nohup bash -c "crash_save_tem --uuid=$SERVER_UUID" 2>&1 &
+			log "starting side runner TEM .."
+		)
+	fi
 }
 
 function stop_side_runner() {
-    if pgrep -f "side_runner.sh $SERVER_UUID"
-    then
-        log "stopping side_runner.sh"
-        pkill -f "side_runner.sh $SERVER_UUID"
-    fi
+	if pgrep -f "side_runner.sh $SERVER_UUID"
+	then
+		log "stopping side_runner.sh"
+		pkill -f "side_runner.sh $SERVER_UUID"
+	fi
+	pkill -f "start_tem.sh.*$SERVER_UUID"
+	pkill -f -- "crash_save_tem --uuid=$SERVER_UUID"
+	pkill -f -- "settings=$CFG_TEM_SETTINGS"
 }
 
 function check_running() {

@@ -32,4 +32,5 @@ def_var 'CFG_AUTO_CLEANUP_OLD_LOCAL_DATA' 'auto_cleanup_old_local_data' "0" '(0|
 def_var 'CFG_GITPATH_ANTIBOT' 'gitpath_antibot' "" ''
 def_var 'CFG_LOG_DDOS' 'log_ddos' "0" '(0|no|off|false|1|yes|on|true)'
 def_var 'CFG_UNIX_USER' 'unix_user' "$USER" ''
+def_var 'CFG_TEM_SIDE_RUNNER' 'tem_side_runner' "0" '(0|no|off|false|1|yes|on|true)'
 

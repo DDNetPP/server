@@ -36,22 +36,10 @@ do
 			arg_print=1
 		elif [ "$arg" == "--tem" ]
 		then
-			arg_follow=-f
-			uuid="$(generate_uuid)"
-			current_file="$(get_latest_logfile)"
-			show_latest_log "$arg_follow" "$arg_logpath" --id="$uuid" &
-			while true
-			do
-				if [ "$current_file" != "$(get_latest_logfile)" ]
-				then
-					pkill -f "id=$uuid"
-					pkill -f "tail.*$current_file"
-					current_file="$(get_latest_logfile)"
-					exit 0
-				fi
-				sleep 1
-			done
-			break
+			# use config tem_side_runner=1
+			# to pickup restarts
+			show_latest_log -f "$arg_logpath"
+			exit 0
 		elif [ "$arg" == "-f" ]
 		then
 			arg_follow=-f
