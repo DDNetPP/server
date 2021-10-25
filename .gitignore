@@ -35,6 +35,7 @@ data/
 !lib/test/unit/data/
 maps/
 maps7/
+maps7
 records/
 logs/
 core_dumps/
