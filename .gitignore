@@ -30,6 +30,7 @@ lib/var
 lib/plugins
 bin/
 cfg/
+cfg
 votes/
 data/
 !lib/test/unit/data/
