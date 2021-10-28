@@ -366,7 +366,8 @@ function crash_save_tem() {
 	do
 		mkdir -p "${SCRIPT_ROOT}/logs/tem"
 		local log_ext="${CFG_LOG_EXT:-.log}"
-		local logfile="${SCRIPT_ROOT}/logs/tem/tem_$(date +%F_%H-%M-%S)${log_ext}"
+		local logfile
+		logfile="${SCRIPT_ROOT}/logs/tem/tem_$(date +%F_%H-%M-%S)${log_ext}"
 		./start_tem.sh "$CFG_TEM_SETTINGS" "#sid:$SERVER_UUID" > "$logfile" 2>&1
 		sleep 5
 	done
