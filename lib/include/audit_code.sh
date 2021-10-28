@@ -26,6 +26,10 @@ _audit_code_system_whitelisted_systems=(
 	'** assert() macro is enabled, each call into the Win32 native heap subsystem'
 	'** selection of the appropriate locking style based on the filesystem'
 	'** This file contains pre-processor directives related to operating system'
+	'** Create an RBU VFS named zName that accesses the underlying file-system'
+	'      ** from the start of the wal file. This is because, for a system'
+	'** synced to disk. The journal file still exists in the file-system'
+	'** pFd->deviceCharacteristics are set according to the file-system'
 
 )
 _audit_code_system_whitelisted_buffers=(
