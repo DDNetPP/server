@@ -9,8 +9,7 @@ function tw_configs() {
 	for flag in "$@"
 	do
 		grep -r "MACRO_CONFIG_.*CFGFLAG_$flag" \
-			src/ \
-			--include={variables.h,config_variables.h} |
+			src/ |
 			LC_ALL=C sort | while IFS= read -r line
 		do
 			line="$(echo "$line" | cut -d'(' -f2 | cut -d',' -f2)"
