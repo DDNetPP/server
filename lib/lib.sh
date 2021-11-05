@@ -564,6 +564,14 @@ function update_configs() {
 		cd cnf || exit 1
 		git_save_pull
 	fi
+	cd "$SCRIPT_ROOT" || exit 1
+	if [[ -d maps/ ]] && [[ -d maps/.git ]]
+	then
+		log "found maps directory maps/"
+		log "updating maps ..."
+		cd maps || exit 1
+		git_save_pull
+	fi
 	for plugin in ./lib/plugins/*/
 	do
 		cd "$SCRIPT_ROOT" || exit 1

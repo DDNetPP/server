@@ -242,14 +242,13 @@ function cmake_update() {
 		fi
 		cmake_refresh_teeworlds_binary
 
+		update_configs
 		num_maps="$(find ./data/maps -maxdepth 1 -name '*.map' 2>/dev/null | wc -l)"
 		if [ "$num_maps" != 0 ]
 		then
 			log "copying $num_maps maps from source directory ..."
 			cp data/maps/*.map "${SCRIPT_ROOT}/maps"
 		fi
-
-		update_configs
 
 		if is_cfg CFG_TEST_RUN
 		then
