@@ -586,6 +586,11 @@ function fddr.filter() {
 		num_accs="$((num_accs+1))"
 		fddr.parse_account "$acc" || exit 1
 		val="$(eval "echo \$$filter_variable")"
+		if [ "$filter_variable" == "acc_addr" ] || \
+			[ "$filter_variable" == "acc_last_addr" ]
+		then
+			val="${val%%:*}"
+		fi
 		if [ "$filter_operator" == "==" ]
 		then
 			if [ "$val" == "$filter_value" ]
