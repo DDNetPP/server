@@ -524,102 +524,102 @@ function fddr.filter_print() {
 }
 
 function fddr.filter() {
-    # usage: fddr.filter variable operator value
-    # variables: (see get_vars)
-    # operator: == != < >
-    # value: string or integer
-    local acc
-    local num_accs=0
-    local num_matches=0
-    local filter_variable="$1"
-    local filter_operator="$2"
-    local filter_value="$3"
-    local arg_show="$4"
-    local val
-    local var
-    local found=0
-    if { [ "$1" == "--help" ] || [ "$1" == "help" ] || [ "$1" == "-h" ]; } || \
-        { [ "$1" == "" ] && [ "$2" == "" ] && [ "$3" == "" ]; }
-    then
-        err "usage: $0 filter 'variable operator value' ['show variables..']"
-        err "example:"
-        err "  $0 filter 'acc_level > 60'"
-        err "  $0 filter 'acc_level > 60' 'show acc acc_username acc_level"
-        exit 1
-    elif [ "$filter_variable" == "" ]
-    then
-        err "filter: variable can not be empty!"
-        err "        see $(tput bold)$0 get_vars$(tput sgr0) for a full list"
-        exit 1
-    elif [[ ! "$filter_operator" =~ (==|!=|<|>) ]]
-    then
-        err "filter: invalid operator '$filter_operator'"
-        err "        valid operators: ==, !=, <, and >"
-        exit 1
-    elif [[ "$filter_operator" =~ (<|>) ]] && [ "$filter_value" == "" ]
-    then
-        err "filter: value can not be empty when using operator '$filter_operator'"
-        exit 1
-    fi
-    fddr.reset_vars
-    for var in "${!acc_@}"
-    do
-        if [ "$filter_variable" == "$var" ]
-        then
-            found=1
-            break
-        fi
-    done
-    if [ "$found" != "1" ]
-    then
-        err "filter: invalid variable '$filter_variable'"
-        err "        $0 get_vars"
-        exit 1
-    fi
-    if [ ! -d "$FDDR_ACC_PATH" ]
-    then
-        err "Error: '$FDDR_ACC_PATH' is not a directory"
-        exit 1
-    fi
-    for acc in "$FDDR_ACC_PATH"/*.acc
-    do
-        num_accs="$((num_accs+1))"
-        fddr.parse_account "$acc" || exit 1
-        val="$(eval "echo \$$filter_variable")"
-        if [ "$filter_operator" == "==" ]
-        then
-            if [ "$val" == "$filter_value" ]
-            then
-                num_matches="$((num_matches+1))"
-                fddr.filter_print "$acc" "$arg_show"
-            fi
-        elif [ "$filter_operator" == "!=" ]
-        then
-            if [ "$val" != "$filter_value" ]
-            then
-                num_matches="$((num_matches+1))"
-                fddr.filter_print "$acc" "$arg_show"
-            fi
-        elif [ "$filter_operator" == ">" ]
-        then
-            if [ "$val" -gt "$filter_value" ]
-            then
-                num_matches="$((num_matches+1))"
-                fddr.filter_print "$acc" "$arg_show"
-            fi
-        elif [ "$filter_operator" == "<" ]
-        then
-            if [ "$val" -lt "$filter_value" ]
-            then
-                num_matches="$((num_matches+1))"
-                fddr.filter_print "$acc" "$arg_show"
-            fi
-        else
-            err "invalid operator '$filter_operator'"
-            exit 1
-        fi
-    done
-    log "total accounts: $num_accs matches: $num_matches"
+	# usage: fddr.filter variable operator value
+	# variables: (see get_vars)
+	# operator: == != < >
+	# value: string or integer
+	local acc
+	local num_accs=0
+	local num_matches=0
+	local filter_variable="$1"
+	local filter_operator="$2"
+	local filter_value="$3"
+	local arg_show="$4"
+	local val
+	local var
+	local found=0
+	if { [ "$1" == "--help" ] || [ "$1" == "help" ] || [ "$1" == "-h" ]; } || \
+		{ [ "$1" == "" ] && [ "$2" == "" ] && [ "$3" == "" ]; }
+	then
+		err "usage: $0 filter 'variable operator value' ['show variables..']"
+		err "example:"
+		err "  $0 filter 'acc_level > 60'"
+		err "  $0 filter 'acc_level > 60' 'show acc acc_username acc_level"
+		exit 1
+	elif [ "$filter_variable" == "" ]
+	then
+		err "filter: variable can not be empty!"
+		err "        see $(tput bold)$0 get_vars$(tput sgr0) for a full list"
+		exit 1
+	elif [[ ! "$filter_operator" =~ (==|!=|<|>) ]]
+	then
+		err "filter: invalid operator '$filter_operator'"
+		err "        valid operators: ==, !=, <, and >"
+		exit 1
+	elif [[ "$filter_operator" =~ (<|>) ]] && [ "$filter_value" == "" ]
+	then
+		err "filter: value can not be empty when using operator '$filter_operator'"
+		exit 1
+	fi
+	fddr.reset_vars
+	for var in "${!acc_@}"
+	do
+		if [ "$filter_variable" == "$var" ]
+		then
+			found=1
+			break
+		fi
+	done
+	if [ "$found" != "1" ]
+	then
+		err "filter: invalid variable '$filter_variable'"
+		err "        $0 get_vars"
+		exit 1
+	fi
+	if [ ! -d "$FDDR_ACC_PATH" ]
+	then
+		err "Error: '$FDDR_ACC_PATH' is not a directory"
+		exit 1
+	fi
+	for acc in "$FDDR_ACC_PATH"/*.acc
+	do
+		num_accs="$((num_accs+1))"
+		fddr.parse_account "$acc" || exit 1
+		val="$(eval "echo \$$filter_variable")"
+		if [ "$filter_operator" == "==" ]
+		then
+			if [ "$val" == "$filter_value" ]
+			then
+				num_matches="$((num_matches+1))"
+				fddr.filter_print "$acc" "$arg_show"
+			fi
+		elif [ "$filter_operator" == "!=" ]
+		then
+			if [ "$val" != "$filter_value" ]
+			then
+				num_matches="$((num_matches+1))"
+				fddr.filter_print "$acc" "$arg_show"
+			fi
+		elif [ "$filter_operator" == ">" ]
+		then
+			if [ "$val" -gt "$filter_value" ]
+			then
+				num_matches="$((num_matches+1))"
+				fddr.filter_print "$acc" "$arg_show"
+			fi
+		elif [ "$filter_operator" == "<" ]
+		then
+			if [ "$val" -lt "$filter_value" ]
+			then
+				num_matches="$((num_matches+1))"
+				fddr.filter_print "$acc" "$arg_show"
+			fi
+		else
+			err "invalid operator '$filter_operator'"
+			exit 1
+		fi
+	done
+	log "total accounts: $num_accs matches: $num_matches"
 }
 
 function fddr.rewrite_database() {
