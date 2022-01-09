@@ -102,10 +102,6 @@ function map_themes_post() {
 					mkdir -p ./designs/"$theme"
 					"$t" ./maps/"$theme".map ./designs/"$theme"/"$(basename "$t" .py)".map
 				done
-			else
-				log "skipping non updated map"
-				log "  old: ${OldMapHashes["$theme"]}"
-				log "  new: $(sha1sum ./maps/"$theme".map | cut -d' ' -f1)"
 			fi
 		fi
 	done
