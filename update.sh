@@ -53,6 +53,10 @@ do
 			exit 1
 		fi
 		shift
+	elif [ "$arg" == "--force" ] || [ "$arg" == "-f" ]
+	then
+		# gets passed on
+		test
 	elif [ "$arg" == "--refresh" ]
 	then
 		arg_refresh=1
