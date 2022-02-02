@@ -130,7 +130,7 @@ function cmake_update() {
 	if [[ -n $(git status -s) ]] || [[ "$git_pull" == "fail" ]]
 	then
 		git submodule update
-		if [ "$arg_force_pull" == "1" ]
+		if [ "$arg_force_pull" == "1" ] || is_cfg CFG_GIT_FORCE_PULL
 		then
 			upstream="$(git for-each-ref --format='%(upstream:short)' "$(git symbolic-ref -q HEAD)")"
 			wrn "Warning: git status not clean after pull"
