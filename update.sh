@@ -75,7 +75,8 @@ function map_themes_pre() {
 	local theme
 	for theme in "$CFG_GIT_ROOT"/maps-scripts/*/
 	do
-		local theme="$(basename "$theme")"
+		local theme
+		theme="$(basename "$theme")"
 		if [ -f ./maps/"$theme".map ]
 		then
 			OldMapHashes["$theme"]="$(sha1sum ./maps/"$theme".map | cut -d' ' -f1)"
