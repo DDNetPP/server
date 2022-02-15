@@ -18,5 +18,7 @@ archive_gmon
 logfile="$LOGS_PATH_FULL_TW/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S)${CFG_LOG_EXT}"
 cache_logpath "$logfile"
 
-gdb -ex=run --args ./"$CFG_BIN" "logfile $logfile;#sid:$SERVER_UUID"
+run_cmd="$CFG_ENV_RUNTIME gdb -ex=run --args ./\"$CFG_BIN\" \"logfile $logfile;#sid:$SERVER_UUID\""
+log "$run_cmd"
+eval "$run_cmd"
 
