@@ -24,6 +24,10 @@ fi
 check_server_dir
 
 fifo_file="$(get_tw_config sv_input_fifo "")"
+if [ "$fifo_file" == "" ]
+then
+	fifo_file="$(get_tw_config cl_input_fifo "")"
+fi
 
 if [ "$fifo_file" == "" ]
 then
