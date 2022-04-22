@@ -1,13 +1,21 @@
 #!/bin/bash
 
 function _log() {
-	local ts_msg
-	ts_msg="[$(date '+%F %H:%M:%S')]$1"
+	# _log <prefix_rich> <prefix_plain> <msg>
+	local prefix_rich="$1"
+	local prefix_plain="$2"
+	local msg="$3"
+	local ts
+	local msg_rich
+	local msg_plain
+	msg_rich="$prefix_rich $msg"
+	msg_plain="$prefix_plain $msg"
+	ts="[$(date '+%F %H:%M:%S')]"
 	if [ "$LOG_TS" == "1" ]
 	then
-		echo -ne "$ts_msg"
+		echo -ne "$ts$msg_rich"
 	else
-		echo -ne "$1"
+		echo -ne "$msg_rich"
 	fi
 	if [ "$CFG_POST_LOGS_DIR" == "" ]
 	then
@@ -15,7 +23,7 @@ function _log() {
 	fi
 	if [ -d "$CFG_POST_LOGS_DIR" ]
 	then
-		echo -ne "$ts_msg" >> "$CFG_POST_LOGS_DIR"/server_log.txt
+		echo -ne "$ts$msg_plain" >> "$CFG_POST_LOGS_DIR"/server_log.txt
 	fi
 }
 
@@ -23,34 +31,34 @@ function err() {
 	if [ "$#" == 2 ] && [ "$1" == "--log" ]
 	then
 		log_err "$2"
-		_log "[${RED}error${RESET}] $2\n"
+		_log "[${RED}error${RESET}]" "[error]" "$2\n"
 	elif [ "$#" == 2 ] && [ "$1" == "-n" ]
 	then
-		_log "[${RED}error${RESET}] $2"
+		_log "[${RED}error${RESET}]" "[error]" "$2"
 	else
-		_log "[${RED}error${RESET}] $1\n"
+		_log "[${RED}error${RESET}]" "[error]" "$1\n"
 	fi
 }
 
 function log() {
 	if [ "$#" == 2 ] && [ "$1" == "-n" ]
 	then
-		_log "[${YELLOW}*${RESET}] $2"
+		_log "[${YELLOW}*${RESET}]" "[*]" "$2"
 	else
-		_log "[${YELLOW}*${RESET}] $1\n"
+		_log "[${YELLOW}*${RESET}]" "[*]" "$1\n"
 	fi
 }
 
 function wrn() {
-	_log "[${YELLOW}!${RESET}] $1\n"
+	_log "[${YELLOW}!${RESET}]" "[!]" "$1\n"
 }
 
 function suc() {
 	if [ "$#" == 2 ] && [ "$1" == "-n" ]
 	then
-		_log "[${GREEN}+${RESET}] $2"
+		_log "[${GREEN}+${RESET}]" "[+]" "$2"
 	else
-		_log "[${GREEN}+${RESET}] $1\n"
+		_log "[${GREEN}+${RESET}]" "[+]" "$1\n"
 	fi
 }
 
