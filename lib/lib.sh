@@ -384,7 +384,8 @@ function restart_side_runner() {
 		[ -f "$plugin"side_runner.sh ] || continue
 
 		log "starting side runner $(basename "$plugin")/side_runner.sh .."
-		"$plugin"side_runner.sh "$SERVER_UUID" > logs/side_runner_"$(basename "$plugin")".log 2>&1 &
+		LOG_TS=1 "$plugin"side_runner.sh "$SERVER_UUID" > logs/side_runner_"$(basename "$plugin")".log 2>&1 &
+		LOG_TS=0
 	done
 	if is_cfg CFG_TEM_SIDE_RUNNER
 	then

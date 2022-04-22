@@ -1,14 +1,21 @@
 #!/bin/bash
 
 function _log() {
-	echo -ne "$1"
+	local ts_msg
+	ts_msg="[$(date '+%F %H:%M:%S')]$1"
+	if [ "$LOG_TS" == "1" ]
+	then
+		echo -ne "$ts_msg"
+	else
+		echo -ne "$1"
+	fi
 	if [ "$CFG_POST_LOGS_DIR" == "" ]
 	then
 		return
 	fi
 	if [ -d "$CFG_POST_LOGS_DIR" ]
 	then
-		echo -ne "$1" >> "$CFG_POST_LOGS_DIR"/server_log.txt
+		echo -ne "$ts_msg" >> "$CFG_POST_LOGS_DIR"/server_log.txt
 	fi
 }
 
