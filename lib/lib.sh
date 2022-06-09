@@ -348,11 +348,18 @@ function get_running_procs() {
 	# tl;dr
 	# if https://github.com/DDNetPP/server/issues/50 solved
 	# remove commit.sh line
+	if [ "$#" == "0" ]
+	then
+		err "Error: missing argument proc_str"
+		return
+	fi
+	local proc_str
+	proc_str="$1"
 	for proc in $(pgrep -f "$proc_str")
 	do
 		ps o cmd -p "$proc" | tail -n1 |
 			grep -v 'lib/commit.sh' |
-			grep -v 'node .+.js'
+			grep -v 'node .*.js'
 	done
 }
 
@@ -361,16 +368,16 @@ function show_procs_name() {
 	local num_procs
 	local proc_str
 	proc_str="$1"
-	num_procs="$(get_running_procs | wc -l)"
+	num_procs="$(get_running_procs "$proc_str" | wc -l)"
 	if [ "$num_procs" -gt "0" ]
 	then
 		wrn "process with the same name is running already!"
 		echo ""
 		log "+--------] running processes ($num_procs) [---------+"
-		for proc in $(get_running_procs)
+		while IFS= read -r proc
 		do
 			log_raw "$proc"
-		done
+		done < <(get_running_procs "$proc_str")
 		log "+--------------------------------------+"
 		return 0
 	fi
