@@ -49,6 +49,12 @@ function log() {
 	fi
 }
 
+function log_raw() {
+	# log plain text
+	# no decorators
+	_log "" "" "$1\n"
+}
+
 function wrn() {
 	_log "[${YELLOW}!${RESET}]" "[!]" "$1\n"
 }

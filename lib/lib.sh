@@ -338,20 +338,35 @@ function show_procs() {
 	show_procs_name "$CFG_SRV_NAME"
 }
 
+function get_running_procs() {
+	# if commit.sh is properly integrated as side runner
+	# this check should not be removed
+	# because then commit.sh is not supposed to run in seperation
+	# so it running would be an indicator
+	# of the whole thing running already
+	#
+	# tl;dr
+	# if https://github.com/DDNetPP/server/issues/50 solved
+	# remove commit.sh line
+	pgrep -f "$proc_str" |
+		grep -v 'lib/commit.sh' |
+		grep -v 'node .+.js'
+}
+
 function show_procs_name() {
 	local proc
 	local num_procs
 	local proc_str
 	proc_str="$1"
-	num_procs="$(pgrep -f "$proc_str" | wc -l)"
+	num_procs="$(get_running_procs | wc -l)"
 	if [ "$num_procs" -gt "0" ]
 	then
 		wrn "process with the same name is running already!"
 		echo ""
 		log "+--------] running processes ($num_procs) [---------+"
-		for proc in $(pgrep -f "$proc_str")
+		for proc in $(get_running_procs)
 		do
-			ps o cmd -p "$proc" | tail -n1
+			log_raw "$(ps o cmd -p "$proc" | tail -n1)"
 		done
 		log "+--------------------------------------+"
 		return 0
