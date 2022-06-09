@@ -348,9 +348,12 @@ function get_running_procs() {
 	# tl;dr
 	# if https://github.com/DDNetPP/server/issues/50 solved
 	# remove commit.sh line
-	pgrep -f "$proc_str" |
-		grep -v 'lib/commit.sh' |
-		grep -v 'node .+.js'
+	for proc in $(pgrep -f "$proc_str")
+	do
+		ps o cmd -p "$proc" | tail -n1 |
+			grep -v 'lib/commit.sh' |
+			grep -v 'node .+.js'
+	done
 }
 
 function show_procs_name() {
@@ -366,7 +369,7 @@ function show_procs_name() {
 		log "+--------] running processes ($num_procs) [---------+"
 		for proc in $(get_running_procs)
 		do
-			log_raw "$(ps o cmd -p "$proc" | tail -n1)"
+			log_raw "$proc"
 		done
 		log "+--------------------------------------+"
 		return 0
