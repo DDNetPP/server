@@ -232,131 +232,131 @@ function check_duplicated_uuid() {
 }
 
 function check_warnings() {
-    local port
-    local num_cores
-    check_server_dir
-    twcfg.check_cfg_full
-    check_dir_size
-    check_duplicated_uuid
-    mkdir -p lib/tmp
-    mkdir -p lib/var
-    if [ -f failed_sql.sql ]
-    then
-        wrn "WARNING: file found 'failed_sql.sql'"
-        wrn "         add these records manually to the database"
-    fi
-    if [ -d core_dumps ]
-    then
-        num_cores="$(find core_dumps/ | wc -l)"
-        num_cores="$((num_cores - 1))"
-        if [ "$num_cores" != "" ] && [ "$num_cores" -gt "5" ]
-        then
-            wrn "WARNING: $num_cores core dumps found!"
-            wrn "         ckeck core_dumps/ directory"
-        fi
-    fi
-    if is_cfg CFG_GDB_DUMP_CORE
-    then
-        if [ "$(cat /proc/sys/kernel/core_pattern)" != "core" ]
-        then
-            wrn "WARNING: unsupported coredump pattern!"
-            wrn "         cat /proc/sys/kernel/core_pattern"
-            wrn "         expected 'core'"
-            wrn "         got '$(cat /proc/sys/kernel/core_pattern)'"
-            wrn ""
-            wrn "         $(tput bold)sysctl -w kernel.core_pattern=core$(tput sgr0)"
-            wrn ""
-        fi
-    fi
-    port="$(wc -l < <(grep '^sv_port ' lib/tmp/compiled.cfg))"
-    if [ "$port" != "" ] && [ "$port" -gt "1" ]
-    then
-        wrn "WARNING: found sv_port $port times in your config"
-        wrn "         avoid duplicates in config to avoid confusion."
-    fi
-    if [ -d ./cfg ]
-    then
-        if [ -d ./cfg/.git ] && [ -f ./cfg/passwords.cfg ]
-        then
-            (
-                cd cfg || exit 1
-                if ! git check-ignore -q passwords.cfg
-                then
-                    wrn "WARNING: file cfg/passwords.cfg found but not in cfg/.gitignore"
-                fi
-            )
-        fi
-    fi
+	local port
+	local num_cores
+	check_server_dir
+	twcfg.check_cfg_full
+	check_dir_size
+	check_duplicated_uuid
+	mkdir -p lib/tmp
+	mkdir -p lib/var
+	if [ -f failed_sql.sql ]
+	then
+		wrn "WARNING: file found 'failed_sql.sql'"
+		wrn "         add these records manually to the database"
+	fi
+	if [ -d core_dumps ]
+	then
+		num_cores="$(find core_dumps/ | wc -l)"
+		num_cores="$((num_cores - 1))"
+		if [ "$num_cores" != "" ] && [ "$num_cores" -gt "5" ]
+		then
+			wrn "WARNING: $num_cores core dumps found!"
+			wrn "         ckeck core_dumps/ directory"
+		fi
+	fi
+	if is_cfg CFG_GDB_DUMP_CORE
+	then
+		if [ "$(cat /proc/sys/kernel/core_pattern)" != "core" ]
+		then
+			wrn "WARNING: unsupported coredump pattern!"
+			wrn "         cat /proc/sys/kernel/core_pattern"
+			wrn "         expected 'core'"
+			wrn "         got '$(cat /proc/sys/kernel/core_pattern)'"
+			wrn ""
+			wrn "         $(tput bold)sysctl -w kernel.core_pattern=core$(tput sgr0)"
+			wrn ""
+		fi
+	fi
+	port="$(wc -l < <(grep '^sv_port ' lib/tmp/compiled.cfg))"
+	if [ "$port" != "" ] && [ "$port" -gt "1" ]
+	then
+		wrn "WARNING: found sv_port $port times in your config"
+		wrn "         avoid duplicates in config to avoid confusion."
+	fi
+	if [ -d ./cfg ]
+	then
+		if [ -d ./cfg/.git ] && [ -f ./cfg/passwords.cfg ]
+		then
+			(
+				cd cfg || exit 1
+				if ! git check-ignore -q passwords.cfg
+				then
+					wrn "WARNING: file cfg/passwords.cfg found but not in cfg/.gitignore"
+				fi
+			)
+		fi
+	fi
 }
 
 function install_apt() {
-    if [ "$#" != "1" ]
-    then
-        err "Error: install_dep invalid amount of arguments given"
-        err "       expected 1 got $#"
-        exit 1
-    fi
-    local dep="$1"
-    if [ -x "$(command -v "$dep")" ]
-    then
-        return
-    fi
-    if [ ! -x "$(command -v apt)" ]
-    then
-        err "Error: package manager apt not found"
-        err "       you have to install '$dep' manually"
-        exit 1
-    fi
+	if [ "$#" != "1" ]
+	then
+		err "Error: install_dep invalid amount of arguments given"
+		err "       expected 1 got $#"
+		exit 1
+	fi
+	local dep="$1"
+	if [ -x "$(command -v "$dep")" ]
+	then
+		return
+	fi
+	if [ ! -x "$(command -v apt)" ]
+	then
+		err "Error: package manager apt not found"
+		err "       you have to install '$dep' manually"
+		exit 1
+	fi
 
-    if [ "$UID" == "0" ]
-    then
-        apt install "$dep" || exit 1
-    else
-        if [ -x "$(command -v sudo)" ]
-        then
-            sudo apt install "$dep" || exit 1
-        else
-            err "Install sudo or switch to root user"
-            exit 1
-        fi
-    fi
-    if [ -x "$(command -v "$dep")" ]
-    then
-        log "Successfully installed dependency '$dep'"
-    else
-        err "Failed to install dependency '$dep'"
-        err "please install it manually"
-        exit 1
-    fi
+	if [ "$UID" == "0" ]
+	then
+		apt install "$dep" || exit 1
+	else
+		if [ -x "$(command -v sudo)" ]
+		then
+			sudo apt install "$dep" || exit 1
+		else
+			err "Install sudo or switch to root user"
+			exit 1
+		fi
+	fi
+	if [ -x "$(command -v "$dep")" ]
+	then
+		log "Successfully installed dependency '$dep'"
+	else
+		err "Failed to install dependency '$dep'"
+		err "please install it manually"
+		exit 1
+	fi
 }
 
 function install_dep() {
-    install_apt "$1"
+	install_apt "$1"
 }
 
 function show_procs() {
-    show_procs_name "$CFG_SRV_NAME"
+	show_procs_name "$CFG_SRV_NAME"
 }
 
 function show_procs_name() {
-    local proc
-    local num_procs
-    local proc_str
-    proc_str="$1"
-    num_procs="$(pgrep -f "$proc_str" | wc -l)"
-    if [ "$num_procs" -gt "0" ]
-    then
-        wrn "process with the same name is running already!"
-        echo ""
-        log "+--------] running processes ($num_procs) [---------+"
-        for proc in $(pgrep -f "$proc_str")
-        do
-            ps o cmd -p "$proc" | tail -n1
-        done
-        log "+--------------------------------------+"
-        return 0
-    fi
-    return 1
+	local proc
+	local num_procs
+	local proc_str
+	proc_str="$1"
+	num_procs="$(pgrep -f "$proc_str" | wc -l)"
+	if [ "$num_procs" -gt "0" ]
+	then
+		wrn "process with the same name is running already!"
+		echo ""
+		log "+--------] running processes ($num_procs) [---------+"
+		for proc in $(pgrep -f "$proc_str")
+		do
+			ps o cmd -p "$proc" | tail -n1
+		done
+		log "+--------------------------------------+"
+		return 0
+	fi
+	return 1
 }
 
 function crash_save_tem() {
