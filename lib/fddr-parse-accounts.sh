@@ -1,6 +1,6 @@
 #!/bin/bash
 # F-DDrace accounts parser
-# https://github.com/fokkonaut/F-DDrace/blob/79e3a5f49bd1efa59e34ffcbeb0cc62ee3fc8e0e/src/game/server/gamecontext.cpp#L4600-L4645
+# https://github.com/fokkonaut/F-DDrace/blob/9c5f97b4b5780c31a21fbfae4670774fff4d6b6c/src/game/server/gamecontext.cpp#L5277-L5332
 
 if [ ! -f lib/lib.sh ]
 then
@@ -42,7 +42,7 @@ fi
 
 FDDR_PURGE_FILE="${FDDR_PURGE_FILE:-/tmp/fddr-purge.txt}"
 FDDR_ACC_PATH="${FDDR_ACC_PATH:-./accounts}"
-FDDR_NUM_LINES=45
+FDDR_NUM_LINES=47
 FDDR_MIN_NAME_LEN=3
 FDDR_MAX_NAME_LEN=20
 FDDR_MIN_PW_LEN=3
@@ -107,6 +107,8 @@ function fddr.reset_vars() {
 	acc_last_login_date="0"
 	acc_flags="0"
 	acc_email=""
+	acc_design=""
+	acc_portal_battery=0
 }
 
 function fddr.parse_account() {
@@ -217,6 +219,10 @@ function fddr.parse_account() {
 			acc_flags="$line"
 		elif [ "$linenum" == "47" ]; then
 			acc_email="$line"
+		elif [ "$linenum" == "48" ]; then
+			acc_design="$line"
+		elif [ "$linenum" == "49" ]; then
+			acc_portal_battery="$line"
 		else
 			err "Error: too many lines $linenum/$FDDR_NUM_LINES"
 			err "       $acc_path"
@@ -296,6 +302,8 @@ function fddr.write_account() {
         linenum="$((linenum+1))"; echo "$acc_last_login_date"
         linenum="$((linenum+1))"; echo "$acc_flags"
         linenum="$((linenum+1))"; echo "$acc_email"
+        linenum="$((linenum+1))"; echo "$acc_design"
+        linenum="$((linenum+1))"; echo "$acc_portal_battery"
     } > "$file_path"
     if [ "$linenum" != "$FDDR_NUM_LINES" ]
     then
@@ -331,7 +339,9 @@ function fddr.print_account() {
 	echo "  port: $acc_port loggedin: $acc_logged_in"
 	echo "  clientID: $acc_client_id disabled: $acc_disabled"
 	echo "  euros: $acc_euros vip: $acc_vip vip-expire: $(fddr.print_timestamp "$acc_expiredate_vip")"
-	echo "  portalrifle: $acc_portal_rifle portal-rifle-expire: $(fddr.print_timestamp "$acc_expire_date_portal_rifle")"
+	echo "  portalrifle: $acc_portal_rifle"
+	echo "    expire: $(fddr.print_timestamp "$acc_expire_date_portal_rifle")"
+	echo "    ammo: $acc_portal_battery"
 	echo "meta:"
 	echo "  version: $acc_version"
 	echo "  addr: $acc_addr last addr: $acc_last_addr"
@@ -339,6 +349,7 @@ function fddr.print_account() {
 	echo "  last login date: $(fddr.print_timestamp "$acc_last_login_date")"
 	echo "  contact: $acc_contact"
 	echo "  email: $acc_email"
+	echo "  design: $acc_design"
 	echo -n "  flags: $acc_flags"
 	if [[ "$((FDDR_ACCFLAG_PLOTSPAWN & acc_flags))" == "1" ]]
 	then
@@ -463,6 +474,11 @@ function fddr.check_database() {
         if [[ ! "${acc_email}" =~ ^[a-zA-Z0-9.\-@]+$ ]] && [[ "$acc_email" != "" ]]
         then
             wrn "Invalid email '$acc_email' $(basename "$acc_path")"
+            fddr_warnings="$((fddr_warnings+1))"
+        fi
+        if [[ ! "${acc_portal_battery}" =~ ^[0-9]+$ ]] && [[ "$acc_portal_battery" != "" ]]
+        then
+            wrn "Invalid portal battery '$acc_portal_battery' $(basename "$acc_path")"
             fddr_warnings="$((fddr_warnings+1))"
         fi
         # lines
