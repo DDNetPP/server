@@ -513,29 +513,38 @@ function fddr.check_database() {
 }
 
 function fddr.show_vars() {
-    local acc="$1"
-    local variables="$2"
-    local var
-    fddr.parse_account "$acc" || exit 1
-    for var in $variables
-    do
-        if [ "$var" == "acc" ]
-        then
-            echo "$acc"
-        else
-            eval "echo \$$var"
-        fi
-    done
+	local acc="$1"
+	local variables="$2"
+	local sep="${3:-\n}"
+	# turn '\t' into $'\t'
+	# escape sequence as string into actual escape sequence
+	eval "sep=$'$sep'"
+	local var
+	fddr.parse_account "$acc" || exit 1
+	for var in $variables
+	do
+		if [ "$var" == "acc" ]
+		then
+			printf '%s%s' "$acc" "$sep"
+		else
+			eval "printf '%s%s' \"\$$var\" \"$sep\""
+		fi
+	done
+	if [ "$sep" != $'\n' ]
+	then
+		echo ""
+	fi
 }
 
 function fddr.filter_print() {
     local acc="$1"
     local vars="$2"
+    local sep="$3"
     if [ "$vars" == "" ]
     then
         echo "$acc"
     else
-        fddr.show_vars "$acc" "$vars"
+        fddr.show_vars "$acc" "$vars" "$sep"
     fi
 }
 
@@ -551,6 +560,7 @@ function fddr.filter() {
 	local filter_operator="$2"
 	local filter_value="$3"
 	local arg_show="$4"
+	local arg_sep="$5"
 	local val
 	local var
 	local found=0
@@ -612,28 +622,28 @@ function fddr.filter() {
 			if [ "$val" == "$filter_value" ]
 			then
 				num_matches="$((num_matches+1))"
-				fddr.filter_print "$acc" "$arg_show"
+				fddr.filter_print "$acc" "$arg_show" "$arg_sep"
 			fi
 		elif [ "$filter_operator" == "!=" ]
 		then
 			if [ "$val" != "$filter_value" ]
 			then
 				num_matches="$((num_matches+1))"
-				fddr.filter_print "$acc" "$arg_show"
+				fddr.filter_print "$acc" "$arg_show" "$arg_sep"
 			fi
 		elif [ "$filter_operator" == ">" ]
 		then
 			if [ "$val" -gt "$filter_value" ]
 			then
 				num_matches="$((num_matches+1))"
-				fddr.filter_print "$acc" "$arg_show"
+				fddr.filter_print "$acc" "$arg_show" "$arg_sep"
 			fi
 		elif [ "$filter_operator" == "<" ]
 		then
 			if [ "$val" -lt "$filter_value" ]
 			then
 				num_matches="$((num_matches+1))"
-				fddr.filter_print "$acc" "$arg_show"
+				fddr.filter_print "$acc" "$arg_show" "$arg_sep"
 			fi
 		else
 			err "invalid operator '$filter_operator'"
@@ -716,6 +726,8 @@ then
     echo "  $0 filter 'acc_level > 100'"
     echo "  $0 filter 'acc_level > 100' 'show acc acc_level acc_xp'"
     echo "  $0 filter 'acc_contact != \"\"' 'show acc_contact'"
+    # shellcheck disable=SC2028
+    echo "  $0 filter 'acc_portal_battery > 0' 'show acc_portal_battery acc_last_playername' sep='\\t' | sort -nr | head -n10"
     echo "  FDDR_ACC_PATH=~/data/accounts $(basename "$0") show ChillerDragon.acc"
     echo "  find \"\$FDDR_ACC_PATH\" -print0 | xargs -0 ./lib/fddr-parse-accounts.sh get_var acc_contact | awk 'NF'"
     exit 0
@@ -847,26 +859,35 @@ then
     fddr_cmd=get_vars
 elif [ "$1" == "filter" ]
 then
-    shift
-    fddr_cmd=filter
-    arg_filter="$1"
-    shift
-    arg_variable="$(echo "$arg_filter" | awk '{ print $1 }')"
-    arg_operator="$(echo "$arg_filter" | awk '{ print $2 }')"
-    arg_value="$(echo "$arg_filter" | awk '{ print $3 }')"
-    if [ "${arg_value::1}" == '"' ]
-    then
-        arg_value="$(echo "$arg_filter" | cut -d'"' -f2)"
-    elif [ "${arg_value::1}" == "'" ]
-    then
-        arg_value="$(echo "$arg_filter" | cut -d"'" -f2)"
-    fi
-    if [[ "$1" =~ show\  ]]
-    then
-        arg_show="$1"
-        arg_show="${arg_show:5}" # cut off 'show '
-        shift
-    fi
+	shift
+	fddr_cmd=filter
+	arg_filter="$1"
+	shift
+	arg_variable="$(echo "$arg_filter" | awk '{ print $1 }')"
+	arg_operator="$(echo "$arg_filter" | awk '{ print $2 }')"
+	arg_value="$(echo "$arg_filter" | awk '{ print $3 }')"
+	if [ "${arg_value::1}" == '"' ]
+	then
+		arg_value="$(echo "$arg_filter" | cut -d'"' -f2)"
+	elif [ "${arg_value::1}" == "'" ]
+	then
+		arg_value="$(echo "$arg_filter" | cut -d"'" -f2)"
+	fi
+	if [[ "$1" =~ show\  ]]
+	then
+		arg_show="$1"
+		arg_show="${arg_show:5}" # cut off 'show '
+		shift
+	fi
+	if [[ "$1" =~ sep= ]]
+	then
+		arg_separator="$(echo "$1" | cut -d'=' -f2-)"
+		shift
+	elif [ "$1" != "" ]
+	then
+		echo "Error: invalid keyword '$1' did you mean sep=seperator"
+		exit 1
+	fi
 else
     echo "Error: invalid cmd '$1'"
     exit 1
@@ -904,7 +925,7 @@ then
     fddr.get_vars
 elif [ "$fddr_cmd" == "filter" ]
 then
-    fddr.filter "$arg_variable" "$arg_operator" "$arg_value" "$arg_show"
+    fddr.filter "$arg_variable" "$arg_operator" "$arg_value" "$arg_show" "$arg_separator"
 fi
 
 if [ "$fddr_warnings" != "0" ] && [ "$fddr_is_verbose" == "1" ]
