@@ -210,7 +210,7 @@ function read_settings_file_new() {
 		err "       run the following command to fix it"
 		echo ""
 		tput bold
-		./lib/fix_settings.sh
+		echo "./lib/fix_settings.sh"
 		tput sgr0
 		echo ""
 		exit 1
