@@ -150,8 +150,12 @@ function parse_settings_cmd() {
 }
 
 function include() {
+	local old_sett
+	old_sett="$current_settings_file"
+	current_settings_file="$1"
 	# shellcheck disable=SC1090
 	source "$1"
+	current_settings_file="$old_sett"
 }
 
 function check_var_new() {
@@ -189,10 +193,16 @@ function check_var_new() {
 			return
 		fi
 	done
+	# this is a bit hacky
+	# but since we not not parse our self we have to guess the current line_num
+	line_num="$(grep -n "^$sett=" "$current_settings_file" | cut -d':' -f1)"
+	settings_err "unkown setting '$(tput bold)$sett$(tput sgr0)'"
+	exit 1
 }
 
 function read_settings_file_new() {
 	local filename="$1"
+	current_settings_file="$filename"
 	local var
 	if grep -qE '^[a-z]+[a-z0-9_]+=' "$filename"
 	then
