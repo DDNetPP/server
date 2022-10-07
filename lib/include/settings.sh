@@ -156,6 +156,11 @@ function include() {
 	# shellcheck disable=SC1090
 	source "$1"
 	current_settings_file="$old_sett"
+
+	if [ -x "$(command -v shellcheck)" ]
+	then
+		shellcheck -x -e SC2034 --shell=bash "$1"
+	fi
 }
 
 function check_var_new() {
@@ -203,6 +208,10 @@ function check_var_new() {
 function read_settings_file_new() {
 	local filename="$1"
 	current_settings_file="$filename"
+	if [ -x "$(command -v shellcheck)" ]
+	then
+		shellcheck -x -e SC2034 --shell=bash "$filename"
+	fi
 	local var
 	if [ "$IS_SETT_FIX" != "1" ] && grep -qE '^[a-z]+[a-z0-9_]+=' "$filename"
 	then
