@@ -149,6 +149,11 @@ function parse_settings_cmd() {
 	fi
 }
 
+function include() {
+	# shellcheck disable=SC1090
+	source "$1"
+}
+
 function read_settings_file_new() {
 	local filename="$1"
 	if grep -qE '^[a-z]+[a-z0-9_]+=' "$filename"
@@ -162,6 +167,8 @@ function read_settings_file_new() {
 		echo ""
 		exit 1
 	fi
+	# shellcheck disable=SC1090
+	source "$filename"
 }
 
 function read_settings_file() {
