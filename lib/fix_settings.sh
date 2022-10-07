@@ -7,9 +7,9 @@ then
 	exit 1
 fi
 
-source lib/lib.sh
-
 export IS_SETT_FIX=1
+
+source lib/lib.sh
 
 rename_old_settings server.cnf
 
