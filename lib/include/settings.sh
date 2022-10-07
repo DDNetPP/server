@@ -28,6 +28,31 @@ function def_var() {
 	aSettValid+=("$validation")
 }
 
+function rename_old_settings() {
+	local filename="$1"
+	if [ ! -f "$filename" ]
+	then
+		err "Error: file not found $filename"
+		exit 1
+	fi
+	local i
+	local old
+	local new
+	for i in "${!aSettStr[@]}"
+	do
+		old="${aSettStr[$i]}"
+		new="${aSettVar[$i]}"
+		echo "$old -> $new"
+		sed "s/^$old=/$new=/" "$filename" > "$filename".tmp
+		mv "$filename".tmp "$filename"
+	done
+	local incfile
+	while read -r incfile
+	do
+		rename_old_settings "$(echo "$incfile" | awk '{ print $2 }')"
+	done < <(grep "^include " "$filename")
+}
+
 function create_settings() {
 	if [ -f $current_settings_file ];
 	then
@@ -124,7 +149,24 @@ function parse_settings_cmd() {
 	fi
 }
 
+function read_settings_file_new() {
+	local filename="$1"
+	if grep -qE '^[a-z]+[a-z0-9_]+=' "$filename"
+	then
+		err "Error: found old settings format in $filename"
+		err "       run the following command to fix it"
+		echo ""
+		tput bold
+		./lib/fix_settings.sh
+		tput sgr0
+		echo ""
+		exit 1
+	fi
+}
+
 function read_settings_file() {
+	# read_settings_file_new "$1"
+	# return
 	local filename="$1"
 	current_settings_file="$filename"
 	line_num=0
