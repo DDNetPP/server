@@ -164,16 +164,20 @@ function check_var_new() {
 		then
 			# printf "[setting] (%s)%-16s=  %s\\n" "$i" "$sett" "$val"
 			val="$(eval "echo \"\$$sett\"")"
+			# todo: document this weird behavior somewhere
+			#       this is intended as a feature that the user can config what he wants
+			#       append as many trailing slashes at the end of paths
+			#
+			#       the fix is just stripping slashes of all configs that contain the str PATH
+			#       then when they get concatinated with a filename you never get something like
+			#       /some/path/var//concatfile.txt
 			if [[ "$sett" =~ PATH ]]
 			then
-				test
-				# todo: strip paths
-
-				# val="${val%%+(/)}" # strip trailing slash
-				# # escape single quotes
-				# val="${val//\'/\'\\\'\'}"
-				# assign="$sett='$val'"
-				# eval "$assign"
+				val="${val%%+(/)}" # strip trailing slash
+				# escape single quotes
+				val="${val//\'/\'\\\'\'}"
+				assign="$sett='$val'"
+				eval "$assign"
 			fi
 			valid_pattern=${aSettValid[$i]}
 			if [[ "$valid_pattern" != "" ]] && [[ ! "$val" =~ ^$valid_pattern$ ]]
