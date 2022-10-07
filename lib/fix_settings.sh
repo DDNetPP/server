@@ -9,5 +9,7 @@ fi
 
 source lib/lib.sh
 
+export IS_SETT_FIX=1
+
 rename_old_settings server.cnf
 

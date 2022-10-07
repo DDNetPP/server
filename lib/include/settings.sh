@@ -204,7 +204,7 @@ function read_settings_file_new() {
 	local filename="$1"
 	current_settings_file="$filename"
 	local var
-	if grep -qE '^[a-z]+[a-z0-9_]+=' "$filename"
+	if [ "$IS_SETT_FIX" != "1" ] && grep -qE '^[a-z]+[a-z0-9_]+=' "$filename"
 	then
 		err "Error: found old settings format in $filename"
 		err "       run the following command to fix it"
