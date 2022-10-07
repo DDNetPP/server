@@ -154,8 +154,42 @@ function include() {
 	source "$1"
 }
 
+function check_var_new() {
+	local sett="$1"
+	local val
+	local i
+	for i in "${!aSettStr[@]}"
+	do
+		if  [ "$sett" == "${aSettVar[$i]}" ]
+		then
+			# printf "[setting] (%s)%-16s=  %s\\n" "$i" "$sett" "$val"
+			val="$(eval "echo \"\$$sett\"")"
+			if [[ "$sett" =~ PATH ]]
+			then
+				test
+				# todo: strip paths
+
+				# val="${val%%+(/)}" # strip trailing slash
+				# # escape single quotes
+				# val="${val//\'/\'\\\'\'}"
+				# assign="$sett='$val'"
+				# eval "$assign"
+			fi
+			valid_pattern=${aSettValid[$i]}
+			if [[ "$valid_pattern" != "" ]] && [[ ! "$val" =~ ^$valid_pattern$ ]]
+			then
+				settings_err "invalid value '$val' for setting '$sett'"
+				err "               values have to match $valid_pattern"
+				exit 1
+			fi
+			return
+		fi
+	done
+}
+
 function read_settings_file_new() {
 	local filename="$1"
+	local var
 	if grep -qE '^[a-z]+[a-z0-9_]+=' "$filename"
 	then
 		err "Error: found old settings format in $filename"
@@ -169,6 +203,11 @@ function read_settings_file_new() {
 	fi
 	# shellcheck disable=SC1090
 	source "$filename"
+
+	for var in "${!CFG_@}"
+	do
+		check_var_new "$var"
+	done
 }
 
 function read_settings_file() {
