@@ -8,6 +8,7 @@ source lib/include/logger.sh
 source lib/include/common.sh
 source lib/include/editor.sh
 source lib/include/tw_config.sh
+source lib/include/storage.sh
 source lib/include/port.sh
 source lib/include/dir.sh
 source lib/include/sid.sh

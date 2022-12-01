@@ -1,4 +1,5 @@
 #!/bin/bash
+
 shopt -s extglob # used for trailing slashes globbing
 
 # init variables
@@ -330,7 +331,7 @@ then
 	CFG_LOGS_PATH="$(grep '^sh_logs_path' "$tem_settings_path" | tail -n1 | cut -d'=' -f2-)"
 	if [ "${CFG_LOGS_PATH::1}" != "/" ]
 	then
-		CFG_LOGS_PATH="$HOME/.teeworlds/dumps/$CFG_LOGS_PATH"
+		CFG_LOGS_PATH="$default_save_dir$CFG_LOGS_PATH"
 	fi
 fi
 CFG_LOGS_PATH="${CFG_LOGS_PATH%%+(/)}" # strip trailing slash
@@ -363,6 +364,14 @@ then
 fi
 LOGS_PATH_FULL="$CFG_LOGS_PATH/$CFG_SRV_NAME/logs"
 LOGS_PATH_FULL_TW="$LOGS_PATH_TW/$CFG_SRV_NAME/logs"
+default_save_dir="$HOME/.teeworlds/"
+if [[ "$LOGS_PATH_FULL" =~ ^$default_save_dir ]]
+then
+	# replace ~/.teeworlds/
+	# by storage.cfg path
+	def_len="${#default_save_dir}"
+	LOGS_PATH_FULL="$(storage_get_save_path)/${LOGS_PATH_FULL:$def_len}"
+fi
 if [ "$CFG_SERVER_TYPE" == "tem" ]
 then
 	LOGS_PATH_FULL="$CFG_LOGS_PATH"
