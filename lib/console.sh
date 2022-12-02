@@ -24,11 +24,8 @@ function render() {
 		return
 	fi
 	last_log_line="$newest_line"
-	local size
-	size="$(stty size)"
-	log_height="$(echo "$size" | cut -d' ' -f1)"
+	read -r log_height max_width < <(stty size)
 	log_height="$((log_height - 3))"
-	max_width="$(echo "$size" | cut -d' ' -f2)"
 
 	tail -n "$log_height" "$logfile"
 	printf '%0.s-' $(seq 1 "$max_width")
