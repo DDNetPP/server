@@ -30,6 +30,10 @@ _audit_code_system_whitelisted_systems=(
 	'      ** from the start of the wal file. This is because, for a system'
 	'** synced to disk. The journal file still exists in the file-system'
 	'** pFd->deviceCharacteristics are set according to the file-system'
+	' * @ingroup Filesystem'
+	' * @defgroup Filesystem'
+	'              Returns a human-readable version string of the operating system'
+	'   errnum is set to zlib error number.  If an error occurred in the file system'
 
 )
 _audit_code_system_whitelisted_buffers=(
@@ -151,8 +155,10 @@ function audit_code_system() {
 			then
 				seek_buf="${BASH_REMATCH[1]}"
 			else
+				line_chopped="$(trim "$line_chopped")"
 				for buf in "${_audit_code_system_whitelisted_systems[@]}"
 				do
+					buf="$(trim "$buf")"
 					if [ "$line_chopped" == "$buf" ]
 					then
 						detect=0

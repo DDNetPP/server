@@ -3,6 +3,7 @@
 SCRIPT_ROOT="$(pwd)"
 export SCRIPT_ROOT
 
+source lib/include/string.sh
 source lib/include/colors.sh
 source lib/include/logger.sh
 source lib/include/common.sh
