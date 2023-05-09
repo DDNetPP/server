@@ -121,7 +121,7 @@ else # teeworlds
 	tput sgr0
 	eval "$run_cmd"
 
-	if [ "$arg_logs" == "1" ]
+	if [ "$arg_logs" == "1" ] && [ "$arg_is_interactive" == "0" ]
 	then
 		show_log_file "$logfile"
 	fi
