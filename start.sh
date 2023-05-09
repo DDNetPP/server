@@ -58,6 +58,7 @@ do
 done
 
 archive_gmon
+restart_side_runner
 
 if [ "$arg_tmp_map_url" != "" ]
 then
