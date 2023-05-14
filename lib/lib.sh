@@ -401,6 +401,37 @@ function crash_save_tem() {
 }
 export -f crash_save_tem
 
+function debug_side_runner() {
+	# call this from
+	# ./lib/interact.sh
+	log "starting debug side_runners .."
+	if pgrep -f "side_runner.sh $SERVER_UUID"
+	then
+		log "side runner already running make sure they do not conflict"
+		log "do you want to start anyways? [y/N]"
+		read -r -n 1 yn
+		echo ""
+		if ! [[ "$yn" =~ [yY] ]]
+		then
+		    log "aborting ..."
+		    return
+		fi
+	fi
+	for plugin in ./lib/plugins/*/
+	do
+		[ -d "$plugin" ] || continue
+		[ -f "$plugin"side_runner.sh ] || continue
+
+		log "starting side runner $(basename "$plugin")/side_runner.sh .."
+		LOG_TS=1 "$plugin"side_runner.sh "$SERVER_UUID"
+		LOG_TS=0
+	done
+	if is_cfg CFG_TEM_SIDE_RUNNER
+	then
+		wrn "debugging tem side runner not supported"
+	fi
+}
+
 function restart_side_runner() {
 	trap "stop_side_runner;exit" EXIT
 	log "restarting side_runners .."
