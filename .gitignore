@@ -50,3 +50,8 @@ SAN.*
 votes_raw.txt
 votes_count.txt
 votes_lower.txt
+
+# 0xf antibot
+am_data.txt 
+delay.txt 
+detects.txt 
