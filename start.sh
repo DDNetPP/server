@@ -102,6 +102,7 @@ then
 	cd "$CFG_TEM_PATH" || exit 1
 	if [ "$arg_is_interactive" == "1" ]
 	then
+		log "starting interactive tem server ..."
 		./start_tem.sh "$CFG_TEM_SETTINGS" "#sid:$SERVER_UUID"
 	else
 		nohup ./start_tem.sh "$CFG_TEM_SETTINGS" "#sid:$SERVER_UUID" > "$logfile" 2>&1 &
