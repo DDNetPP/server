@@ -53,5 +53,7 @@ votes_lower.txt
 
 # 0xf antibot
 am_data.txt 
-delay.txt 
+delay.txt
 detects.txt 
+IPs.fifo
+
