@@ -105,7 +105,8 @@ then
 		log "starting interactive tem server ..."
 		./start_tem.sh "$CFG_TEM_SETTINGS" "#sid:$SERVER_UUID"
 	else
-		nohup ./start_tem.sh "$CFG_TEM_SETTINGS" "#sid:$SERVER_UUID" > "$logfile" 2>&1 &
+		log "logging to $logfile"
+		nohup ./start_tem.sh "$CFG_TEM_SETTINGS" "#sid:$SERVER_UUID" &> "$logfile" &
 	fi
 else # teeworlds
 	logfile="$LOGS_PATH_FULL/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S)${log_ext}"
