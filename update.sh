@@ -118,7 +118,7 @@ function update_lua() {
 	log "checking for lua/ updates"
 	pushd lua || return
 	git_save_pull
-	popd lua || return
+	popd || return
 }
 
 if [ "$arg_type" == "bot" ]
