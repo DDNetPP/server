@@ -319,6 +319,9 @@ done
 create_settings # create fresh if null
 read_settings_file "$current_settings_file" # get values from file
 
+IS_DUMPS_LOGPATH=0
+default_save_dir="$HOME/.teeworlds/"
+
 if [ "$CFG_SERVER_TYPE" == "tem" ]
 then
 	tem_settings_path="$CFG_TEM_PATH/$CFG_TEM_SETTINGS"
@@ -329,14 +332,19 @@ then
 		exit 1
 	fi
 	CFG_LOGS_PATH="$(grep '^sh_logs_path' "$tem_settings_path" | tail -n1 | cut -d'=' -f2-)"
+	tem_tw_version="$(grep '^sh_tw_version' "$tem_settings_path" | tail -n1 | cut -d'=' -f2-)"
 	if [ "${CFG_LOGS_PATH::1}" != "/" ]
 	then
-		CFG_LOGS_PATH="$default_save_dir$CFG_LOGS_PATH"
+		if [ "$tem_tw_version" != "6" ]
+		then
+			CFG_LOGS_PATH="${default_save_dir}dumps/$CFG_LOGS_PATH"
+		else
+			CFG_LOGS_PATH="$default_save_dir$CFG_LOGS_PATH"
+		fi
 	fi
 fi
 CFG_LOGS_PATH="${CFG_LOGS_PATH%%+(/)}" # strip trailing slash
 LOGS_PATH_TW="$CFG_LOGS_PATH"
-IS_DUMPS_LOGPATH=0
 
 if [ "$CFG_LOGS_PATH" == "" ]
 then
@@ -364,7 +372,6 @@ then
 fi
 LOGS_PATH_FULL="$CFG_LOGS_PATH/$CFG_SRV_NAME/logs"
 LOGS_PATH_FULL_TW="$LOGS_PATH_TW/$CFG_SRV_NAME/logs"
-default_save_dir="$HOME/.teeworlds/"
 if [[ "$LOGS_PATH_FULL" =~ ^$default_save_dir ]]
 then
 	# replace ~/.teeworlds/
