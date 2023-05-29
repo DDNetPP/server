@@ -111,6 +111,14 @@ function map_themes_post() {
 		fi
 	done
 }
+function update_lua() {
+	[[ -d lua ]] || return
+	[[ -d lua/.git ]] || return
+
+	pushd lua || return
+	git_save_pull
+	popd lua || return
+}
 
 if [ "$arg_type" == "bot" ]
 then
@@ -122,6 +130,7 @@ then
 	cmake_update_bot "$@"
 	update_configs
 	git_save_pull
+	update_lua
 elif [ "$CFG_SERVER_TYPE" == "teeworlds" ] || [ "$arg_type" == "teeworlds" ]
 then
 	if [ "$arg_refresh" == "1" ]
@@ -133,6 +142,7 @@ then
 	cmake_update_teeworlds "$@"
 	map_themes_post
 	git_save_pull
+	update_lua
 elif [ "$CFG_SERVER_TYPE" == "tem" ] || [ "$arg_type" == "tem" ]
 then
 	if [ "$arg_refresh" == "1" ]
