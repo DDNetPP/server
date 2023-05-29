@@ -113,6 +113,8 @@ function save_move() {
 function save_copy() {
 	if [[ ! -f "$1" ]]
 	then
+		wrn "Warning: tried to copy file that does not exist"
+		wrn "         file=$1"
 		return
 	elif [[ "$1" == "$2" ]]
 	then
