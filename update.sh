@@ -115,6 +115,7 @@ function update_lua() {
 	[[ -d lua ]] || return
 	[[ -d lua/.git ]] || return
 
+	log "checking for lua/ updates"
 	pushd lua || return
 	git_save_pull
 	popd lua || return
