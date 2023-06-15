@@ -112,10 +112,10 @@ else # teeworlds
 	logfile="$LOGS_PATH_FULL/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S)${log_ext}"
 	cache_logpath "$logfile"
 
-	run_cmd="$CFG_ENV_RUNTIME nohup ./$CFG_BIN \"#sid:$SERVER_UUID\" > $logfile 2>&1 &"
+	run_cmd="$CFG_ENV_RUNTIME nohup ./$CFG_BIN \"exec autoexec.cfg;#sid:$SERVER_UUID\" > $logfile 2>&1 &"
 	if [ "$arg_is_interactive" == "1" ]
 	then
-		run_cmd="$CFG_ENV_RUNTIME ./$CFG_BIN \"#sid:$SERVER_UUID\""
+		run_cmd="$CFG_ENV_RUNTIME ./$CFG_BIN \"exec autoexec.cfg;#sid:$SERVER_UUID\""
 	fi
 	log "running:"
 	tput bold
