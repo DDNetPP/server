@@ -167,10 +167,23 @@ function twcfg.include_exec() {
 	twcfg.check_cfg
 	if [ ! -f "$config" ]
 	then
-		err "Error: parsing teeworlds config" >&2
-		err "  $twcfg_line:$twcfg_last_line" >&2
-		err "  file not found: $config" >&2
-		exit 1
+		local storage_path
+		local match=''
+		while read -r storage_path
+		do
+			if [ -f "$storage_path/$config" ]
+			then
+				match="$storage_path/$config"
+			fi
+		done < <(storage_paths)
+		if [ "$match" == "" ]
+		then
+			err "Error: parsing teeworlds config" >&2
+			err "  $twcfg_line:$twcfg_last_line" >&2
+			err "  file not found: $config" >&2
+			exit 1
+		fi
+		config="$match"
 	fi
 	# shellcheck disable=SC2094
 	# https://github.com/koalaman/shellcheck/issues/1368
