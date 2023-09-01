@@ -39,6 +39,34 @@ function cmake_refresh_teeworlds_binary() {
 	cp \
 		"$CFG_GIT_PATH_MOD/build/$CFG_COMPILED_BIN" \
 		"${SCRIPT_ROOT}/${CFG_BIN}"
+	local libantibot_runtime_path="${SCRIPT_ROOT}/bin/libantibot.so"
+	if [ -f "$libantibot_runtime_path" ]
+	then
+		log "cleaning up old antibot."
+		rm "$libantibot_runtime_path"
+	fi
+	if [ "$CFG_GITPATH_ANTIBOT" != "" ]
+	then
+		log "refreshing antibot binary ..."
+		local libantibot_path="$CFG_GITPATH_ANTIBOT"/libantibot.so
+		if [ -f "$libantibot_path" ]
+		then
+			log "found $libantibot_path"
+		else
+			libantibot_path="$CFG_GIT_PATH_MOD/build/$CFG_COMPILED_BIN"
+			if [ -f "$libantibot_path" ]
+			then
+				log "found $libantibot_path"
+			fi
+		fi
+		if [ -f "$libantibot_path" ]
+		then
+			log "move libantibot.so ..."
+			cp "$libantibot_path" "$libantibot_runtime_path"
+		else
+			err "Error: libantibot.so not found $libantibot_path"
+		fi
+	fi
 }
 
 function cmake_update_teeworlds() {
@@ -162,13 +190,19 @@ function cmake_update() {
 	fi
 	if [ "$CFG_GITPATH_ANTIBOT" != "" ]
 	then
-		log "patching antibot ..."
+		log "updating antibot ..."
 		(
 			cd "$CFG_GITPATH_ANTIBOT" || exit 1
 			git pull
 		)
-		cp "$CFG_GITPATH_ANTIBOT"/*.h src/antibot/
-		cp "$CFG_GITPATH_ANTIBOT"/*.cpp src/antibot/
+		if [ ! -f "$CFG_GITPATH_ANTIBOT"/libantibot.so ]
+		then
+			log "patching antibot source ..."
+			cp "$CFG_GITPATH_ANTIBOT"/*.h src/antibot/
+			cp "$CFG_GITPATH_ANTIBOT"/*.cpp src/antibot/
+		else
+			log "using precompiled libantibot.so"
+		fi
 	fi
 	bin_commit="$(git rev-parse HEAD)"
 	local cmake_cache="$SCRIPT_ROOT/lib/tmp/cmake_flags.txt"
@@ -205,13 +239,11 @@ function cmake_update() {
 	fi
 	if [ "$CFG_GITPATH_ANTIBOT" != "" ]
 	then
-		log "cleaning up antibot patch ..."
-		git add ../src/antibot
-		git reset --hard HEAD
-		if [ -f "$CFG_GITPATH_ANTIBOT"/libantibot.so ]
+		if [ ! -f "$CFG_GITPATH_ANTIBOT"/libantibot.so ]
 		then
-			log "move libantibot.so ..."
-			cp "$CFG_GITPATH_ANTIBOT"/libantibot.so .
+			log "cleaning up antibot patch ..."
+			git add ../src/antibot
+			git reset --hard HEAD
 		fi
 	fi
 	if [ "$build_fail" == "1" ]
