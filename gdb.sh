@@ -25,7 +25,7 @@ cache_logpath "$logfile"
 # and curl throws a sigpipe
 # the ddnet code catches that but gdb catches it first and then crashes the server
 # TODO: make this a gdb options config or use a gdbrc file and also include that in loop_gdb
-run_cmd="$CFG_ENV_RUNTIME gdb -ex='handle SIGPIPE nostop noprint pass' -ex=run --args ./\"$CFG_BIN\" \"logfile $logfile;#sid:$SERVER_UUID\""
+run_cmd="$CFG_ENV_RUNTIME gdb -ex='handle SIGPIPE nostop noprint pass' -ex=run --args ./\"$CFG_BIN\" \"exec autoexec.cfg;logfile $logfile;#sid:$SERVER_UUID\""
 log "$run_cmd"
 eval "$run_cmd"
 
