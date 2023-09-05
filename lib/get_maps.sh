@@ -150,6 +150,7 @@ function menu() {
         "chiller"
         "zillyfng"
         "zillyfly"
+	"zillyinsta"
         "Quit"
     )
     select opt in "${options[@]}"
@@ -197,6 +198,10 @@ function menu() {
                 ;;
             "zillyfly")
                 download_git https://github.com/ZillyFly/fly-maps
+                break
+                ;;
+            "zillyinsta")
+                download_git https://github.com/ZillyInsta/maps
                 break
                 ;;
             "Quit")
