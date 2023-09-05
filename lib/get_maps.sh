@@ -12,6 +12,11 @@ source lib/lib.sh
 
 maps_dir="${SCRIPT_ROOT}/maps"
 
+function select_maps_dir() {
+	printf 'Select a map output directory:\n\n'
+	read -r -e -i "$maps_dir" maps_dir
+}
+
 function download_web() {
 	local url="$1"
 	mkdir -p "$maps_dir" || exit 1
@@ -123,6 +128,7 @@ function download_git() {
 
 function menu() {
 	check_server_dir
+	select_maps_dir
 	if [[ -d "$maps_dir" ]] && [[ "$(ls "$maps_dir")" != "" ]]
 	then
 		num_maps="$(find "$maps_dir" | wc -l)"
