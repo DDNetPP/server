@@ -27,5 +27,6 @@ cache_logpath "$logfile"
 # TODO: make this a gdb options config or use a gdbrc file and also include that in loop_gdb
 run_cmd="$CFG_ENV_RUNTIME gdb -ex='handle SIGPIPE nostop noprint pass' -ex=run --args ./\"$CFG_BIN\" \"exec autoexec.cfg;logfile $logfile;#sid:$SERVER_UUID\""
 log "$run_cmd"
+launch_commit="$(get_commit)"
 eval "$run_cmd"
-
+log "commit: $launch_commit"
