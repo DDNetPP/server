@@ -626,13 +626,19 @@ function update_configs() {
 		git_save_pull
 	fi
 	cd "$SCRIPT_ROOT" || exit 1
-	if [[ -d maps/ ]] && [[ -d maps/.git ]]
-	then
-		log "found maps directory maps/"
-		log "updating maps ..."
-		cd maps || exit 1
-		git_save_pull
-	fi
+	local maps_dir
+	for maps_dir in maps maps7
+	do
+		if [[ -d "$maps_dir" ]] && [[ -d "$maps_dir/.git" ]]
+		then
+			log "found maps directory $maps_dir/"
+			log "updating maps ..."
+			(
+				cd "$maps_dir" || exit 1
+				git_save_pull
+			)
+		fi
+	done
 	for plugin in ./lib/plugins/*/
 	do
 		cd "$SCRIPT_ROOT" || exit 1
