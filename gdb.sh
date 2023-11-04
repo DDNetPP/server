@@ -14,6 +14,7 @@ check_warnings
 check_running
 install_dep gdb
 archive_gmon
+restart_side_runner
 
 logfile="$LOGS_PATH_FULL_TW/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S)${CFG_LOG_EXT}"
 cache_logpath "$logfile"
