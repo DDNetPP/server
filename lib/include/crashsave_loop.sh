@@ -87,7 +87,7 @@ fi
 
 post_loop_run
 
-./update.sh &> "$p/raw_build.txt"
+./update.sh | tee "$p/raw_build.txt"
 if is_cfg CFG_CSTD
 then
     url="$(cstd "$p/raw_build.txt")"
