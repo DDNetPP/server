@@ -34,4 +34,8 @@ def_var 'CFG_GITPATH_ANTIBOT' 'gitpath_antibot' "" ''
 def_var 'CFG_LOG_DDOS' 'log_ddos' "0" '(0|no|off|false|1|yes|on|true)'
 def_var 'CFG_UNIX_USER' 'unix_user' "$USER" ''
 def_var 'CFG_TEM_SIDE_RUNNER' 'tem_side_runner' "0" '(0|no|off|false|1|yes|on|true)'
+def_var 'CFG_BUILD_SYSTEM' 'build_system' "cmake" '(cmake|bam|bam4|custom)'
+def_var 'CFG_CUSTOM_BUILD_CMD' 'custom_build_cmd' "g++ main.c -o main" ''
+def_var 'CFG_BAM_BIN' 'bam_bin' "bam" ''
+def_var 'CFG_BAM_FLAGS' 'bam_flags' "server_release" ''
 

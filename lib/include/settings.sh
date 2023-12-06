@@ -16,7 +16,7 @@ function def_var() {
 	local cfg_lower="$2"
 	local default_value="$3"
 	local validation="$4"
-	if [ "$cfg_upper" == "CFG_CMAKE_FLAGS" ]
+	if [ "$cfg_upper" == "CFG_CMAKE_FLAGS" ] || [ "$cfg_upper" == "CFG_BAM_FLAGS" ]
 	then
 		eval "read -r -a $cfg_upper <<< '$default_value'"
 		eval "export $cfg_upper"
@@ -386,6 +386,7 @@ then
 fi
 
 export CFG_CMAKE_FLAGS # usage: "${CFG_CMAKE_FLAGS[@]}"
+export CFG_BAM_FLAGS # usage: "${CFG_BAM_FLAGS[@]}"
 export IS_DUMPS_LOGPATH
 export LOGS_PATH_TW
 export LOGS_PATH_FULL

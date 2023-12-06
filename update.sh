@@ -9,7 +9,10 @@ fi
 
 source lib/lib.sh
 
+source lib/include/update/vartype.sh
 source lib/include/update/cmake.sh
+source lib/include/update/custom.sh
+source lib/include/update/bam.sh
 
 function print_default() {
 	if [ "$CFG_SERVER_TYPE" == "$1" ]
@@ -140,7 +143,22 @@ then
 		exit 0
 	fi
 	map_themes_pre
-	cmake_update_teeworlds "$@"
+	if [ "$CFG_BUILD_SYSTEM" == "cmake" ]
+	then
+		cmake_update_teeworlds "$@"
+	elif [ "$CFG_BUILD_SYSTEM" == "bam" ]
+	then
+		bam_update_teeworlds 5 "$@"
+	elif [ "$CFG_BUILD_SYSTEM" == "bam4" ]
+	then
+		bam_update_teeworlds 4 "$@"
+	elif [ "$CFG_BUILD_SYSTEM" == "custom" ]
+	then
+		custom_update_teeworlds "$@"
+	else
+		err "Unsupported build system: $CFG_BUILD_SYSTEM"
+		exit 1
+	fi
 	map_themes_post
 	git_save_pull
 	update_lua
