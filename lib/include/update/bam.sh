@@ -55,5 +55,7 @@ function bam_update_teeworlds() {
 	else
 		bam5_refresh_teeworlds_binary
 	fi
+
+	update_configs
 }
 
