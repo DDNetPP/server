@@ -41,6 +41,7 @@ logfile="$LOGS_PATH_FULL_TW/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S)${CFG_LOG_EXT}"
 start_ts_slug=$(date '+%Y-%m-%d_%H-%M-%S')
 start_ts=$(date '+%Y-%m-%d %H:%M:%S')
 
+export COMMIT_HASH="$(get_commit)"
 run_cmd="$CFG_ENV_RUNTIME ./$CFG_BIN 'exec autoexec.cfg;logfile $logfile;#sid:$SERVER_UUID:loop_script'"
 log "running:"
 tput bold

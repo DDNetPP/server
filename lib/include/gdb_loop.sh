@@ -85,6 +85,7 @@ then
     log "custom gdb command '$custom_gdb'"
 fi
 
+export COMMIT_HASH="$(get_commit)"
 read -rd '' GDB_CMD << EOF
 $CFG_ENV_RUNTIME gdb -ex='set confirm off' \
     -ex='set pagination off' \
