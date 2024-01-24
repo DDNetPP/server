@@ -112,7 +112,12 @@ else # teeworlds
 	logfile="$LOGS_PATH_FULL/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S)${log_ext}"
 	cache_logpath "$logfile"
 
-	export COMMIT_HASH="$(get_commit)"
+	export COMMIT_HASH
+	if ! COMMIT_HASH="$(get_commit)"
+	then
+		err "failed to get commit hash"
+		exit 1
+	fi
 	run_cmd="$CFG_ENV_RUNTIME nohup ./$CFG_BIN \"exec autoexec.cfg;#sid:$SERVER_UUID\" > $logfile 2>&1 &"
 	if [ "$arg_is_interactive" == "1" ]
 	then
