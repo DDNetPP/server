@@ -301,7 +301,6 @@ function is_cfg() {
 		yes|on) return 0;;
 		*) return 1;;
 	esac
-	return 1
 }
 
 # load syntax

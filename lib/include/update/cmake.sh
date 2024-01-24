@@ -70,6 +70,8 @@ function cmake_update() {
 	local arg_git_branch="$3"
 	local arg_git_commit="$4"
 	local pointer_cmake_flags="$5" # has to be name of an array variable
+	# this should be ${5} imo :shrug:
+	# https://github.com/koalaman/shellcheck/issues/2910
 	local pointer_cmake_flags_arr="$5[@]"
 	local arg_cmake_flags=("${!pointer_cmake_flags_arr}") # parameter expansion
 	local arg_compiled_bin="$6"

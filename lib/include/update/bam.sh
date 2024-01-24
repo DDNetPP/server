@@ -33,7 +33,8 @@ function bam_update_teeworlds() {
 	local bam_version="$1"
 
 	local pointer_bam_flags="CFG_BAM_FLAGS" # has to be name of an array variable
-	local pointer_bam_flags_arr="$pointer_bam_flags[@]"
+	# https://www.shellcheck.net/wiki/SC1087
+	local pointer_bam_flags_arr="${pointer_bam_flags}[@]"
 	local arg_bam_flags=("${!pointer_bam_flags_arr}") # parameter expansion
 
 	if [ "$(vartype "$pointer_bam_flags")" != "ARRAY" ]

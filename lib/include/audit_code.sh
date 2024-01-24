@@ -66,8 +66,8 @@ function _chop_grep_line() {
 	local context
 	local ret=''
 	context="$(_get_grep_context "$line")"
-	ret="${line#*$context}"
-	ret="${ret#*$context}"
+	ret="${line#*"$context"}"
+	ret="${ret#*"$context"}"
 	printf '%s\n' "$ret"
 }
 

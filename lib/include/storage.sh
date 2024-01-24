@@ -29,6 +29,7 @@ function storage_paths() {
 	local dir
 	while read -r dir
 	do
+		# shellcheck disable=SC2016
 		if [ "$dir" == '$USERDIR' ]
 		then
 			echo "$HOME/.teeworlds/"
