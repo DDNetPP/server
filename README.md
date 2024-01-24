@@ -52,4 +52,5 @@ screen -X -S my_debug_session quit # clean up if you are done
 
 ## plugins
 
-[server-plugin-web](https://github.com/DDNetPP/server-plugin-web)
+[server-plugin-web](https://github.com/DDNetPP/server-plugin-web) crappy website with cpu usage and logs
+[server-plugin-disk](https://github.com/DDNetPP/server-plugin-disk) send discord notification if server hard drive is full
