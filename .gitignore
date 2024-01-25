@@ -51,6 +51,9 @@ votes_raw.txt
 votes_count.txt
 votes_lower.txt
 
+# F-DDrace /design maps
+designs/
+
 # 0xf antibot
 am_data.txt 
 delay.txt
