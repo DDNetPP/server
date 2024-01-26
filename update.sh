@@ -91,10 +91,22 @@ function map_themes_post() {
 	then
 		return
 	fi
-	# expects the following folder structure
+	# expects the following folder structure fro $CFG_GIT_ROOT/maps-scripts
 	# https://github.com/DDNetPP/maps-scripts
+	#
+	# and also supports ./designs being a maps repo like this
+	# https://github.com/fddrace/maps-themes
+	# where the generated themes will auto uploaded
+	# and the plain mapfiles will be auto pulled
+	if [ -d ./designs/.git ]
+	then
+		pushd ./designs/ > /dev/null || exit 1
+		git_save_pull
+		popd > /dev/null || exit 1
+	fi
 	local map_name
 	local t
+	local updated_themes=0
 	for map_name in "$CFG_GIT_ROOT"/maps-scripts/*/themes
 	do
 		map_name="${map_name%/*}" # cut off /themes at the end
@@ -109,13 +121,37 @@ function map_themes_post() {
 				log "  new: $(sha1sum ./maps/"$map_name".map | cut -d' ' -f1)"
 				for t in "$CFG_GIT_ROOT"/maps-scripts/"$map_name"/themes/*.py
 				do
-					log "generating '$(basename "$t" .py)' theme for '$map_name' ..."
+					local theme_name
+					theme_name="$(basename "$t" .py)"
+					log "generating '$theme_name' theme for '$map_name' ..."
 					mkdir -p ./designs/"$map_name"
-					"$t" ./maps/"$map_name".map ./designs/"$map_name"/"$(basename "$t" .py)".map
+					"$t" ./maps/"$map_name".map ./designs/"$map_name"/"$theme_name".map
+
+					updated_themes=1
+					if [ -d ./designs/.git ]
+					then
+						pushd ./designs/ > /dev/null || exit 1
+						local map_version
+						local version_script
+						map_version=null
+						version_script="$CFG_GIT_ROOT"/maps-scripts/"$map_name"/print_version.py
+						if [ -f "$version_script" ]
+						then
+							map_version="$($version_script)"
+						fi
+						git commit -m "Updated map $map_name theme $theme_name to version $map_version"
+					fi
+					popd > /dev/null || exit 1
 				done
 			fi
 		fi
 	done
+	if [ "$updated_themes" == "1" ] && [ -d ./designs/.git ]
+	then
+		pushd ./designs/ > /dev/null || exit 1
+		git push
+		popd > /dev/null || exit 1
+	fi
 }
 function update_lua() {
 	[[ -d lua ]] || return
