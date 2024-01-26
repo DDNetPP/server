@@ -116,9 +116,17 @@ function map_themes_post() {
 		then
 			if [ "${OldMapHashes["$map_name"]}" != "$(sha1sum ./maps/"$map_name".map | cut -d' ' -f1)" ]
 			then
+				local version_script
+				map_version=null
+				version_script="$CFG_GIT_ROOT"/maps-scripts/"$map_name"/print_version.py
 				log "map '$map_name' updated generating new themes ..."
 				log "  old: ${OldMapHashes["$map_name"]}"
 				log "  new: $(sha1sum ./maps/"$map_name".map | cut -d' ' -f1)"
+				if [[ -f "$version_script" ]]
+				then
+					map_version="$($version_script ./maps/"$map_name".map)"
+					log "  version: $map_version"
+				fi
 				for t in "$CFG_GIT_ROOT"/maps-scripts/"$map_name"/themes/*.py
 				do
 					local theme_name
@@ -132,13 +140,6 @@ function map_themes_post() {
 					then
 						pushd ./designs/ > /dev/null || exit 1
 						local map_version
-						local version_script
-						map_version=null
-						version_script="$CFG_GIT_ROOT"/maps-scripts/"$map_name"/print_version.py
-						if [ -f "$version_script" ]
-						then
-							map_version="$($version_script)"
-						fi
 						git commit -m "Updated map $map_name theme $theme_name to version $map_version"
 						popd > /dev/null || exit 1
 					fi
