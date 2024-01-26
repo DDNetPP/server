@@ -139,7 +139,7 @@ function map_themes_post() {
 					if [ -d ./designs/.git ]
 					then
 						pushd ./designs/ > /dev/null || exit 1
-						local map_version
+						git add ./"$map_name"/"$theme_name".map
 						git commit -m "Updated map $map_name theme $theme_name to version $map_version"
 						popd > /dev/null || exit 1
 					fi
