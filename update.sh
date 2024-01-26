@@ -75,14 +75,14 @@ function map_themes_pre() {
 		return
 	fi
 	OldMapHashes=()
-	local theme
-	for theme in "$CFG_GIT_ROOT"/maps-scripts/*/
+	local map_name
+	for map_name in "$CFG_GIT_ROOT"/maps-scripts/*/themes
 	do
-		local theme
-		theme="$(basename "$theme")"
-		if [ -f ./maps/"$theme".map ]
+		map_name="${map_name%/*}" # cut off /themes at the end
+		map_name="$(basename "$map_name")" # get folder name for examle BlmapChill
+		if [ -f ./maps/"$map_name".map ]
 		then
-			OldMapHashes["$theme"]="$(sha1sum ./maps/"$theme".map | cut -d' ' -f1)"
+			OldMapHashes["$map_name"]="$(sha1sum ./maps/"$map_name".map | cut -d' ' -f1)"
 		fi
 	done
 }
@@ -91,24 +91,27 @@ function map_themes_post() {
 	then
 		return
 	fi
-	local theme
+	# expects the following folder structure
+	# https://github.com/DDNetPP/maps-scripts
+	local map_name
 	local t
-	for theme in "$CFG_GIT_ROOT"/maps-scripts/*/
+	for map_name in "$CFG_GIT_ROOT"/maps-scripts/*/themes
 	do
-		theme="$(basename "$theme")"
-		log "theme $theme"
-		if [ -f ./maps/"$theme".map ]
+		map_name="${map_name%/*}" # cut off /themes at the end
+		map_name="$(basename "$map_name")" # get folder name for examle BlmapChill
+		log "themes for  $map_name"
+		if [ -f ./maps/"$map_name".map ]
 		then
-			if [ "${OldMapHashes["$theme"]}" != "$(sha1sum ./maps/"$theme".map | cut -d' ' -f1)" ]
+			if [ "${OldMapHashes["$map_name"]}" != "$(sha1sum ./maps/"$map_name".map | cut -d' ' -f1)" ]
 			then
-				log "map '$theme' updated generating new themes ..."
-				log "  old: ${OldMapHashes["$theme"]}"
-				log "  new: $(sha1sum ./maps/"$theme".map | cut -d' ' -f1)"
-				for t in "$CFG_GIT_ROOT"/maps-scripts/"$theme"/*.py
+				log "map '$map_name' updated generating new themes ..."
+				log "  old: ${OldMapHashes["$map_name"]}"
+				log "  new: $(sha1sum ./maps/"$map_name".map | cut -d' ' -f1)"
+				for t in "$CFG_GIT_ROOT"/maps-scripts/"$map_name"/themes/*.py
 				do
-					log "generating '$(basename "$t" .py)' theme for '$theme' ..."
-					mkdir -p ./designs/"$theme"
-					"$t" ./maps/"$theme".map ./designs/"$theme"/"$(basename "$t" .py)".map
+					log "generating '$(basename "$t" .py)' theme for '$map_name' ..."
+					mkdir -p ./designs/"$map_name"
+					"$t" ./maps/"$map_name".map ./designs/"$map_name"/"$(basename "$t" .py)".map
 				done
 			fi
 		fi
