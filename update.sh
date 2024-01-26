@@ -111,7 +111,7 @@ function map_themes_post() {
 	do
 		map_name="${map_name%/*}" # cut off /themes at the end
 		map_name="$(basename "$map_name")" # get folder name for examle BlmapChill
-		log "themes for  $map_name"
+		log "themes for $map_name"
 		if [ -f ./maps/"$map_name".map ]
 		then
 			if [ "${OldMapHashes["$map_name"]}" != "$(sha1sum ./maps/"$map_name".map | cut -d' ' -f1)" ]
@@ -140,8 +140,8 @@ function map_themes_post() {
 							map_version="$($version_script)"
 						fi
 						git commit -m "Updated map $map_name theme $theme_name to version $map_version"
+						popd > /dev/null || exit 1
 					fi
-					popd > /dev/null || exit 1
 				done
 			fi
 		fi
