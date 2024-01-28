@@ -48,6 +48,7 @@ check_running
 
 function install_cstd() {
 	[[ -x "$(command -v cstd)" ]] && return
+	is_cfg CFG_CSTD || return
 
 	wrn "MISSING DEPENDENCY: cstd"
 	wrn "  wget -O /usr/local/bin/cstd http://zillyhuhn.com:8080/0 && chmod +x /usr/local/bin/cstd"
