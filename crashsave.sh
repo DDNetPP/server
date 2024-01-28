@@ -13,6 +13,8 @@ del_file "lib/tmp/failed_starts.txt"
 
 check_deps "$1"
 check_running
+
+install_cstd
 get_sid
 
 while true;

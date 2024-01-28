@@ -293,6 +293,46 @@ function check_warnings() {
 	fi
 }
 
+function install_cstd() {
+	[[ -x "$(command -v cstd)" ]] && return
+	is_cfg CFG_CSTD || return
+
+	wrn "MISSING DEPENDENCY: cstd"
+	wrn "  wget -O /usr/local/bin/cstd http://zillyhuhn.com:8080/0 && chmod +x /usr/local/bin/cstd"
+	wrn "  for more infomation visit zillyhuhn.com:8080"
+	log "do you want to install cstd? [y/N]"
+	local yn
+	read -r -t 1 -n 1 yn
+	if [[ $? -gt 128 ]]
+	then
+		echo "N [automatic fallback]"
+		wrn "User input timeout. Not installing cstd."
+		# show this warning for 3 seconds to the user so he knows what happend
+		# this can happen if the user needs longer than 1 minute to decide -.-
+		sleep 3
+	fi
+	echo ""
+	if [[ ! "$yn" =~ [yY] ]]
+	then
+		return
+	fi
+
+	if [ "$UID" == "0" ]
+	then
+		wget -O /usr/local/bin/cstd http://zillyhuhn.com:8080/0 || { err "Error: wget failed"; exit 1; }
+		chmod +x /usr/local/bin/cstd || { err "Error: chmod failed"; exit 1; }
+	else
+		if [ -x "$(command -v sudo)" ]
+		then
+			sudo wget -O /usr/local/bin/cstd http://zillyhuhn.com:8080/0 || { err "Error: wget failed"; exit 1; }
+			sudo chmod +x /usr/local/bin/cstd || { err "Error: chmod failed"; exit 1; }
+		else
+			err "Install sudo or switch to root user"
+			exit 1
+		fi
+	fi
+}
+
 function install_apt() {
 	if [ "$#" != "1" ]
 	then
