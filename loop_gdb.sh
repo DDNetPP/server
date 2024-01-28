@@ -47,36 +47,37 @@ check_deps "$1"
 check_running
 
 function install_cstd() {
-    if [ "$UID" == "0" ]
-    then
-        wget -O /usr/local/bin/cstd http://zillyhuhn.com:8080/0 || { err "Error: wget failed"; exit 1; }
-        chmod +x /usr/local/bin/cstd || { err "Error: chmod failed"; exit 1; }
-    else
-        if [ -x "$(command -v sudo)" ]
-        then
-            sudo wget -O /usr/local/bin/cstd http://zillyhuhn.com:8080/0 || { err "Error: wget failed"; exit 1; }
-            sudo chmod +x /usr/local/bin/cstd || { err "Error: chmod failed"; exit 1; }
-        else
-            err "Install sudo or switch to root user"
-            exit 1
-        fi
-    fi
+	[[ -x "$(command -v cstd)" ]] && return
+
+	wrn "MISSING DEPENDENCY: cstd"
+	wrn "  wget -O /usr/local/bin/cstd http://zillyhuhn.com:8080/0 && chmod +x /usr/local/bin/cstd"
+	wrn "  for more infomation visit zillyhuhn.com:8080"
+	log "do you want to install cstd? [y/N]"
+	local yn
+	read -r -n 1 yn
+	echo ""
+	if [[ ! "$yn" =~ [yY] ]]
+	then
+		return
+	fi
+
+	if [ "$UID" == "0" ]
+	then
+		wget -O /usr/local/bin/cstd http://zillyhuhn.com:8080/0 || { err "Error: wget failed"; exit 1; }
+		chmod +x /usr/local/bin/cstd || { err "Error: chmod failed"; exit 1; }
+	else
+		if [ -x "$(command -v sudo)" ]
+		then
+			sudo wget -O /usr/local/bin/cstd http://zillyhuhn.com:8080/0 || { err "Error: wget failed"; exit 1; }
+			sudo chmod +x /usr/local/bin/cstd || { err "Error: chmod failed"; exit 1; }
+		else
+			err "Install sudo or switch to root user"
+			exit 1
+		fi
+	fi
 }
 
-# check dependencys
-if [ ! -x "$(command -v cstd)" ]
-then
-    wrn "MISSING DEPENDENCY: cstd"
-    wrn "  wget -O /usr/local/bin/cstd http://zillyhuhn.com:8080/0 && chmod +x /usr/local/bin/cstd"
-    wrn "  for more infomation visit zillyhuhn.com:8080"
-    log "do you want to install cstd? [y/N]"
-    read -r -n 1 yn
-    echo ""
-    if [[ "$yn" =~ [yY] ]]
-    then
-        install_cstd
-    fi
-fi
+install_cstd
 install_dep git
 install_dep gdb
 
