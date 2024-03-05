@@ -50,6 +50,7 @@ SAN.*
 votes_raw.txt
 votes_count.txt
 votes_lower.txt
+patches/
 
 # F-DDrace /design maps
 designs/
