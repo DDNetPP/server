@@ -38,4 +38,5 @@ def_var 'CFG_BUILD_SYSTEM' 'build_system' "cmake" '(cmake|bam|bam4|custom)'
 def_var 'CFG_CUSTOM_BUILD_CMD' 'custom_build_cmd' "g++ main.c -o main" ''
 def_var 'CFG_BAM_BIN' 'bam_bin' "bam" ''
 def_var 'CFG_BAM_FLAGS' 'bam_flags' "server_release" ''
+def_var 'CFG_GIT_PATCHES_DIR' 'git_patches_dir' "patches" ''
 

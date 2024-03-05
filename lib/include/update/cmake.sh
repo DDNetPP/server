@@ -177,6 +177,7 @@ function cmake_update() {
 			log "using precompiled libantibot.so"
 		fi
 	fi
+	apply_git_patches
 	bin_commit="$(git rev-parse HEAD)"
 	local cmake_cache="$SCRIPT_ROOT/lib/tmp/cmake_flags.txt"
 	if [ -f "$cmake_cache" ]
@@ -219,6 +220,7 @@ function cmake_update() {
 			git reset --hard HEAD
 		fi
 	fi
+	reverse_git_patches
 	if [ "$build_fail" == "1" ]
 	then
 		err --log "build failed."
