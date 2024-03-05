@@ -14,7 +14,7 @@ source lib/include/update/cmake.sh
 source lib/include/update/custom.sh
 source lib/include/update/bam.sh
 
-function print_default() {
+print_default() {
 	if [ "$CFG_SERVER_TYPE" == "$1" ]
 	then
 		tput bold
@@ -23,7 +23,7 @@ function print_default() {
 	fi
 }
 
-function tem_update() {
+tem_update() {
 	(
 		cd "$CFG_TEM_PATH" || exit 1
 		git_save_pull
@@ -69,7 +69,7 @@ do
 	fi
 done
 
-function map_themes_pre() {
+map_themes_pre() {
 	if [ ! -d "$CFG_GIT_ROOT"/maps-scripts ]
 	then
 		return
@@ -86,7 +86,7 @@ function map_themes_pre() {
 		fi
 	done
 }
-function map_themes_post() {
+map_themes_post() {
 	if [ ! -d "$CFG_GIT_ROOT"/maps-scripts ]
 	then
 		return
@@ -154,7 +154,7 @@ function map_themes_post() {
 		popd > /dev/null || exit 1
 	fi
 }
-function update_lua() {
+update_lua() {
 	[[ -d lua ]] || return
 	[[ -d lua/.git ]] || return
 
