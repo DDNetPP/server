@@ -32,8 +32,13 @@ then
 	err "failed to get commit hash"
 	exit 1
 fi
+git_patches="$(get_applied_git_patches)"
 run_cmd="$CFG_ENV_RUNTIME gdb -ex='handle SIGPIPE nostop noprint pass' -ex=run --args ./\"$CFG_BIN\" \"exec autoexec.cfg;logfile $logfile;#sid:$SERVER_UUID\""
 log "$run_cmd"
 launch_commit="$(get_commit)"
 eval "$run_cmd"
-log "commit: $launch_commit"
+log "build commit: $launch_commit"
+if [ "$git_patches" != "" ]
+then
+	log "applied patches: $git_patches"
+fi

@@ -32,9 +32,6 @@ _apply_git_patch_files() {
 	#     └── teeworlds.patch
 	#
 
-
-	_APPLIED_GIT_PATCHES=()
-
 	local patch_dir_abs
 	patch_dir_abs="$(_patch_dir_absolute)"
 	local patch_dir
@@ -42,10 +39,13 @@ _apply_git_patch_files() {
 	# only one patch per dir needed
 	for patch_dir in "$patch_dir_abs"/*/
 	do
+		[ ! -d "$patch_dir" ] && continue
+
 		local patch_applied=0
 		for patch_file in "$patch_dir"/*.patch
 		do
 			[ "$patch_applied" = 1 ] && continue
+			[ ! -f "$patch_file" ] && continue
 
 			if git apply "$patch_file"
 			then
@@ -62,6 +62,8 @@ _apply_git_patch_files() {
 	# root level patches are single files
 	for patch_file in "$patch_dir_abs"/*.patch
 	do
+		[ ! -f "$patch_file" ] && continue
+
 		if git apply "$patch_file"
 		then
 			log "applied patch '$patch_file'"
@@ -70,6 +72,17 @@ _apply_git_patch_files() {
 			wrn "WARNING: failed to apply patch '$patch_file'"
 		fi
 	done
+}
+
+_save_applied_patches() {
+	mkdir -p "$SCRIPT_ROOT/lib/var"
+	printf '%s' "${_APPLIED_GIT_PATCHES[*]}" > "$SCRIPT_ROOT/lib/var/applied_git_patches.txt"
+}
+
+get_applied_git_patches() {
+	mkdir -p "$SCRIPT_ROOT/lib/var"
+	[ ! -f "$SCRIPT_ROOT/lib/var/applied_git_patches.txt" ] && return
+	cat "$SCRIPT_ROOT/lib/var/applied_git_patches.txt"
 }
 
 reverse_git_patches() {
@@ -86,6 +99,7 @@ reverse_git_patches() {
 }
 
 apply_git_patches() {
+	_APPLIED_GIT_PATCHES=()
 	local patch_dir_abs
 	patch_dir_abs="$(_patch_dir_absolute)"
 	[ "$patch_dir_abs" = "" ] && return
@@ -104,6 +118,7 @@ apply_git_patches() {
 
 	pushd "$CFG_GIT_PATH_MOD" >/dev/null || exit 1
 	_apply_git_patch_files
+	_save_applied_patches
 	popd >/dev/null || exit 1 # CFG_GIT_PATH_MOD
 }
 
