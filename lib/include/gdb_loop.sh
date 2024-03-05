@@ -112,13 +112,18 @@ $CFG_ENV_RUNTIME gdb -ex='set confirm off' \
     -ex=quit --args \
     ./$CFG_BIN "exec autoexec.cfg;logfile $logfile;#sid:$SERVER_UUID:loop_script"
 EOF
+git_patches="$(get_applied_git_patches)"
 start_ts=$(date '+%Y-%m-%d %H:%M:%S')
 {
-    echo "/============= server start $start_ts =============\\"
-    echo "build commit: $(get_commit)"
-    echo "gdb ./bin/backup/$(get_commit) $gdb_corefile"
-    echo "objdump -dCS -M intel bin/backup/$(get_commit) > ./lib/tmp/debug.asm && vim ./lib/tmp/debug.asm"
-    echo "python -c 'print(hex(0xbabe + 10))'"
+	echo "/============= server start $start_ts =============\\"
+	echo "build commit: $(get_commit)"
+	if [ "$git_patches" != "" ]
+	then
+		echo "applied patches: $git_patches"
+	fi
+	echo "gdb ./bin/backup/$(get_commit) $gdb_corefile"
+	echo "objdump -dCS -M intel bin/backup/$(get_commit) > ./lib/tmp/debug.asm && vim ./lib/tmp/debug.asm"
+	echo "python -c 'print(hex(0xbabe + 10))'"
 } >> "$p/full_gdb.txt"
 echo ""
 eval "$GDB_CMD"
