@@ -46,9 +46,11 @@ function bam_update_teeworlds() {
 
 	cd "$CFG_GIT_PATH_MOD" || exit 1
 
+	apply_git_patches
 	local build_cmd="$CFG_BAM_BIN ${arg_bam_flags[*]}"
 	eval "$build_cmd" || \
 		{ err --log "build failed (bam)"; }
+	reverse_git_patches
 
 	if [ "$bam_version" == "4" ]
 	then

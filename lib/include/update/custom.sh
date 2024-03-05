@@ -13,7 +13,9 @@ function custom_update_teeworlds() {
 
 	cd "$CFG_GIT_PATH_MOD" || exit 1
 
+	apply_git_patches
 	"$CFG_CUSTOM_BUILD_CMD" || exit 1
+	reverse_git_patches
 
 	update_configs
 }
