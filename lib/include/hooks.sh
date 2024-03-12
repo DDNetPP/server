@@ -23,9 +23,6 @@ run_hook() {
 	[ -d "$SCRIPT_ROOT/hooks" ] || return
 	[ -d "$SCRIPT_ROOT/hooks/$hook_name" ] || return
 
-	pushd "$SCRIPT_ROOT" >/dev/null || exit 1
-
-
 	local hook_script
 	while read -r hook_script
 	do
@@ -35,8 +32,6 @@ run_hook() {
 			err "Error: failed to run $hook_script"
 		fi
 	done < <(find "$SCRIPT_ROOT/hooks/$hook_name/" -name "*.sh" | LC_ALL=C sort)
-
-	popd >/dev/null || exit 1 # "$SCRIPT_ROOT" 
 }
 
 register_hook() {
