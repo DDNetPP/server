@@ -21,6 +21,7 @@ source lib/include/screen.sh
 source lib/include/audit_code.sh
 source lib/include/traffic_logger.sh
 source lib/include/update/git_patches.sh
+source lib/include/hooks.sh
 # UNUSED for now...
 # source lib/include/external/dylanaraps/pure-bash-bible.sh
 

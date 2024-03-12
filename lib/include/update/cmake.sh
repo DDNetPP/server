@@ -191,6 +191,9 @@ function cmake_update() {
 			rm -rf build
 		fi
 	fi
+
+	register_hook_before_compile
+
 	echo "${arg_cmake_flags[*]}" > "$cmake_cache"
 	mkdir -p build || { err "Error: creating dir build/"; exit 1; }
 	cd build || { err "Could not enter build/ directory"; exit 1; }

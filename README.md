@@ -50,6 +50,15 @@ screen -r my_debug_session # to return again on crash or to visit the logs
 screen -X -S my_debug_session quit # clean up if you are done
 ```
 
+## hooks
+
+```
+mkdir -p hooks/before_compile
+echo 'echo hello from my hook' > hooks/before_compile/01-my-hook.sh
+```
+
+It now prints "hello from my hook" every time before the update script recompiles the code
+
 ## plugins
 
 - [server-plugin-web](https://github.com/DDNetPP/server-plugin-web) crappy website with cpu usage and logs
