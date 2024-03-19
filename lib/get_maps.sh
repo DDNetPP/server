@@ -12,9 +12,113 @@ source lib/lib.sh
 
 maps_dir="${SCRIPT_ROOT}/maps"
 
+function usage() {
+	cat <<-EOF
+	usage: ./lib/get_maps.sh [OPTION..]
+	description:
+	  interactively download teeworlds maps from differen sources
+	options:
+	  --output-dir DIRECTORY            where to save the maps to
+	  --non-interactive                 errors instead of promting the user
+	  --source SOURCE_NAME              where to download maps from
+	example:
+	  ./lib/get_maps.sh --non-interactive --output-dir maps --source "vanilla 0.7.1 release"
+	EOF
+}
+
+SOURCE_OPTIONS=(
+	"vanilla git"
+	"vanilla 0.7.1 release"
+	"vanilla 0.6.5 release"
+	"heinrich5991 [BIG]"
+	"ddnet [BIG]"
+	"ddnet7 [BIG]"
+	"KoG [BIG]"
+	"ddnet++"
+	"chiller"
+	"zillyfng"
+	"zillyfly"
+	"zillyinsta-06"
+	"zillyinsta-07"
+	"Quit"
+)
+
+ARG_OUTPUT_DIR=''
+ARG_SOURCE=''
+ARG_NON_INTERACTIVE=0
+
+function parse_args() {
+	local arg
+	while true
+	do
+		[ "$#" -eq 0 ] && break
+
+		arg="$1"
+		shift
+
+		if [ "$arg" = "--help" ] || [ "$arg" = "-h" ] || [ "$arg" = "help" ]
+		then
+			usage
+			exit 0
+		elif [ "$arg" = "--output-dir" ]
+		then
+			ARG_OUTPUT_DIR="$1"
+			shift
+			if [ "$ARG_OUTPUT_DIR" = "" ]
+			then
+				err "--output-dir requires an argument"
+				exit 1
+			fi
+		elif [ "$arg" = "--source" ]
+		then
+			ARG_SOURCE="$1"
+			shift
+			if [ "$ARG_SOURCE" = "" ]
+			then
+				err "--source requires an argument"
+				exit 1
+			fi
+			local source_option
+			local found=0
+			for source_option in "${SOURCE_OPTIONS[@]}"
+			do
+				if [ "$source_option" = "$ARG_SOURCE" ]
+				then
+					found=1
+					break
+				fi
+			done
+			if [ "$found" = 0 ]
+			then
+				err "Invalid source '$ARG_SOURCE' has to be one of those:"
+				echo "${SOURCE_OPTIONS[*]}"
+				exit 1
+			fi
+		elif [ "$arg" = "--non-interactive" ]
+		then
+			ARG_NON_INTERACTIVE=1
+		else
+			err "Error: invalid argument '$arg'"
+			exit 1
+		fi
+	done
+}
+
+IFS=$'\n'
+parse_args "$@"
+
 function select_maps_dir() {
-	printf 'Select a map output directory:\n\n'
-	read -r -e -i "$maps_dir" maps_dir
+	if [ "$ARG_OUTPUT_DIR" != "" ]
+	then
+		maps_dir="$ARG_OUTPUT_DIR"
+	elif [ "$ARG_NON_INTERACTIVE" = 1 ]
+	then
+		err "--non-interactive requires --output-dir to be set"
+		exit 1
+	else
+		printf 'Select a map output directory:\n\n'
+		read -r -e -i "$maps_dir" maps_dir
+	fi
 }
 
 function download_web() {
@@ -126,6 +230,70 @@ function download_git() {
 	cd "$SCRIPT_ROOT" || exit 1
 }
 
+# @param opt
+function select_option() {
+	local opt="$1"
+	case $opt in
+		"vanilla git")
+			download_git https://github.com/teeworlds/teeworlds-maps
+			return 0
+			;;
+		"vanilla 0.7.1 release")
+			download_archive tar.gz https://github.com/teeworlds/teeworlds/releases/download/0.7.1/teeworlds-0.7.1-linux_x86_64.tar.gz
+			return 0
+			;;
+		"vanilla 0.6.5 release")
+			download_archive tar.xz https://downloads.teeworlds.com/teeworlds-0.6.5-linux_x86_64.tar.xz
+			return 0
+			;;
+		"heinrich5991 [BIG]")
+			download_web http://heinrich5991.de/teeworlds/maps/maps/
+			return 0
+			;;
+		"ddnet [BIG]")
+			download_git https://github.com/ddnet/ddnet-maps
+			return 0
+			;;
+		"ddnet7 [BIG]")
+			download_archive zip https://maps.ddnet.tw/compilations/maps7.zip
+			return 0
+			;;
+		"KoG [BIG]")
+			download_archive tar.gz https://qshar.com/maps.tar.gz
+			return 0
+			;;
+		"ddnet++")
+			download_git https://github.com/DDNetPP/maps
+			return 0
+			;;
+		"chiller")
+			download_git https://github.com/ChillerTW/GitMaps
+			return 0
+			;;
+		"zillyfng")
+			download_git https://github.com/ZillyFng/solofng-maps
+			return 0
+			;;
+		"zillyfly")
+			download_git https://github.com/ZillyFly/fly-maps
+			return 0
+			;;
+		"zillyinsta-06")
+			download_git https://github.com/ZillyInsta/maps-06
+			return 0
+			;;
+		"zillyinsta-07")
+			download_git https://github.com/ZillyInsta/maps-07
+			return 0
+			;;
+		"Quit")
+			return 0
+			;;
+		*) echo "invalid option ${REPLY:-$opt}";;
+	esac
+	return 1
+}
+
 function menu() {
 	check_server_dir
 	select_maps_dir
@@ -135,6 +303,11 @@ function menu() {
 		wrn "You already have $num_maps maps in:"
 		wrn "$maps_dir"
 		echo "do you want to overwrite/add to current map pool? [y/N]"
+		if [ "$ARG_NON_INTERACTIVE" = 1 ]
+		then
+			err "aborting because --non-interactive is set"
+			exit 1
+		fi
 		read -n 1 -rp "" inp
 		echo ""
 		if ! [[ $inp =~ ^[Yy]$ ]]
@@ -144,83 +317,19 @@ function menu() {
 		fi
 	fi
 	PS3='Please enter your choice: '
-	options=(
-		"vanilla git"
-		"vanilla 0.7.1 release"
-		"vanilla 0.6.5 release"
-		"heinrich5991 [BIG]"
-		"ddnet [BIG]"
-		"ddnet7 [BIG]"
-		"KoG [BIG]"
-		"ddnet++"
-		"chiller"
-		"zillyfng"
-		"zillyfly"
-		"zillyinsta-06"
-		"zillyinsta-07"
-		"Quit"
-	)
-	select opt in "${options[@]}"
-	do
-		case $opt in
-			"vanilla git")
-				download_git https://github.com/teeworlds/teeworlds-maps
-				break
-				;;
-			"vanilla 0.7.1 release")
-				download_archive tar.gz https://github.com/teeworlds/teeworlds/releases/download/0.7.1/teeworlds-0.7.1-linux_x86_64.tar.gz
-				break
-				;;
-			"vanilla 0.6.5 release")
-				download_archive tar.xz https://downloads.teeworlds.com/teeworlds-0.6.5-linux_x86_64.tar.xz
-				break
-				;;
-			"heinrich5991 [BIG]")
-				download_web http://heinrich5991.de/teeworlds/maps/maps/
-				break
-				;;
-			"ddnet [BIG]")
-				download_git https://github.com/ddnet/ddnet-maps
-				break
-				;;
-			"ddnet7 [BIG]")
-				download_archive zip https://maps.ddnet.tw/compilations/maps7.zip
-				break
-				;;
-			"KoG [BIG]")
-				download_archive tar.gz https://qshar.com/maps.tar.gz
-				break
-				;;
-			"ddnet++")
-				download_git https://github.com/DDNetPP/maps
-				break
-				;;
-			"chiller")
-				download_git https://github.com/ChillerTW/GitMaps
-				break
-				;;
-			"zillyfng")
-				download_git https://github.com/ZillyFng/solofng-maps
-				break
-				;;
-			"zillyfly")
-				download_git https://github.com/ZillyFly/fly-maps
-				break
-				;;
-			"zillyinsta-06")
-				download_git https://github.com/ZillyInsta/maps-06
-				break
-				;;
-			"zillyinsta-07")
-				download_git https://github.com/ZillyInsta/maps-07
-				break
-				;;
-			"Quit")
-				break
-				;;
-			*) echo "invalid option $REPLY";;
-		esac
-	done
+	if [ "$ARG_SOURCE" != "" ]
+	then
+		select_option "$ARG_SOURCE"
+	elif [ "$ARG_NON_INTERACTIVE" = 1 ]
+	then
+		err "--non-interactive requires --source to be set"
+		exit 1
+	else
+		select opt in "${SOURCE_OPTIONS[@]}"
+		do
+			select_option "$opt" && break
+		done
+	fi
 }
 
 menu
