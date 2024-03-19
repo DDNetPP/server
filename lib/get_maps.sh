@@ -69,6 +69,11 @@ function parse_args() {
 				err "--output-dir requires an argument"
 				exit 1
 			fi
+			if [ "${ARG_OUTPUT_DIR::1}" != "/" ]
+			then
+				err "--output-dir has to point to an absolute path"
+				exit 1
+			fi
 		elif [ "$arg" = "--source" ]
 		then
 			ARG_SOURCE="$1"
@@ -193,7 +198,7 @@ function download_archive() {
 		if [ "$count" != 0 ]
 		then
 			log "found $count maps. copying ..."
-			cp "$tmp_maps_dir/$dir"/*.map "$maps_dir"
+			cp "$tmp_maps_dir/$dir"/*.map "$maps_dir" || exit 1
 			found=1
 		fi
 	fi
@@ -297,15 +302,6 @@ function select_option() {
 function menu() {
 	check_server_dir
 	select_maps_dir
-	if [ ! -d "$maps_dir" ]
-	then
-		err "Error: maps directory not found '$maps_dir'"
-		err "       try running the following command first"
-		err ""
-		err "  mkdir $maps_dir"
-		err ""
-		exit 1
-	fi
 	if [[ -d "$maps_dir" ]] && [[ "$(ls "$maps_dir")" != "" ]]
 	then
 		num_maps="$(find "$maps_dir" | wc -l)"
