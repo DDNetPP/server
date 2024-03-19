@@ -176,7 +176,7 @@ function download_archive() {
 	if [ "$count" != 0 ]
 	then
 		log "found $count maps. copying ..."
-		cp "$tmp_maps_dir"*.map "$maps_dir"
+		cp "$tmp_maps_dir"*.map "$maps_dir" || exit 1
 		found=1
 	fi
 	# check one first subdir or data/maps to look for more maps
@@ -297,6 +297,15 @@ function select_option() {
 function menu() {
 	check_server_dir
 	select_maps_dir
+	if [ ! -d "$maps_dir" ]
+	then
+		err "Error: maps directory not found '$maps_dir'"
+		err "       try running the following command first"
+		err ""
+		err "  mkdir $maps_dir"
+		err ""
+		exit 1
+	fi
 	if [[ -d "$maps_dir" ]] && [[ "$(ls "$maps_dir")" != "" ]]
 	then
 		num_maps="$(find "$maps_dir" | wc -l)"
