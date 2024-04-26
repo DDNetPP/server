@@ -656,7 +656,7 @@ function update_configs() {
 	then
 		log "found config directory cfg/cfg-secrets"
 		log "updating config secrets ..."
-		cd cfg-secrets || exit 1
+		cd cfg/cfg-secrets || exit 1
 		git_save_pull
 	fi
 	cd "$SCRIPT_ROOT" || exit 1
