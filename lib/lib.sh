@@ -652,6 +652,14 @@ function update_configs() {
 		git_save_pull
 	fi
 	cd "$SCRIPT_ROOT" || exit 1
+	if [[ -d cfg/cfg-secrets/.git ]]
+	then
+		log "found config directory cfg/cfg-secrets"
+		log "updating config secrets ..."
+		cd cfg-secrets || exit 1
+		git_save_pull
+	fi
+	cd "$SCRIPT_ROOT" || exit 1
 	if [[ -d votes/ ]] && [[ -d votes/.git ]]
 	then
 		log "found config directory votes/"
