@@ -5,8 +5,9 @@ Scripts to run production teeworlds servers.
 
 ```
 sudo apt install figlet screen expect gdb  # On Debian/Ubuntu
-sudo yum install figlet screen expect gdb  # On CentOS/RHEL
-sudo dnf install figlet screen expect gdb  # On Fedora 22+
+
+# optional dependencies
+sudo apt install graphviz # for profiler graphics
 
 cd
 mkdir -p git && cd git
