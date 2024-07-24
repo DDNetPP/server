@@ -230,9 +230,9 @@ function get_tw_config() {
 	found_key="$(grep "^$config_key " lib/tmp/compiled.cfg | tail -n1 | cut -d' ' -f2- | xargs)"
 	if [ "$found_key" == "" ]
 	then
-		echo "$default_value"
+		printf '%s' "$default_value"
 	else
-		echo "$found_key"
+		printf '%s' "$found_key"
 	fi
 }
 
