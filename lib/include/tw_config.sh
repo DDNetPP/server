@@ -227,8 +227,10 @@ function get_tw_config_value() {
 	line="$(printf '%s' "$line" | cut -d' ' -f2-)"
 	# are we still skipping spaces are in the value?
 	local in_value=0
-	while IFS='' read -r -n 1 letter
+	local i
+	for (( i=0; i<${#line}; i++ ))
 	do
+		letter="${line:$i:1}"
 		if [ "$in_value" = 0 ]
 		then
 			if [ "$letter" = '"' ]
@@ -243,6 +245,22 @@ function get_tw_config_value() {
 				continue
 			fi
 			in_value=1
+		fi
+		if [ "$letter" = \\ ]
+		then
+			local next_i="$((i+1))"
+			local next_letter="${line:$next_i:1}"
+			if [ "$next_letter" = \\ ] # escaped back slash
+			then
+				i="$next_i"
+				value+=\\
+				continue
+			elif [ "$next_letter" = '"' ]  # escaped double quote
+			then
+				i="$next_i"
+				value+='"'
+				continue
+			fi
 		fi
 		if [ "$letter" = '"' ]
 		then
@@ -272,6 +290,12 @@ assert_eq "$(get_tw_config_value 'sv_name foo # hello')" "foo" "string no quotes
 assert_eq "$(get_tw_config_value 'sv_name "foo" # hello')" "foo" "string quotes with comment"
 assert_eq "$(get_tw_config_value 'sv_name "foo bar" # hello')" "foo bar" "multi word string quotes with comment"
 assert_eq "$(get_tw_config_value 'sv_name "foo # bar" # hello')" "foo # bar" "multi word string quotes with comment and hash tag"
+assert_eq "$(get_tw_config_value 'sv_name "foo \" bar" # hello')" 'foo " bar' "qouted multi word string with escaped quote"
+# shellcheck disable=SC1003
+assert_eq "$(get_tw_config_value 'sv_name "foo \\" bar" # hello')" 'foo \' "escaped backslash should unescape quote"
+# shellcheck disable=SC1003
+# assert_eq "$(get_tw_config_value 'sv_name a\"a')" 'a\"a' "escapes only work in strings"
+
 
 function get_tw_config() {
 	if [ "$#" != "2" ]
