@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # compare two strings and ensure they match or crash
 # matching node order of actual, expected, [message]  https://nodejs.org/api/assert.html#assertequalactual-expected-message
 # matching rust order of actual, expexted https://users.rust-lang.org/t/assert-eq-expected-and-actual/20304/3
