@@ -11,7 +11,7 @@ function _log() {
 	msg_rich="$prefix_rich $msg"
 	msg_plain="$prefix_plain $msg"
 	ts="[$(date '+%F %H:%M:%S')]"
-	if [ "$LOG_TS" == "1" ]
+	if [ "${LOG_TS:-}" == "1" ]
 	then
 		echo -ne "$ts$msg_rich"
 	else
