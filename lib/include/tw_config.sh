@@ -212,10 +212,66 @@ function twcfg.include_exec() {
 # stripping of the config key and comments
 function get_tw_config_value() {
 	local line="$1"
-	printf '%s' "$line" | cut -d' ' -f2- | xargs
+
+	# go simple and fast if there are no comments
+	if ! printf '%s' "$line" | grep -q '#'
+	then
+		printf '%s' "$line" | cut -d' ' -f2- | xargs
+		return
+	fi
+
+	# only iterate character by character if we have to
+	local letter
+	local value=''
+	local quoted_value=0
+	line="$(printf '%s' "$line" | cut -d' ' -f2-)"
+	# are we still skipping spaces are in the value?
+	local in_value=0
+	while IFS='' read -r -n 1 letter
+	do
+		if [ "$in_value" = 0 ]
+		then
+			if [ "$letter" = '"' ]
+			then
+				quoted_value=1
+				continue
+			elif [ "$letter" = "\t" ]
+			then
+				continue
+			elif [ "$letter" = " " ]
+			then
+				continue
+			fi
+			in_value=1
+		fi
+		if [ "$letter" = '"' ]
+		then
+			if [ "$quoted_value" = 1 ]
+			then
+				break
+			fi
+		elif [ "$letter" = '#' ]
+		then
+			if [ "$quoted_value" = 0 ]
+			then
+				break
+			fi
+		fi
+		value+="$letter"
+	done < <(printf '%s' "$line")
+
+	# sed gets rid of trailing spaces
+	# for example sv_name "foo # bar" should be "foo" not "foo "
+	printf '%s' "$value" | sed -e 's/[[:space:]]*$//'
 }
 
 assert_eq "$(get_tw_config_value 'sv_name "foo"')" "foo" "simple double quotes"
+assert_eq "$(get_tw_config_value 'sv_name foo')" "foo" "simple string without quotes"
+assert_eq "$(get_tw_config_value 'sv_name foo bar')" "foo bar" "two word string without quotes"
+assert_eq "$(get_tw_config_value 'sv_name foo # hello')" "foo" "string no quotes with comment"
+assert_eq "$(get_tw_config_value 'sv_name "foo" # hello')" "foo" "string quotes with comment"
+assert_eq "$(get_tw_config_value 'sv_name "foo bar" # hello')" "foo bar" "multi word string quotes with comment"
+assert_eq "$(get_tw_config_value 'sv_name "foo # bar" # hello')" "foo # bar" "multi word string quotes with comment and hash tag"
 
 function get_tw_config() {
 	if [ "$#" != "2" ]
