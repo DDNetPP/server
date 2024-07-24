@@ -1,6 +1,8 @@
 #!/bin/bash
 # script that tests this scripts repo
 
+set -u
+
 root_dir="$(pwd)"
 integration_root_dir="${root_dir}/lib/test/integration"
 testdir="$root_dir"/lib/tmp/tests
@@ -87,7 +89,7 @@ add_executable(teeworlds_srv main.cpp)
 EOF
 
 function fail() {
-	clear_testdir
+	# clear_testdir
 	echo "[-] Error: test failed"
 	exit 1
 }
@@ -166,6 +168,8 @@ function test_loop_gdb() {
 
 function test_status_size_check() {
 	create_server "status_size"
+	cd "$testdir" || fail
+	cd status_size || exit 1
 	mkdir -p logs/ddos
 	local x
 	for x in {1..150}
@@ -176,7 +180,11 @@ function test_status_size_check() {
 	./status.sh
 	if ./status.sh | grep -q WARNING
 	then
+
 		echo "Error: ./status.sh threw a WARNING"
+		echo "       in $PWD"
+		echo "       ./status.sh | grep -q WARNING"
+		echo "       failed"
 		fail
 	fi
 }
@@ -194,6 +202,7 @@ function create_server() {
 	mkdir -p "$serverdir"/lib
 	cp lib/*.sh "$serverdir"/lib
 	cp -r lib/include "$serverdir"/lib
+	cp -r lib/supp "$serverdir"/lib
 	cp -r bin/ "$serverdir"
 	cp -r .git "$serverdir"
 	cp .gitignore "$serverdir"
