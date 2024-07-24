@@ -16,5 +16,6 @@ assert_eq() {
 	printf 'assertion error! %s\n' "$message" 1>&2
 	printf " expected: '%s'\n" "$expected" 1>&2
 	printf "      got: '%s'\n" "$actual" 1>&2
+	exit 1
 }
 
