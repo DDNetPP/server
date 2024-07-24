@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source lib/include/assert.sh
+
 twcfg_line=0
 twcfg_last_line="firstline"
 
@@ -205,6 +207,16 @@ function twcfg.include_exec() {
 	done < "$config"
 }
 
+# usage: get_tw_config_value LINE
+# given one config value line it extracts only the value
+# stripping of the config key and comments
+function get_tw_config_value() {
+	local line="$1"
+	printf '%s' "$line" | cut -d' ' -f2- | xargs
+}
+
+assert_eq "$(get_tw_config_value 'sv_name "foo"')" "foo" "simple double quotes"
+
 function get_tw_config() {
 	if [ "$#" != "2" ]
 	then
@@ -232,7 +244,7 @@ function get_tw_config() {
 	then
 		printf '%s' "$default_value"
 	else
-		printf '%s' "$found_key"
+		get_tw_config_value "$found_key"
 	fi
 }
 
