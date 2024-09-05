@@ -652,13 +652,17 @@ function update_configs() {
 		git_save_pull
 	fi
 	cd "$SCRIPT_ROOT" || exit 1
-	if [[ -d cfg/cfg-secrets/.git ]]
-	then
-		log "found config directory cfg/cfg-secrets"
-		log "updating config secrets ..."
-		cd cfg/cfg-secrets || exit 1
+	local sub_cfg
+	for sub_cfg in ./cfg/*/
+	do
+		[[ -d "$sub_cfg" ]] || continue
+		[[ -d "$sub_cfg".git ]] || continue
+
+		log "found config directory $sub_cfg"
+		log "updating ..."
+		cd "$sub_cfg" || exit 1
 		git_save_pull
-	fi
+	done
 	cd "$SCRIPT_ROOT" || exit 1
 	if [[ -d votes/ ]] && [[ -d votes/.git ]]
 	then
