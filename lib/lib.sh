@@ -651,6 +651,7 @@ function update_configs() {
 		cd cfg || exit 1
 		git_save_pull
 	fi
+	cd "$SCRIPT_ROOT" || exit 1
 	local sub_cfg
 	for sub_cfg in ./cfg/*/
 	do
