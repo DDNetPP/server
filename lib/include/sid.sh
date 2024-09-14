@@ -4,7 +4,8 @@
 # and they are generated once and then stored into lib/var/.server_id
 # they are used to kill the process and make sure not to kill the wrong server
 
-SID_FILE="$SCRIPT_ROOT/lib/var/.server_id"
+RELATIVE_SID_FILE="lib/var/.server_id"
+SID_FILE="$SCRIPT_ROOT/$RELATIVE_SID_FILE"
 OLD_SID_FILE="$SCRIPT_ROOT/lib/.server_id" # backwards compability
 
 function generate_uuid() {

@@ -222,7 +222,9 @@ function check_duplicated_uuid() {
 			# skip this instance
 			exit 0
 		fi
-		comp_uuid="$(cat "$SID_FILE")"
+		[[ -f "$RELATIVE_SID_FILE" ]] || exit 0
+
+		comp_uuid="$(cat "$RELATIVE_SID_FILE")"
 		if [ "$comp_uuid" == "$SERVER_UUID" ]
 		then
 			wrn "Warning: same server uuid used in $(tput bold)$d$(tput sgr0)"
