@@ -154,6 +154,25 @@ map_themes_post() {
 		popd > /dev/null || exit 1
 	fi
 }
+update_non_git_module_sub_repos() {
+	if ! is_cfg CFG_PULL_GIT_SUB_REPOS
+	then
+		return
+	fi
+
+	cd "$CFG_GIT_PATH_MOD" || exit 1
+	local sub_repo
+	while read -r sub_repo
+	do
+		[ -d "$sub_repo" ] || continue
+
+		log "found sub repo $sub_repo"
+		(
+			cd "$sub_repo" || exit 1
+			git_save_pull
+		)
+	done < <(find src -maxdepth 3 -name ".git" | rev | cut -c 5- | rev)
+}
 update_lua() {
 	[[ -d lua ]] || return
 	[[ -d lua/.git ]] || return
@@ -183,6 +202,7 @@ then
 		exit 0
 	fi
 	map_themes_pre
+	update_non_git_module_sub_repos
 	if [ "$CFG_BUILD_SYSTEM" == "cmake" ]
 	then
 		cmake_update_teeworlds "$@"

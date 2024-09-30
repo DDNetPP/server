@@ -39,4 +39,4 @@ def_var 'CFG_CUSTOM_BUILD_CMD' 'custom_build_cmd' "g++ main.c -o main" ''
 def_var 'CFG_BAM_BIN' 'bam_bin' "bam" ''
 def_var 'CFG_BAM_FLAGS' 'bam_flags' "server_release" ''
 def_var 'CFG_GIT_PATCHES_DIR' 'git_patches_dir' "patches" ''
-
+def_var 'CFG_PULL_GIT_SUB_REPOS' 'pull_git_sub_repos' "0" '(0|no|off|false|1|yes|on|true)'
