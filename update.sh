@@ -201,6 +201,14 @@ then
 		cmake_refresh_teeworlds_binary
 		exit 0
 	fi
+
+	while ! lock_build
+	do
+		wrn "WARNING: the build is locked by another process"
+		wrn "         waiting for the lock to release ..."
+		sleep 10
+	done
+
 	map_themes_pre
 	update_non_git_module_sub_repos
 	if [ "$CFG_BUILD_SYSTEM" == "cmake" ]
@@ -216,12 +224,15 @@ then
 	then
 		custom_update_teeworlds "$@"
 	else
+		unlock_build
 		err "Unsupported build system: $CFG_BUILD_SYSTEM"
 		exit 1
 	fi
 	map_themes_post
 	git_save_pull
 	update_lua
+
+	unlock_build
 elif [ "$CFG_SERVER_TYPE" == "tem" ] || [ "$arg_type" == "tem" ]
 then
 	if [ "$arg_refresh" == "1" ]
