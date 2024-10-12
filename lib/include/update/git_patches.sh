@@ -49,7 +49,7 @@ _apply_git_patch_files() {
 		[ ! -d "$patch_dir" ] && continue
 
 		local patch_applied=0
-		for patch_file in "$patch_dir"/*.patch
+		for patch_file in "$patch_dir"*.patch
 		do
 			[ "$patch_applied" = 1 ] && continue
 			[ ! -f "$patch_file" ] && continue
