@@ -206,7 +206,7 @@ then
 	do
 		wrn "WARNING: the build is locked by another process"
 		wrn "         waiting for the lock to release ..."
-		sleep 10
+		sleep 20
 	done
 
 	map_themes_pre
