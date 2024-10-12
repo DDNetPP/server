@@ -653,7 +653,7 @@ function git_pull_script_dir() {
 	cd "$SCRIPT_ROOT" || exit 1
 	if [[ -d "$dir" ]] && [[ -d "$dir"/.git ]]
 	then
-		log "updating $dir ..."
+		log "updating $dir/ ..."
 		cd "$dir" || exit 1
 		git_save_pull
 	fi
@@ -673,10 +673,10 @@ function git_pull_script_dir() {
 }
 
 function update_configs() {
-	git_pull_script_dir patches/
-	git_pull_script_dir cfg/
-	git_pull_script_dir votes/
-	git_pull_script_dir cnf/
+	git_pull_script_dir patches
+	git_pull_script_dir cfg
+	git_pull_script_dir votes
+	git_pull_script_dir cnf
 	cd "$SCRIPT_ROOT" || exit 1
 	local maps_dir
 	for maps_dir in maps maps7
