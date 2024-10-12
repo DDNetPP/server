@@ -644,44 +644,39 @@ function check_deps() {
 	twcfg.check_cfg
 }
 
-function update_configs() {
+# git_pull_dir [relative_path]
+#
+# 1 level recursive git pull
+# given a relative script dir path
+function git_pull_script_dir() {
+	local dir="$1"
 	cd "$SCRIPT_ROOT" || exit 1
-	if [[ -d cfg/ ]] && [[ -d cfg/.git ]]
+	if [[ -d "$dir" ]] && [[ -d "$dir"/.git ]]
 	then
-		log "found config directory cfg/"
-		log "updating configs ..."
-		cd cfg || exit 1
+		log "updating $dir ..."
+		cd "$dir" || exit 1
 		git_save_pull
 	fi
 	cd "$SCRIPT_ROOT" || exit 1
-	local sub_cfg
-	for sub_cfg in ./cfg/*/
+	local sub_dir
+	for sub_dir in ./"$dir"/*/
 	do
 		cd "$SCRIPT_ROOT" || exit 1
-		[[ -d "$sub_cfg" ]] || continue
-		[[ -d "$sub_cfg".git ]] || continue
+		[[ -d "$sub_dir" ]] || continue
+		[[ -d "$sub_dir".git ]] || continue
 
-		log "found config directory $sub_cfg"
+		log "found sub repo $sub_dir"
 		log "updating ..."
-		cd "$sub_cfg" || exit 1
+		cd "$sub_dir" || exit 1
 		git_save_pull
 	done
-	cd "$SCRIPT_ROOT" || exit 1
-	if [[ -d votes/ ]] && [[ -d votes/.git ]]
-	then
-		log "found config directory votes/"
-		log "updating votes ..."
-		cd votes || exit 1
-		git_save_pull
-	fi
-	cd "$SCRIPT_ROOT" || exit 1
-	if [[ -d cnf/ ]] && [[ -d cnf/.git ]]
-	then
-		log "found settings directory cnf/"
-		log "updating settings ..."
-		cd cnf || exit 1
-		git_save_pull
-	fi
+}
+
+function update_configs() {
+	git_pull_script_dir patches/
+	git_pull_script_dir cfg/
+	git_pull_script_dir votes/
+	git_pull_script_dir cnf/
 	cd "$SCRIPT_ROOT" || exit 1
 	local maps_dir
 	for maps_dir in maps maps7
