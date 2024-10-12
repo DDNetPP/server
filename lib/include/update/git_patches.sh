@@ -1,5 +1,7 @@
 #!/bin/bash
 
+shopt -s extglob # used for trailing slashes globbing
+
 # gets overwritten if patches are applied
 # absolute paths to the patch files
 # that were succesfully applied on last
@@ -8,11 +10,16 @@ _APPLIED_GIT_PATCHES=()
 
 _patch_dir_absolute() {
 	[ "$CFG_GIT_PATCHES_DIR" = "" ] && return
-	if [ "${CFG_GIT_PACTHES_DIR::1}" = / ]
+
+	local dir
+	# strip trailing slashes
+	dir="${CFG_GIT_PATCHES_DIR%%+(/)}"
+
+	if [ "${dir::1}" = / ]
 	then
-		printf '%s' "$CFG_GIT_PATCHES_DIR"
+		printf '%s' "$dir"
 	else
-		printf '%s/%s' "$SCRIPT_ROOT" "$CFG_GIT_PATCHES_DIR"
+		printf '%s/%s' "$SCRIPT_ROOT" "$dir"
 	fi
 }
 
