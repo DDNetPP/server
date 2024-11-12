@@ -3,7 +3,7 @@
 function callback_editor() {
     local file="$1"
     local _editor="$2"
-    eval "$_editor $file"
+    bash -c "set -euo pipefail;$_editor $file" || { err "failed to open editor"; }
 }
 
 function edit_file() {
@@ -18,7 +18,7 @@ function edit_file() {
     fi
     if [ "$selected_editor" != "" ]
     then
-        eval "$selected_editor $file"
+        bash -c "set -euo pipefail;$selected_editor $file" || { err "failed to open editor"; }
         return
     fi
     fzf_select \
