@@ -165,7 +165,7 @@ function twcfg.check_syntax_line() {
 
 function twcfg.include_exec() {
 	local config="$1"
-	local check_syntax="$2"
+	local check_syntax="${2:-}"
 	twcfg.check_cfg
 	if [ ! -f "$config" ]
 	then
