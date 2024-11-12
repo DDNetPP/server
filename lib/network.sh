@@ -120,7 +120,7 @@ do
 		echo "[*] record ring buffer"
 		w_tcpdump "-w \"${CAPPATH}/${PORT}_\" -W 5 -C 5000 \"port $PORT\""
 	else
-		echo "unkown arg '$arg' see --help"
+		echo "unknown arg '$arg' see --help"
 		exit 1
 	fi
 done

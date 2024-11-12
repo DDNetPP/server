@@ -125,7 +125,7 @@ function parse_settings_line() {
 			return
 		fi
 	done
-	settings_err "unkown setting '$(tput bold)$sett$(tput sgr0)'"
+	settings_err "unknown setting '$(tput bold)$sett$(tput sgr0)'"
 	exit 1
 }
 
@@ -145,7 +145,7 @@ function parse_settings_cmd() {
 	then
 		echo "$(tput bold)[settings]$(tput sgr0) $*"
 	else
-		settings_err "unkown command '$(tput bold)$cmd$(tput sgr0)'"
+		settings_err "unknown command '$(tput bold)$cmd$(tput sgr0)'"
 		exit 1
 	fi
 }
@@ -202,7 +202,7 @@ function check_var_new() {
 	# this is a bit hacky
 	# but since we not not parse our self we have to guess the current line_num
 	line_num="$(grep -n "^$sett=" "$current_settings_file" | cut -d':' -f1)"
-	settings_err "unkown setting '$(tput bold)$sett$(tput sgr0)'"
+	settings_err "unknown setting '$(tput bold)$sett$(tput sgr0)'"
 	exit 1
 }
 
