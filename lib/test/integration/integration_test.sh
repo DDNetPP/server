@@ -13,6 +13,14 @@ then
 	exit 1
 fi
 
+function log() {
+	printf '[*][test] %s\n' "$1"
+}
+
+function err() {
+	printf '[-][test] %s\n' "$1" 1>&2
+}
+
 function clear_testdir() {
 	cd "$root_dir" || exit 1
 	if [ -d "$testdir" ]
@@ -90,7 +98,7 @@ EOF
 
 function fail() {
 	# clear_testdir
-	echo "[-] Error: test failed"
+	err "Error: test failed"
 	exit 1
 }
 
@@ -104,25 +112,27 @@ function test_exec_all_servers() {
 	create_server "server\\ backslash"
 	cd "$testdir" || fail
 	cd server1 || fail
+	log "runinning git status on all servers ..."
 	yes | ./lib/exec_all_servers.sh git status
 	code="$?"
 	if [ "$code" != "0" ]
 	then
-		echo "Error: 'exec_all_servers.sh git status' failed with exit code $code"
+		err "Error: 'exec_all_servers.sh git status' failed with exit code $code"
 		fail
 	fi
+	log "runinning touch foo.txt on all servers ..."
 	yes | ./lib/exec_all_servers.sh touch foo.txt
 	code="$?"
 	if [ "$code" != "0" ]
 	then
-		echo "Error: 'exec_all_servers.sh touch foo.txt' failed with exit code $code"
+		err "Error: 'exec_all_servers.sh touch foo.txt' failed with exit code $code"
 		fail
 	fi
 	local foo_files
 	foo_files="$(find .. -name foo.txt | wc -l)"
 	if [ "$foo_files" != "$num_servers" ]
 	then
-		echo "Error: 'exec_all_servers.sh touch foo.txt' found $foo_files foo.txt files but expected $num_servers"
+		err "Error: 'exec_all_servers.sh touch foo.txt' found $foo_files foo.txt files but expected $num_servers"
 		fail
 	fi
 }
@@ -159,9 +169,9 @@ function test_loop_gdb() {
 	else
 		echo " FAIL"
 		cat ./logs/test_gdb.txt
-		echo "Error: loop_gdb.sh did not create enough logfiles"
-		echo "       found $num_logs logs expected 3"
-		echo "       did the server restart properly?"
+		err "Error: loop_gdb.sh did not create enough logfiles"
+		err "       found $num_logs logs expected 3"
+		err "       did the server restart properly?"
 		fail
 	fi
 }
@@ -181,10 +191,10 @@ function test_status_size_check() {
 	if ./status.sh | grep -q WARNING
 	then
 
-		echo "Error: ./status.sh threw a WARNING"
-		echo "       in $PWD"
-		echo "       ./status.sh | grep -q WARNING"
-		echo "       failed"
+		err "Error: ./status.sh threw a WARNING"
+		err "       in $PWD"
+		err "       ./status.sh | grep -q WARNING"
+		err "       failed"
 		fail
 	fi
 }
@@ -192,11 +202,12 @@ function test_status_size_check() {
 function create_server() {
 	if [ "$#" != "1" ]
 	then
-		echo "create_server: 1 arg required"
+		err "create_server: 1 arg required"
 		fail
 	fi
 	local servername="$1"
 	local serverdir="$testdir/$servername"
+	log "creating server '$servername' ..."
 	mkdir -p "$serverdir" || fail
 	cp ./*.sh "$serverdir"
 	mkdir -p "$serverdir"/lib
