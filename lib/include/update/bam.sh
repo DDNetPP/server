@@ -48,7 +48,7 @@ function bam_update_teeworlds() {
 
 	apply_git_patches
 	local build_cmd="$CFG_BAM_BIN ${arg_bam_flags[*]}"
-	eval "$build_cmd" || \
+	bash -c "set -euo pipefail;$build_cmd" || \
 		{ err --log "build failed (bam)"; }
 	reverse_git_patches
 

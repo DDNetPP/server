@@ -127,7 +127,7 @@ else # teeworlds
 	tput bold
 	echo "$run_cmd"
 	tput sgr0
-	eval "$run_cmd"
+	bash -c "set -euo pipefail;$run_cmd"
 
 	if [ "$arg_logs" == "1" ] && [ "$arg_is_interactive" == "0" ]
 	then

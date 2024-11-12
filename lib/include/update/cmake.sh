@@ -203,8 +203,8 @@ function cmake_update() {
 	local build_fail=0
 	local build_cmd="$CFG_ENV_BUILD cmake .. ${arg_cmake_flags[*]}"
 	log "$(tput bold)$build_cmd$(tput sgr0)"
-	eval "$build_cmd" || \
-		{ err --log "build failed at $branch $bin_commit (cmake)"; build_fail=1; }
+	bash -c "set -euo pipefail;$build_cmd" || \
+		{ err --log "build failed at $branch $bin_commit (cmake)"; err "build directory: $PWD";build_fail=1; }
 	if [ "$build_fail" == "0" ]
 	then
 		make "-j$(get_cores)" || { err --log "build failed at $branch $(git rev-parse HEAD) (make)"; build_fail=1; }

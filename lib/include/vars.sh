@@ -26,8 +26,10 @@ def_var 'CFG_GIT_BRANCH' 'git_branch' "" ''
 def_var 'CFG_SERVER_TYPE' 'server_type' "teeworlds" '(tem|teeworlds)'
 def_var 'CFG_TEM_SETTINGS' 'tem_settings' "tem.settings" ''
 def_var 'CFG_TEM_PATH' 'tem_path' "/home/$USER/git/TeeworldsEconMod" ''
-def_var 'CFG_ENV_BUILD' 'env_build' "source ./lib/env_san.sh;" '(.*=.*|.*;$|)'
-def_var 'CFG_ENV_RUNTIME' 'env_runtime' "source ./lib/env_san.sh;" '(.*=.*|.*;$|)'
+# shellcheck disable=SC2016
+def_var 'CFG_ENV_BUILD' 'env_build' 'source $SCRIPT_ROOT/lib/env_san.sh;' '(.*=.*|.*;$|)'
+# shellcheck disable=SC2016
+def_var 'CFG_ENV_RUNTIME' 'env_runtime' 'source $SCRIPT_ROOT/lib/env_san.sh;' '(.*=.*|.*;$|)'
 def_var 'CFG_LOG_EXT' 'logfile_extension' ".log" ''
 def_var 'CFG_AUTO_CLEANUP_OLD_LOCAL_DATA' 'auto_cleanup_old_local_data' "0" '(0|no|off|false|1|yes|on|true)'
 def_var 'CFG_GITPATH_ANTIBOT' 'gitpath_antibot' "" ''
