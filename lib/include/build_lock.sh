@@ -22,6 +22,7 @@ function _meta_lock() {
 	if [ -f "$BUILD_LOCKFILE".lock ]
 	then
 		wrn "WARNING: failed to lock build. The lock file is locked."
+		_cleanup_stale_locks
 		return 1
 	fi
 	printf '%s %s\n' "$SERVER_UUID" "$$" > "$BUILD_LOCKFILE".lock
