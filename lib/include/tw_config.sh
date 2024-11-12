@@ -283,6 +283,10 @@ function get_tw_config_value() {
 	printf '%s' "$value" | sed -e 's/[[:space:]]*$//'
 }
 
+function compile_tw_config() {
+	twcfg.include_exec "autoexec.cfg" > lib/tmp/compiled.cfg
+}
+
 function get_tw_config() {
 	if [ "$#" != "2" ]
 	then
@@ -304,7 +308,7 @@ function get_tw_config() {
 	fi
 	mkdir -p lib/tmp
 	twcfg_line=0
-	twcfg.include_exec "autoexec.cfg" > lib/tmp/compiled.cfg
+	compile_tw_config
 	found_key="$(grep "^$config_key " lib/tmp/compiled.cfg | tail -n1 | cut -d' ' -f2- | xargs)"
 	if [ "$found_key" == "" ]
 	then

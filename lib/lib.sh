@@ -277,7 +277,16 @@ function check_warnings() {
 			wrn ""
 		fi
 	fi
-	port="$(wc -l < <(grep '^sv_port ' lib/tmp/compiled.cfg))"
+	# make sure the grep does not fail to open the non existent file
+	if [ ! -f lib/tmp/compiled.cfg ]
+	then
+		compile_tw_config
+	fi
+	if ! port="$(wc -l < <(grep '^sv_port ' lib/tmp/compiled.cfg))"
+	then
+		wrn "WARNING: failed to count ports in compiled.cfg"
+		wrn "         file should be at $PWD/lib/tmp/compiled.cfg"
+	fi
 	if [ "$port" != "" ] && [ "$port" -gt "1" ]
 	then
 		wrn "WARNING: found sv_port $port times in your config"
