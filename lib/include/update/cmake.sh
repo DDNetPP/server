@@ -180,6 +180,7 @@ function cmake_update() {
 	fi
 	apply_git_patches
 	bin_commit="$(git rev-parse HEAD)"
+	mkdir -p "$SCRIPT_ROOT/lib/tmp"
 	local cmake_cache="$SCRIPT_ROOT/lib/tmp/cmake_flags.txt"
 	if [ -f "$cmake_cache" ]
 	then
