@@ -85,12 +85,22 @@ function _cleanup_stale_locks() {
 		path="$(printf '%s\n' "$lock_entry" | awk '{ print $1 }')"
 		uuid="$(printf '%s\n' "$lock_entry" | awk '{ print $2 }')"
 		pid="$(printf '%s\n' "$lock_entry" | awk '{ print $3 }')"
+
+		if [ "$pid" = "" ]
+		then
+			wrn "WARNING: the lock owner pid is empty. This is a bug!"
+			wrn "         please check build_lock.sh and add some cleanup code"
+			return
+		fi
+
 		if ! ps "$pid" >/dev/null
 		then
 			wrn "WARNING: the pid $pid holding the build lock is not running"
 			wrn "         removed the lock entry ..."
 
 			_remove_build_lock "^$path $uuid $pid "
+		else
+			log "the pid '$pid' is holdig the lock and still running"
 		fi
 	done < "$BUILD_LOCKFILE"
 }
