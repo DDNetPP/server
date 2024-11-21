@@ -212,6 +212,16 @@ function audit_code_shell() {
 	fi
 }
 
+function audit_code_shell_execute() {
+	local match
+	match="$(grep -iErn 'shell_execute' src)"
+	if [ "$match" != "" ]
+	then
+		audit_wrn "$(tput bold)WARNING$(tput sgr0): found call to shell_execute (ddnets exec wrapper)"
+		echo "$match" | awk '{ print "\t" $0}'
+	fi
+}
+
 function audit_code_rcon() {
 	local matches=""
 	local line
@@ -257,6 +267,7 @@ function audit_code() {
 		audit_code_shell
 		audit_code_exec
 		audit_code_system
+		audit_code_shell_execute
 		audit_code_popen
 	)
 }
