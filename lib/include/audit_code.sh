@@ -53,7 +53,15 @@ function _get_grep_context() {
 	#  given a matches line from grep -B output
 	#  it will return - or : depeding if its the
 	#  context or actual match
-	[[ "$1" =~ [^a-zA-Z0-9/.] ]] && printf '%s' "${BASH_REMATCH[0]}"
+	local line="$1"
+
+	# skip to the file extension
+	# we need to do this because the file path
+	# could already contain ":" or more likely "-"
+	line="$(printf '%s' "$line" | grep -Eo '(\.(cpp|h|c).*)')"
+
+	# then match the first character after the digit
+	[[ "$line" =~ [^a-zA-Z0-9/.] ]] && printf '%s' "${BASH_REMATCH[0]}"
 }
 
 function _chop_grep_line() {

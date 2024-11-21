@@ -32,6 +32,9 @@ else
 	echo "OK"
 fi
 
+assert_eq "$(_get_grep_context 'src/external/DDNetPP-bots/src/twbl/teeworlds/base/system.cpp:6: * @ingroup Filesystem')" ":" "detect correct grep context :"
+assert_eq "$(_get_grep_context 'src/external/DDNetPP-bots/src/twbl/teeworlds/base/system.cpp-5- *')" "-" "detect correct grep context -"
+
 log -n "audit_code.sh [_chop_grep_line ':'] ... "
 
 if ! diff <(_chop_grep_line 'src/game/client/gameclient.cpp:580: // render all systems') \
