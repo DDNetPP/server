@@ -23,7 +23,7 @@ function tw_configs() {
 function tw_commands() {
 	local flag="$1"
 	local line
-	grep -roh "Register(\".*CFGFLAG_$flag" src/ | LC_ALL=C sort | while IFS= read -r line
+	grep -Eroh "(Register|CONSOLE_COMMAND)\(\".*CFGFLAG_$flag" src/ | LC_ALL=C sort | while IFS= read -r line
 	do
 		line="$(echo "$line" | cut -d'(' -f2 | cut -d'"' -f2)"
 		echo "$line"
