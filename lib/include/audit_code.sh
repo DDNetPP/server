@@ -50,6 +50,12 @@ _audit_code_system_whitelisted_rcons=(
 	"	log_info(\"server\", \"| rcon password: '%s' |\", Config()->m_SvRconPassword);"
 )
 
+_audit_code_system_whitelisted_shell_executes=(
+	'PROCESS shell_execute(const char *file, EShellExecuteWindowState window_state)'
+	'm_ServerProcess.m_Process = shell_execute(aBuf, EShellExecuteWindowState::BACKGROUND);'
+	'shell_execute(aRestartBinaryPath, EShellExecuteWindowState::FOREGROUND);'
+)
+
 function _get_grep_context() {
 	# SYNOPSIS:
 	#  _get_grep_context <line>
@@ -213,12 +219,36 @@ function audit_code_shell() {
 }
 
 function audit_code_shell_execute() {
-	local match
-	match="$(grep -iErn 'shell_execute' src)"
-	if [ "$match" != "" ]
+	local matches=""
+	local line
+	local line_chopped
+	local buf
+
+	while IFS= read -r line
+	do
+		local detect=1
+		line_chopped="$(_chop_grep_line "$line")"
+		line_chopped="$(trim "$line_chopped")"
+		for buf in "${_audit_code_system_whitelisted_shell_executes[@]}"
+		do
+			buf="$(trim "$buf")"
+			if [ "$line_chopped" == "$buf" ]
+			then
+				detect=0
+				break
+			fi
+		done
+		if [ "$detect" = 1 ]
+		then
+			# appends 'line' to 'matches' with an actual newline character
+			printf -v matches '%s%s\n' "$matches" "$line"
+		fi
+	done < <(grep -iErn 'shell_execute' src)
+
+	if [ "$matches" != "" ]
 	then
 		audit_wrn "$(tput bold)WARNING$(tput sgr0): found call to shell_execute (ddnets exec wrapper)"
-		echo "$match" | awk '{ print "\t" $0}'
+		printf '%s' "$matches" | awk '{ print "\t" $0}'
 	fi
 }
 
