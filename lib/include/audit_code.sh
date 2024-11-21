@@ -46,6 +46,10 @@ _audit_code_system_whitelisted_buffers=(
 	'	m_pStorage->GetBinaryPath(PLAT_CLIENT_EXEC, aPath, sizeof aPath);'
 )
 
+_audit_code_system_whitelisted_rcons=(
+	"	log_info(\"server\", \"| rcon password: '%s' |\", Config()->m_SvRconPassword);"
+)
+
 function _get_grep_context() {
 	# SYNOPSIS:
 	#  _get_grep_context <line>
@@ -209,12 +213,36 @@ function audit_code_shell() {
 }
 
 function audit_code_rcon() {
-	local match
-	match="$(grep -iErn '(print|log|say|sendchat|broadcast).*config.*SvRconPassword' src)"
-	if [ "$match" != "" ]
+	local matches=""
+	local line
+	local line_chopped
+	local buf
+
+	while IFS= read -r line
+	do
+		local detect=1
+		line_chopped="$(_chop_grep_line "$line")"
+		line_chopped="$(trim "$line_chopped")"
+		for buf in "${_audit_code_system_whitelisted_rcons[@]}"
+		do
+			buf="$(trim "$buf")"
+			if [ "$line_chopped" == "$buf" ]
+			then
+				detect=0
+				break
+			fi
+		done
+		if [ "$detect" = 1 ]
+		then
+			# appends 'line' to 'matches' with an actual newline character
+			printf -v matches '%s%s\n' "$matches" "$line"
+		fi
+	done < <(grep -iErn '(print|log|say|sendchat|broadcast).*config.*SvRconPassword' src)
+
+	if [ "$matches" != "" ]
 	then
 		audit_wrn "$(tput bold)WARNING$(tput sgr0): found possible rcon password leak"
-		echo "$match" | awk '{ print "\t" $0}'
+		printf '%s' "$matches" | awk '{ print "\t" $0}'
 	fi
 }
 
