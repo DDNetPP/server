@@ -23,7 +23,19 @@ function _log() {
 	fi
 	if [ -d "$CFG_POST_LOGS_DIR" ]
 	then
-		echo -ne "$ts$msg_plain" >> "$CFG_POST_LOGS_DIR"/server_log.txt
+		local logfile="$CFG_POST_LOGS_DIR"/server_log.txt
+		echo -ne "$ts$msg_plain" >> "$logfile"
+		local num_lines
+		num_lines="$(wc -l "$logfile" | cut -d' ' -f1)"
+		if [ "$num_lines" -gt 3000 ]
+		then
+			if ! tail -n 2000 "$logfile" > "$logfile".tmp
+			then
+				echo -ne "${ts}ERROR: FAILED TO TAIL LOGFILE. COULD NOT CREATE TMP FILE." >> "$logfile"
+			else
+				mv "$logfile".tmp "$logfile"
+			fi
+		fi
 	fi
 }
 
