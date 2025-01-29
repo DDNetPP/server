@@ -31,7 +31,7 @@ function _log() {
 		then
 			if ! tail -n 2000 "$logfile" > "$logfile".tmp
 			then
-				echo -ne "${ts}ERROR: FAILED TO TAIL LOGFILE. COULD NOT CREATE TMP FILE." > "$logfile"
+				echo -e "${ts}ERROR: FAILED TO TAIL LOGFILE. COULD NOT CREATE TMP FILE." > "$logfile"
 			else
 				mv "$logfile".tmp "$logfile"
 			fi
