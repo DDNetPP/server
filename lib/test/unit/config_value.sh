@@ -23,5 +23,8 @@ assert_eq "$(get_tw_config_value 'sv_name "foo \" bar" # hello')" 'foo " bar' "q
 assert_eq "$(get_tw_config_value 'sv_name "foo \\" bar" # hello')" 'foo \' "escaped backslash should unescape quote"
 # assert_eq "$(get_tw_config_value 'sv_name a\"a')" 'a\"a' "escapes only work in strings"
 
+assert_eq "$(get_tw_config_value 'sv_port 8302')" '8302' "simple int"
+assert_eq "$(get_tw_config_value 'sv_port 8302 # foo')" '8302' "int with comment"
+
 echo "OK"
 

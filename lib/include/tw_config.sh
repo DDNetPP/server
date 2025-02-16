@@ -309,7 +309,8 @@ function get_tw_config() {
 	mkdir -p lib/tmp
 	twcfg_line=0
 	compile_tw_config
-	found_key="$(grep "^$config_key " lib/tmp/compiled.cfg | tail -n1 | cut -d' ' -f2- | xargs)"
+	found_key="$(grep "^$config_key " lib/tmp/compiled.cfg | tail -n1 | xargs)"
+
 	if [ "$found_key" == "" ]
 	then
 		printf '%s' "$default_value"
