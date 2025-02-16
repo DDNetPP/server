@@ -162,22 +162,7 @@ function cmake_update() {
 		log "checking out commit specified in cfg $arg_git_commit ..."
 		git checkout "$arg_git_commit"
 	fi
-	if [ "$CFG_GITPATH_ANTIBOT" != "" ]
-	then
-		log "updating antibot ..."
-		(
-			cd "$CFG_GITPATH_ANTIBOT" || exit 1
-			git pull
-		)
-		if [ ! -f "$CFG_GITPATH_ANTIBOT"/libantibot.so ]
-		then
-			log "patching antibot source ..."
-			cp "$CFG_GITPATH_ANTIBOT"/*.h src/antibot/
-			cp "$CFG_GITPATH_ANTIBOT"/*.cpp src/antibot/
-		else
-			log "using precompiled libantibot.so"
-		fi
-	fi
+	update_antibot
 	apply_git_patches
 	bin_commit="$(git rev-parse HEAD)"
 	mkdir -p "$SCRIPT_ROOT/lib/tmp"

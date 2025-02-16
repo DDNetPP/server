@@ -1,5 +1,31 @@
 #!/bin/bash
 
+function _log_to_file() {
+	# _log_to_file <full log message with ts>
+	local logline="$1"
+	if [ "$CFG_POST_LOGS_DIR" == "" ]
+	then
+		return
+	fi
+	if [ -d "$CFG_POST_LOGS_DIR" ]
+	then
+		local logfile="$CFG_POST_LOGS_DIR"/server_log.txt
+		echo -ne "$logline" >> "$logfile"
+		local num_lines
+		num_lines="$(wc -l "$logfile" | cut -d' ' -f1)"
+		if [ "$num_lines" -gt 3000 ]
+		then
+			if ! tail -n 2000 "$logfile" > "$logfile".tmp
+			then
+				ts="[$(date '+%F %H:%M:%S')]"
+				echo -e "${ts}ERROR: FAILED TO TAIL LOGFILE. COULD NOT CREATE TMP FILE." > "$logfile"
+			else
+				mv "$logfile".tmp "$logfile"
+			fi
+		fi
+	fi
+}
+
 function _log() {
 	# _log <prefix_rich> <prefix_plain> <msg>
 	local prefix_rich="$1"
@@ -17,26 +43,23 @@ function _log() {
 	else
 		echo -ne "$msg_rich"
 	fi
-	if [ "$CFG_POST_LOGS_DIR" == "" ]
-	then
-		return
-	fi
-	if [ -d "$CFG_POST_LOGS_DIR" ]
-	then
-		local logfile="$CFG_POST_LOGS_DIR"/server_log.txt
-		echo -ne "$ts$msg_plain" >> "$logfile"
-		local num_lines
-		num_lines="$(wc -l "$logfile" | cut -d' ' -f1)"
-		if [ "$num_lines" -gt 3000 ]
-		then
-			if ! tail -n 2000 "$logfile" > "$logfile".tmp
-			then
-				echo -e "${ts}ERROR: FAILED TO TAIL LOGFILE. COULD NOT CREATE TMP FILE." > "$logfile"
-			else
-				mv "$logfile".tmp "$logfile"
-			fi
-		fi
-	fi
+	_log_to_file "$ts$msg_plain"
+}
+
+# use with log -n to produce messages like
+# "doing foo bar baz .. OK"
+function log_status_ok() {
+	local msg="${GREEN}OK${RESET}\n"
+	printf '%b' "$msg"
+	_log_to_file "$msg"
+}
+
+# use with log -n to produce messages like
+# "doing foo bar baz .. ERROR"
+function log_status_error() {
+	local msg="${RED}ERROR${RESET}\n"
+	printf '%b' "$msg"
+	_log_to_file "$msg"
 }
 
 function err() {

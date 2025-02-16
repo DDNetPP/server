@@ -106,6 +106,7 @@ reverse_git_patches() {
 }
 
 apply_git_patches() {
+	log "applying git patches ..."
 	_APPLIED_GIT_PATCHES=()
 	local patch_dir_abs
 	patch_dir_abs="$(_patch_dir_absolute)"

@@ -9,6 +9,7 @@ fi
 
 source lib/lib.sh
 
+source lib/include/update/antibot.sh
 source lib/include/update/vartype.sh
 source lib/include/update/cmake.sh
 source lib/include/update/custom.sh
