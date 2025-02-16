@@ -49,17 +49,15 @@ function _log() {
 # use with log -n to produce messages like
 # "doing foo bar baz .. OK"
 function log_status_ok() {
-	local msg="${GREEN}OK${RESET}\n"
-	printf '%b' "$msg"
-	_log_to_file "$msg"
+	printf '%b%s%b\n' "$GREEN" OK "$RESET"
+	_log_to_file "OK\n"
 }
 
 # use with log -n to produce messages like
 # "doing foo bar baz .. ERROR"
 function log_status_error() {
-	local msg="${RED}ERROR${RESET}\n"
-	printf '%b' "$msg"
-	_log_to_file "$msg"
+	printf '%b%s%b\n' "$RED" ERROR "$RESET"
+	_log_to_file "ERROR\n"
 }
 
 function err() {
