@@ -70,7 +70,13 @@ function create_settings() {
 			echo "# https://github.com/DDNetPP/server"
 			for i in "${!aSettStr[@]}"
 			do
-				echo "${aSettStr[$i]}=${aSettVal[$i]}"
+				local sett_key="${aSettStr[$i]}"
+				if [ "$sett_key" = server_name ]
+				then
+					echo "${sett_key}=$(basename "$SCRIPT_ROOT")"
+				else
+					echo "${sett_key}=${aSettVal[$i]}"
+				fi
 			done
 		} > "$current_settings_file"
 	edit_file "$current_settings_file"
