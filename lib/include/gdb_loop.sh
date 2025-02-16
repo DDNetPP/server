@@ -95,6 +95,12 @@ fi
 gdb_tmp_log_header="$p/full_gdb.header.txt.tmp"
 gdb_tmp_log_gdb="$p/full_gdb.gdb.txt.tmp"
 
+log_cmd=''
+if is_cfg CFG_ENABLE_LOGGING
+then
+	log_cmd="logfile $logfile"
+fi
+
 read -rd '' GDB_CMD << EOF
 $CFG_ENV_RUNTIME gdb -ex='set confirm off' \
     -ex='set pagination off' \
@@ -114,7 +120,7 @@ $CFG_ENV_RUNTIME gdb -ex='set confirm off' \
     $custom_gdb \
     $gdb_corefile_cmd \
     -ex=quit --args \
-    ./$CFG_BIN "exec autoexec.cfg;logfile $logfile;#sid:$SERVER_UUID:loop_script"
+    ./$CFG_BIN "exec autoexec.cfg;$log_cmd;#sid:$SERVER_UUID:loop_script"
 EOF
 git_patches="$(get_applied_git_patches)"
 start_ts=$(date '+%Y-%m-%d %H:%M:%S')

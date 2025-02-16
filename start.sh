@@ -118,7 +118,14 @@ else # teeworlds
 		err "failed to get commit hash"
 		exit 1
 	fi
-	run_cmd="$CFG_ENV_RUNTIME nohup ./$CFG_BIN \"exec autoexec.cfg;#sid:$SERVER_UUID\" > $logfile 2>&1 &"
+
+	logredirect='&> /dev/null'
+	if is_cfg CFG_ENABLE_LOGGING
+	then
+		logredirect="&> $logfile"
+	fi
+
+	run_cmd="$CFG_ENV_RUNTIME nohup ./$CFG_BIN \"exec autoexec.cfg;#sid:$SERVER_UUID\" $logredirect &"
 	if [ "$arg_is_interactive" == "1" ]
 	then
 		run_cmd="$CFG_ENV_RUNTIME ./$CFG_BIN \"exec autoexec.cfg;#sid:$SERVER_UUID\""
@@ -129,7 +136,7 @@ else # teeworlds
 	tput sgr0
 	bash -c "set -euo pipefail;$run_cmd"
 
-	if [ "$arg_logs" == "1" ] && [ "$arg_is_interactive" == "0" ]
+	if [ "$arg_logs" == "1" ] && [ "$arg_is_interactive" == "0" ] && is_cfg CFG_ENABLE_LOGGING
 	then
 		show_log_file "$logfile"
 	fi

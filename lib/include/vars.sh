@@ -31,6 +31,7 @@ def_var 'CFG_ENV_BUILD' 'env_build' 'source $SCRIPT_ROOT/lib/env_san.sh;' '(.*=.
 # shellcheck disable=SC2016
 def_var 'CFG_ENV_RUNTIME' 'env_runtime' 'source $SCRIPT_ROOT/lib/env_san.sh;' '(.*=.*|.*;$|)'
 def_var 'CFG_LOG_EXT' 'logfile_extension' ".log" ''
+def_var 'CFG_ENABLE_LOGGING' 'enable_logging' "1" '(0|no|off|false|1|yes|on|true)'
 def_var 'CFG_AUTO_CLEANUP_OLD_LOCAL_DATA' 'auto_cleanup_old_local_data' "0" '(0|no|off|false|1|yes|on|true)'
 def_var 'CFG_GITPATH_ANTIBOT' 'gitpath_antibot' "" ''
 def_var 'CFG_LOG_DDOS' 'log_ddos' "0" '(0|no|off|false|1|yes|on|true)'

@@ -53,6 +53,13 @@ do
 	fi
 done
 
+if ! is_cfg CFG_ENABLE_LOGGING
+then
+	err "Error: logging is not enabled"
+	err "       set enable_logging=1 in your server.cnf"
+	exit 1
+fi
+
 if [ "$arg_print" == "1" ]
 then
 	if [ "$arg_logpath" == "" ]

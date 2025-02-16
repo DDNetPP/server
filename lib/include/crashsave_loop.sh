@@ -41,13 +41,19 @@ logfile="$LOGS_PATH_FULL_TW/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S)${CFG_LOG_EXT}"
 start_ts_slug=$(date '+%Y-%m-%d_%H-%M-%S')
 start_ts=$(date '+%Y-%m-%d %H:%M:%S')
 
+log_cmd=''
+if is_cfg CFG_ENABLE_LOGGING
+then
+	log_cmd="logfile $logfile"
+fi
+
 export COMMIT_HASH
 if ! COMMIT_HASH="$(get_commit)"
 then
 	err "failed to get commit hash"
 	exit 1
 fi
-run_cmd="$CFG_ENV_RUNTIME ./$CFG_BIN 'exec autoexec.cfg;logfile $logfile;#sid:$SERVER_UUID:loop_script'"
+run_cmd="$CFG_ENV_RUNTIME ./$CFG_BIN 'exec autoexec.cfg;$log_cmd;#sid:$SERVER_UUID:loop_script'"
 log "running:"
 tput bold
 echo "$run_cmd"
