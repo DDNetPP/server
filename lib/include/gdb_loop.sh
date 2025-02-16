@@ -120,7 +120,11 @@ git_patches="$(get_applied_git_patches)"
 start_ts=$(date '+%Y-%m-%d %H:%M:%S')
 {
 	echo "/============= server start $start_ts =============\\"
-	echo "build commit: $(get_commit)"
+	echo "server  build commit: $(get_commit)"
+	if [ "$CFG_GITPATH_ANTIBOT" != "" ]
+	then
+		echo "antibot build commit: $(get_commit_antibot)"
+	fi
 	if [ "$git_patches" != "" ]
 	then
 		echo "applied patches: $git_patches"

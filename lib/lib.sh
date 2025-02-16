@@ -80,6 +80,16 @@ function get_commit()
     fi
 }
 
+function get_commit_antibot()
+{
+	if cd "$CFG_GITPATH_ANTIBOT"
+	then
+		git rev-parse HEAD
+	else
+		echo "invalid"
+	fi
+}
+
 function get_cores() {
     local cores
     if is_cmd nproc
