@@ -11,6 +11,7 @@ paste.txt
 raw_build.txt
 raw_gdb.txt
 status.txt
+peda-session-*.txt
 *.acc
 *_playerdata.dat
 *.db
