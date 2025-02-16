@@ -91,6 +91,10 @@ then
 	err "failed to get commit hash"
 	exit 1
 fi
+
+gdb_tmp_log_header="$p/full_gdb.header.txt.tmp"
+gdb_tmp_log_gdb="$p/full_gdb.gdb.txt.tmp"
+
 read -rd '' GDB_CMD << EOF
 $CFG_ENV_RUNTIME gdb -ex='set confirm off' \
     -ex='set pagination off' \
@@ -100,7 +104,7 @@ $CFG_ENV_RUNTIME gdb -ex='set confirm off' \
     -ex='set logging on' \
     -ex=bt \
     -ex='set logging off' \
-    -ex="set logging file $p/full_gdb.txt" \
+    -ex="set logging file $gdb_tmp_log_gdb" \
     -ex='set logging on' \
     -ex='echo (gdb) bt full\\n' -ex='bt full' \
     -ex='echo (gdb) info registers\\n' -ex='info registers' \
@@ -124,11 +128,17 @@ start_ts=$(date '+%Y-%m-%d %H:%M:%S')
 	echo "gdb ./bin/backup/$(get_commit) $gdb_corefile"
 	echo "objdump -dCS -M intel bin/backup/$(get_commit) > ./lib/tmp/debug.asm && vim ./lib/tmp/debug.asm"
 	echo "python -c 'print(hex(0xbabe + 10))'"
-} >> "$p/full_gdb.txt"
+} >> "$gdb_tmp_log_header"
 echo ""
 eval "$GDB_CMD"
 echo ""
 log "executed: '$GDB_CMD'"
+
+cat "$gdb_tmp_log_header" >> "$p/full_gdb.txt"
+rm "$gdb_tmp_log_header"
+cat "$gdb_tmp_log_gdb" >> "$p/full_gdb.txt"
+rm "$gdb_tmp_log_gdb"
+
 stop_ts=$(date '+%Y-%m-%d %H:%M:%S')
 echo "\\============= server stop  $stop_ts =============/" >> "$p/full_gdb.txt"
 echo "/============= server start $start_ts =============\\" > "$p/raw_gdb.txt"
