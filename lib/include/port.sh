@@ -12,6 +12,20 @@ function port_status() {
     echo "NOT IN USE"
 }
 
+function check_bindaddr() {
+    addr_used="$(get_tw_config bindaddr empty)"
+    if [ "$addr_used" = empty ]
+    then
+	    return
+    fi
+    if ! ip a | grep -q "$addr_used"
+    then
+	    wrn "Warning: your teeworlds config sets bindaddr to '$addr_used'"
+	    wrn "         but this address is not listed in the ip a command"
+	    wrn "         if you try to bind an invalid ip the server can fail to start"
+    fi
+}
+
 function check_port() {
     port_used="$(get_tw_config sv_port 8303)"
     if ! [[ $port_used =~ ^[0-9]+$ ]]

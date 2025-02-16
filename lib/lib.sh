@@ -253,6 +253,7 @@ function check_duplicated_uuid() {
 function check_warnings() {
 	local port
 	local num_cores
+	check_bindaddr
 	check_server_dir
 	twcfg.check_cfg_full
 	check_dir_size
@@ -570,6 +571,7 @@ function check_running() {
         log "ignoring duplicated process..."
     fi
     check_port
+    check_bindaddr
 }
 
 function check_directory() {
