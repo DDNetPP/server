@@ -305,6 +305,23 @@ function check_warnings() {
 			)
 		fi
 	fi
+	if [ "$CFG_POST_LOGS_DIR" != "" ]
+	then
+		if [ -f "$CFG_POST_LOGS_DIR" ]
+		then
+			wrn "WARNING: post_logs_dir is set to: $CFG_POST_LOGS_DIR"
+			wrn "         but it is a FILE not a DIRECTORY"
+			wrn "         logging will not work!"
+		elif [ ! -d "$CFG_POST_LOGS_DIR" ]
+		then
+			wrn "WARNING: post_logs_dir is set to: $CFG_POST_LOGS_DIR"
+			wrn "         but that directory does not exist!"
+			wrn "         logging will not work. Please create the directory"
+			wrn ""
+			wrn "         mkdir -p $CFG_POST_LOGS_DIR"
+			wrn ""
+		fi
+	fi
 }
 
 function install_cstd() {
