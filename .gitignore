@@ -54,6 +54,7 @@ votes_count.txt
 votes_lower.txt
 patches/
 hooks/
+hooks
 
 # F-DDrace /design maps
 designs/
