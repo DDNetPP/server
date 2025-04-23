@@ -4,7 +4,7 @@ port_used=8303
 
 function port_status() {
     port_used="$(get_tw_config sv_port 8303)"
-    if netstat --inet -n -a -p 2>/dev/null | grep "$port_used" | grep -qv grep;
+    if netstat --inet -n -a -p 2>/dev/null | grep ":$port_used " | grep -qv grep;
     then
         echo "IN USE"
         return
@@ -34,7 +34,7 @@ function check_port() {
         exit 1
     fi
     log -n "checking port '$port_used' ... "
-    if netstat --inet -n -a -p 2>/dev/null | grep "$port_used" | grep -qv grep;
+    if netstat --inet -n -a -p 2>/dev/null | grep ":$port_used " | grep -qv grep;
     then
         echo "ERROR"
         err "error port '$port_used' is already in use"
