@@ -38,8 +38,8 @@ SOURCE_OPTIONS=(
 	"chiller"
 	"zillyfng"
 	"zillyfly"
-	"zillyinsta-06"
-	"zillyinsta-07"
+	"ddnet-insta-06"
+	"ddnet-insta-07"
 	"Quit"
 )
 
@@ -283,12 +283,12 @@ function select_option() {
 			download_git https://github.com/ZillyFly/fly-maps
 			return 0
 			;;
-		"zillyinsta-06")
-			download_git https://github.com/ZillyInsta/maps-06
+		"ddnet-insta-06")
+			download_git https://github.com/ddnet-insta/maps-06
 			return 0
 			;;
-		"zillyinsta-07")
-			download_git https://github.com/ZillyInsta/maps-07
+		"ddnet-insta-07")
+			download_git https://github.com/ddnet-insta/maps-07
 			return 0
 			;;
 		"Quit")
