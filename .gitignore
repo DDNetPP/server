@@ -59,6 +59,9 @@ hooks
 # F-DDrace /design maps
 designs/
 
+# 0XF designs
+map_design/
+
 # 0xf antibot
 am_data.txt 
 delay.txt
