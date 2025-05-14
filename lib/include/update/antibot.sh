@@ -56,15 +56,16 @@ function _antibot_format_standalone() {
 		log -n "compiling standalone antibot with make .. "
 
 		build_log="/tmp/${USER}_ddpp_antibot_build_$$.log"
-		echo '$ make clean' > "$build_log"
-		if ! make clean &>> "$build_log"
-		then
-			log_status_error
-			cat "$build_log"
-			rm "$build_log"
-			err "Error: building antibot with make failed (make clean failed)"
-			exit 1
-		fi
+		:>"$build_log"
+		# echo '$ make clean' >> "$build_log"
+		# if ! make clean &>> "$build_log"
+		# then
+		# 	log_status_error
+		# 	cat "$build_log"
+		# 	rm "$build_log"
+		# 	err "Error: building antibot with make failed (make clean failed)"
+		# 	exit 1
+		# fi
 		echo '$ make' >> "$build_log"
 		if ! make &>> "$build_log"
 		then
