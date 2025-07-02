@@ -106,6 +106,7 @@ $CFG_ENV_RUNTIME gdb -ex='set confirm off' \
     -ex='set pagination off' \
     -ex='set disassembly-flavor intel' \
     -ex='handle SIGPIPE nostop noprint pass' \
+    -ex='handle SIGINT nostop noprint pass' \
     -ex=run \
     -ex="set logging file $p/tmp_gdb.txt" \
     -ex='set logging on' \
