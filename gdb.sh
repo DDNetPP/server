@@ -33,7 +33,25 @@ then
 	exit 1
 fi
 git_patches="$(get_applied_git_patches)"
-run_cmd="$CFG_ENV_RUNTIME gdb -ex='handle SIGPIPE nostop noprint pass' -ex='handle SIGINT nostop noprint pass' -ex=run --args ./\"$CFG_BIN\" \"exec autoexec.cfg;logfile $logfile;#sid:$SERVER_UUID\""
+
+log_cmd=''
+if is_cfg CFG_ENABLE_LOGGING
+then
+	log_cmd="logfile $logfile"
+fi
+
+read -rd '' run_cmd << EOF
+$CFG_ENV_RUNTIME gdb \
+    -ex='set confirm off' \
+    -ex='set pagination off' \
+    -ex='set disassembly-flavor intel' \
+    -ex='handle SIGPIPE nostop noprint pass' \
+    -ex='handle SIGINT nostop noprint pass' \
+    -ex=run \
+    --args \
+    ./$CFG_BIN "exec autoexec.cfg;$log_cmd;#sid:$SERVER_UUID:gdb.sh"
+EOF
+
 log "$run_cmd"
 launch_commit="$(get_commit)"
 bash -c "set -euo pipefail;$run_cmd"
