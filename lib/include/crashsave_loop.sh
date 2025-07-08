@@ -53,7 +53,7 @@ then
 	err "failed to get commit hash"
 	exit 1
 fi
-run_cmd="$CFG_ENV_RUNTIME ./$CFG_BIN 'exec autoexec.cfg;$log_cmd;#sid:$SERVER_UUID:loop_script'"
+run_cmd="$CFG_ENV_RUNTIME ./$CFG_BIN -f autoexec.cfg '$log_cmd;#sid:$SERVER_UUID:loop_script'"
 log "running:"
 tput bold
 echo "$run_cmd"

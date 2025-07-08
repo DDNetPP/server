@@ -123,7 +123,7 @@ $CFG_ENV_RUNTIME gdb \
     $custom_gdb \
     $gdb_corefile_cmd \
     -ex=quit --args \
-    ./$CFG_BIN "exec autoexec.cfg;$log_cmd;#sid:$SERVER_UUID:loop_script"
+    ./$CFG_BIN -f autoexec.cfg "$log_cmd;#sid:$SERVER_UUID:loop_script"
 EOF
 git_patches="$(get_applied_git_patches)"
 start_ts=$(date '+%Y-%m-%d %H:%M:%S')

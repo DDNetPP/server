@@ -49,7 +49,7 @@ $CFG_ENV_RUNTIME gdb \
     -ex='handle SIGINT nostop noprint pass' \
     -ex=run \
     --args \
-    ./$CFG_BIN "exec autoexec.cfg;$log_cmd;#sid:$SERVER_UUID:gdb.sh"
+    ./$CFG_BIN -f autoexec.cfg "$log_cmd;#sid:$SERVER_UUID:gdb.sh"
 EOF
 
 log "$run_cmd"
