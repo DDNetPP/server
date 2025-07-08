@@ -95,7 +95,7 @@ fi
 gdb_tmp_log_header="$p/full_gdb.header.txt.tmp"
 gdb_tmp_log_gdb="$p/full_gdb.gdb.txt.tmp"
 
-log_cmd=''
+log_cmd='echo nologging'
 if is_cfg CFG_ENABLE_LOGGING
 then
 	log_cmd="logfile $logfile"

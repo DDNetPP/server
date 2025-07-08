@@ -41,7 +41,7 @@ logfile="$LOGS_PATH_FULL_TW/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S)${CFG_LOG_EXT}"
 start_ts_slug=$(date '+%Y-%m-%d_%H-%M-%S')
 start_ts=$(date '+%Y-%m-%d %H:%M:%S')
 
-log_cmd=''
+log_cmd='echo nologging'
 if is_cfg CFG_ENABLE_LOGGING
 then
 	log_cmd="logfile $logfile"

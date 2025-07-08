@@ -34,7 +34,7 @@ then
 fi
 git_patches="$(get_applied_git_patches)"
 
-log_cmd=''
+log_cmd='echo nologging'
 if is_cfg CFG_ENABLE_LOGGING
 then
 	log_cmd="logfile $logfile"
