@@ -36,7 +36,7 @@ function generate_tw_syntax() {
 		return
 	fi
 	mkdir -p ./lib/tmp
-	log "generate autoexe.cfg syntax for the current mod ..."
+	log "generate autoexec.cfg syntax for the current mod ..."
 	(
 		cd "$CFG_GIT_PATH_MOD" || exit 1
 		tw_configs CLIENT SERVER ECON
