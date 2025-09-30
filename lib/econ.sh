@@ -11,7 +11,10 @@ source lib/lib.sh
 
 if [ "$1" == "--help" ] || [ "$1" == "-h" ] || [ "$#" == "0" ]
 then
-    echo "usage: ./lib/econ.sh <econ command>"
+    echo "usage: ./lib/econ.sh [-i|--interactive] <econ command>"
+    echo ""
+    echo "options:"
+    echo "  --interactive|-i   ignore commands and just spawn an interactive shell"
     echo ""
     echo "examples:"
     echo '  ./lib/econ.sh "shutdown"'
@@ -51,5 +54,10 @@ then
     exit 1
 fi
 
-./lib/econ-exec.exp "$ec_bindaddr" "$ec_port" "$ec_password" "$*"
+if [ "$1" = "--interactive" ] || [ "$1" == "-i" ]
+then
+	nc "$ec_bindaddr" "$ec_port" "$ec_password" "$*"
+else
+	./lib/econ-exec.exp "$ec_bindaddr" "$ec_port" "$ec_password" "$*"
+fi
 
