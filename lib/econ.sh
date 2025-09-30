@@ -56,7 +56,7 @@ fi
 
 if [ "$1" = "--interactive" ] || [ "$1" == "-i" ]
 then
-	nc "$ec_bindaddr" "$ec_port" "$ec_password" "$*"
+	./lib/econ-interactive.exp "$ec_bindaddr" "$ec_port" "$ec_password"
 else
 	./lib/econ-exec.exp "$ec_bindaddr" "$ec_port" "$ec_password" "$*"
 fi
