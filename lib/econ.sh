@@ -56,6 +56,8 @@ fi
 
 if [ "$1" = "--interactive" ] || [ "$1" == "-i" ]
 then
+	log "spawning interactive netcat econ session ..."
+	log "see also $(tput bold)./lib/console.sh$(tput sgr0) for separate input and output"
 	./lib/econ-interactive.exp "$ec_bindaddr" "$ec_port" "$ec_password"
 else
 	./lib/econ-exec.exp "$ec_bindaddr" "$ec_port" "$ec_password" "$*"
