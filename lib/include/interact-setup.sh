@@ -8,6 +8,7 @@ then
 fi
 
 source lib/lib.sh
+source lib/include/lib_loop.sh
 
 figlet "lib.sh"
 echo "show_latest_log"
