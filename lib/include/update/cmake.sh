@@ -19,23 +19,39 @@ function cmake_refresh_teeworlds_binary() {
 	if [ "$CFG_GITPATH_ANTIBOT" != "" ]
 	then
 		log "refreshing antibot binary ..."
-		local libantibot_path="$CFG_GITPATH_ANTIBOT"/libantibot.so
-		if [ -f "$libantibot_path" ]
+
+		if [ -f "$CFG_GITPATH_ANTIBOT"/libantibot.so ] && \
+			[ -f "$CFG_GITPATH_ANTIBOT"/build/libantibot.so ]
 		then
-			log "found $libantibot_path"
-		else
-			libantibot_path="$CFG_GIT_PATH_MOD/build/$CFG_COMPILED_BIN"
-			if [ -f "$libantibot_path" ]
-			then
-				log "found $libantibot_path"
-			fi
+			err "Error: found libantibot.so in root and build dir of $CFG_GITPATH_ANTIBOT"
+			err "       this is ambiguous. Please delete one of the files"
+			err ""
+			err "        $CFG_GITPATH_ANTIBOT/libantibot.so"
+			err "        $CFG_GITPATH_ANTIBOT/build/libantibot.so"
+			err ""
+			exit 1
 		fi
-		if [ -f "$libantibot_path" ]
+
+		local libantibot_path=''
+		for libantibot_path_candidate in \
+			"$CFG_GITPATH_ANTIBOT"/libantibot.so \
+			"$CFG_GITPATH_ANTIBOT"/build/libantibot.so \
+			"$CFG_GIT_PATH_MOD"/build/libantibot.so
+		do
+			if [ -f "$libantibot_path_candidate" ]
+			then
+				libantibot_path="$libantibot_path_candidate"
+				log "found $libantibot_path"
+				break
+			fi
+		done
+
+		if [ "$libantibot_path" != "" ]
 		then
 			log "move libantibot.so ..."
 			cp "$libantibot_path" "$libantibot_runtime_path"
 		else
-			err "Error: libantibot.so not found $libantibot_path"
+			err "Error: libantibot.so not found"
 		fi
 	fi
 }

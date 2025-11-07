@@ -7,8 +7,8 @@
 #
 # supported antibot repo formats:
 #
-# - standalone built from source (recommended)
-#   the repository is expected to contain a Makefile
+# - standalone make/cmake built from source (recommended)
+#   the repository is expected to contain a Makefile or CMakeLists.txt
 #   and be able to compile on its own
 #   the resulting libantibot.so is then copied to the runtime path
 #   have a look at antibob for an example of such a repository
@@ -36,10 +36,14 @@ function update_antibot() {
 		git_save_pull
 	) || exit 1
 
-	if [ -f "$CFG_GITPATH_ANTIBOT/Makefile" ]
+	if [ -f "$CFG_GITPATH_ANTIBOT/CMakeLists.txt" ]
 	then
-		log "detected antibot format: standalone"
-		_antibot_format_standalone
+		log "detected antibot format: standalone cmake"
+		_antibot_format_standalone_cmake
+	elif [ -f "$CFG_GITPATH_ANTIBOT/Makefile" ]
+	then
+		log "detected antibot format: standalone make"
+		_antibot_format_standalone_make
 	elif compgen -G "$CFG_GITPATH_ANTIBOT/*.{h,cpp}" > /dev/null
 	then
 		log "detected antibot format: source patches"
@@ -50,7 +54,55 @@ function update_antibot() {
 	fi
 }
 
-function _antibot_format_standalone() {
+function _antibot_format_standalone_cmake() {
+	(
+		cd "$CFG_GITPATH_ANTIBOT" || exit 1
+		log -n "compiling standalone antibot with cmake "
+
+		build_log="/tmp/${USER}_ddpp_antibot_build_$$.log"
+		:>"$build_log"
+
+		function __run_build_cmd() {
+			local cmd="$1"
+			printf '$ %s\n' "$cmd" >> "$build_log"
+			if ! $cmd &>> "$build_log"
+			then
+				log_status_error
+				cat "$build_log"
+				rm "$build_log"
+				err "Error: building antibot with make failed, failed command: $cmd"
+				exit 1
+			fi
+			printf '.'
+		}
+
+		__run_build_cmd 'mkdir -p build'
+		__run_build_cmd 'cd build'
+		__run_build_cmd 'cmake ..'
+		__run_build_cmd 'make'
+
+		rm "$build_log"
+		printf ' '
+		log_status_ok
+
+		if [ ! -f "$CFG_GITPATH_ANTIBOT"/build/libantibot.so ]
+		then
+			err "Error: antibot cmake passed but did not produce a libantibot.so file"
+			exit 1
+		fi
+
+		# TODO: remove this backcompat layer once cmake antibob rolled out everywhere
+		if [ -f "$CFG_GITPATH_ANTIBOT"/libantibot.so ]
+		then
+			# this avoids having libantibot.so and build/libantibot.so
+			# in the antibot git repo when transitioning from antibob Makefile to cmake
+			log "cleaning up legacy Makefile antibot at $CFG_GITPATH_ANTIBOT/libantibot.so"
+			rm "$CFG_GITPATH_ANTIBOT"/libantibot.so
+		fi
+	) || exit 1
+}
+
+function _antibot_format_standalone_make() {
 	(
 		cd "$CFG_GITPATH_ANTIBOT" || exit 1
 		log -n "compiling standalone antibot with make .. "
