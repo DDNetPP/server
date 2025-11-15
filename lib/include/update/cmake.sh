@@ -161,7 +161,6 @@ function cmake_update() {
 		err       "       cd $arg_git_path"
 		err       "       git status"
 		err       "       $(tput bold)./update.sh --force$(tput sgr0) to ignore"
-		unlock_build
 		exit 1
 	fi
 	current_branch="$(git rev-parse --abbrev-ref HEAD)"
@@ -230,7 +229,6 @@ function cmake_update() {
 	if [ "$build_fail" == "1" ]
 	then
 		err --log "build failed."
-		unlock_build
 		exit 1
 	fi
 	if [ ! -f "$arg_compiled_bin" ]

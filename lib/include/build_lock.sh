@@ -130,6 +130,7 @@ function lock_build() {
 	# lock the build
 	printf '%s %s %s %s\n' "$CFG_GIT_PATH_MOD" "$SERVER_UUID" "$$" "$(date '+%s')" >> "$BUILD_LOCKFILE"
 	_meta_unlock || return 1
+	trap unlock_build EXIT
 }
 
 function unlock_build() {

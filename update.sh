@@ -225,15 +225,12 @@ then
 	then
 		custom_update_teeworlds "$@"
 	else
-		unlock_build
 		err "Unsupported build system: $CFG_BUILD_SYSTEM"
 		exit 1
 	fi
 	map_themes_post
 	git_save_pull
 	update_lua
-
-	unlock_build
 elif [ "$CFG_SERVER_TYPE" == "tem" ] || [ "$arg_type" == "tem" ]
 then
 	if [ "$arg_refresh" == "1" ]
