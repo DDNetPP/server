@@ -230,6 +230,7 @@ function cmake_update() {
 	if [ "$build_fail" == "1" ]
 	then
 		err --log "build failed."
+		unlock_build
 		exit 1
 	fi
 	if [ ! -f "$arg_compiled_bin" ]
