@@ -11,7 +11,7 @@
 #
 # unlock_build
 
-BUILD_LOCKFILE=/tmp/"$USER"_ddpp_build_lock.txt
+BUILD_LOCKFILE=/tmp/"$(whoami)"_ddpp_build_lock.txt
 
 ###################
 # internal helpers
