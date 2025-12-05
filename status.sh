@@ -8,9 +8,12 @@ then
 fi
 
 source lib/lib.sh
+source lib/include/update/cmake.sh
 
 check_warnings
 audit_code
+
+log "current cmake build dir: ${CFG_GIT_PATH_MOD}/$(get_cmake_build_dir)"
 
 if pgrep -f "$SERVER_UUID" > /dev/null
 then

@@ -212,7 +212,8 @@ function check_dir_size() {
     warn_dir_size lib 0 &
     warn_dir_size logs/ddos 1 &
     warn_dir_size logs 0 &
-    warn_dir_size maps  0&
+    warn_dir_size maps 0 &
+    warn_dir_size "$CFG_GIT_PATH_MOD" 0
     wait
     touch ./lib/tmp/size_null.txt
     cat ./lib/tmp/size_*.txt
