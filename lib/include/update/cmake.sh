@@ -1,5 +1,16 @@
 #!/bin/bash
 
+# prints the folder name of the cmake build directory
+# the format is always the following:
+#
+#  build-[sha256sum of cmake flags]
+#
+get_cmake_build_dir() {
+	local sum
+	sum="$(printf '%s' "${CFG_CMAKE_FLAGS[*]}" | sha256sum | cut -d' ' -f1)"
+	printf 'build-%s' "$sum"
+}
+
 function cmake_refresh_teeworlds_binary() {
 	if [ ! -f "$CFG_GIT_PATH_MOD/build/$CFG_COMPILED_BIN" ]
 	then
@@ -19,15 +30,16 @@ function cmake_refresh_teeworlds_binary() {
 	if [ "$CFG_GITPATH_ANTIBOT" != "" ]
 	then
 		log "refreshing antibot binary ..."
+		local build_dir="$(get_cmake_build_dir)"
 
 		if [ -f "$CFG_GITPATH_ANTIBOT"/libantibot.so ] && \
-			[ -f "$CFG_GITPATH_ANTIBOT"/build/libantibot.so ]
+			[ -f "$CFG_GITPATH_ANTIBOT"/"$build_dir"/libantibot.so ]
 		then
 			err "Error: found libantibot.so in root and build dir of $CFG_GITPATH_ANTIBOT"
 			err "       this is ambiguous. Please delete one of the files"
 			err ""
 			err "        $CFG_GITPATH_ANTIBOT/libantibot.so"
-			err "        $CFG_GITPATH_ANTIBOT/build/libantibot.so"
+			err "        $CFG_GITPATH_ANTIBOT/$build_dir/libantibot.so"
 			err ""
 			exit 1
 		fi
@@ -35,8 +47,8 @@ function cmake_refresh_teeworlds_binary() {
 		local libantibot_path=''
 		for libantibot_path_candidate in \
 			"$CFG_GITPATH_ANTIBOT"/libantibot.so \
-			"$CFG_GITPATH_ANTIBOT"/build/libantibot.so \
-			"$CFG_GIT_PATH_MOD"/build/libantibot.so
+			"$CFG_GITPATH_ANTIBOT"/"$build_dir"/libantibot.so \
+			"$CFG_GIT_PATH_MOD"/"$build_dir"/libantibot.so
 		do
 			if [ -f "$libantibot_path_candidate" ]
 			then
@@ -180,6 +192,7 @@ function cmake_update() {
 	update_antibot
 	apply_git_patches
 	bin_commit="$(git rev-parse HEAD)"
+	local build_dir="$(get_cmake_build_dir)"
 	mkdir -p "$SCRIPT_ROOT/lib/tmp"
 	local cmake_cache="$SCRIPT_ROOT/lib/tmp/cmake_flags.txt"
 	if [ -f "$cmake_cache" ]
@@ -189,16 +202,17 @@ function cmake_update() {
 			log "cmake flags changed:"
 			log " old='$(cat "$cmake_cache")'"
 			log " new='${arg_cmake_flags[*]}'"
-			log "deleting build directory ..."
-			rm -rf build
+			log "you might want to cleanup the now potentially old unused build dir in $PWD"
+			# log "deleting build directory ..."
+			# rm -rf "$build_dir"
 		fi
 	fi
 
 	register_hook_before_compile
 
 	echo "${arg_cmake_flags[*]}" > "$cmake_cache"
-	mkdir -p build || { err "Error: creating dir build/"; exit 1; }
-	cd build || { err "Could not enter build/ directory"; exit 1; }
+	mkdir -p "$build_dir" || { err "Error: creating dir $build_dir"; exit 1; }
+	cd "$build_dir" || { err "Could not enter $build_dir directory"; exit 1; }
 	branch="$(git branch | sed -n '/\* /s///p')"
 
 	local build_fail=0
