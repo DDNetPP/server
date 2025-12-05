@@ -3,11 +3,11 @@
 # prints the folder name of the cmake build directory
 # the format is always the following:
 #
-#  build-[sha256sum of cmake flags]
+#  build-[sha256sum of cmake flags and build env]
 #
 get_cmake_build_dir() {
 	local sum
-	sum="$(printf '%s' "${CFG_CMAKE_FLAGS[*]}" | sha256sum | cut -d' ' -f1)"
+	sum="$(printf '%s%s' "${CFG_CMAKE_FLAGS[*]}" "$CFG_ENV_BUILD" | sha256sum | cut -d' ' -f1)"
 	printf 'build-%s' "$sum"
 }
 
