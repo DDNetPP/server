@@ -12,14 +12,15 @@ get_cmake_build_dir() {
 }
 
 function cmake_refresh_teeworlds_binary() {
-	if [ ! -f "$CFG_GIT_PATH_MOD/build/$CFG_COMPILED_BIN" ]
+	local build_dir="$(get_cmake_build_dir)"
+	if [ ! -f "$CFG_GIT_PATH_MOD/$build_dir/$CFG_COMPILED_BIN" ]
 	then
 		err "Error: binary not found try ./update.sh"
-		err "       $CFG_GIT_PATH_MOD/build/$CFG_COMPILED_BIN"
+		err "       $CFG_GIT_PATH_MOD/$build_dir/$CFG_COMPILED_BIN"
 		return
 	fi
 	cp \
-		"$CFG_GIT_PATH_MOD/build/$CFG_COMPILED_BIN" \
+		"$CFG_GIT_PATH_MOD/$build_dir/$CFG_COMPILED_BIN" \
 		"${SCRIPT_ROOT}/${CFG_BIN}"
 	local libantibot_runtime_path="${SCRIPT_ROOT}/bin/libantibot.so"
 	if [ -f "$libantibot_runtime_path" ]
@@ -30,7 +31,6 @@ function cmake_refresh_teeworlds_binary() {
 	if [ "$CFG_GITPATH_ANTIBOT" != "" ]
 	then
 		log "refreshing antibot binary ..."
-		local build_dir="$(get_cmake_build_dir)"
 
 		if [ -f "$CFG_GITPATH_ANTIBOT"/libantibot.so ] && \
 			[ -f "$CFG_GITPATH_ANTIBOT"/build/libantibot.so ]
