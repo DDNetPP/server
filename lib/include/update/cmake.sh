@@ -33,13 +33,13 @@ function cmake_refresh_teeworlds_binary() {
 		local build_dir="$(get_cmake_build_dir)"
 
 		if [ -f "$CFG_GITPATH_ANTIBOT"/libantibot.so ] && \
-			[ -f "$CFG_GITPATH_ANTIBOT"/"$build_dir"/libantibot.so ]
+			[ -f "$CFG_GITPATH_ANTIBOT"/build/libantibot.so ]
 		then
 			err "Error: found libantibot.so in root and build dir of $CFG_GITPATH_ANTIBOT"
 			err "       this is ambiguous. Please delete one of the files"
 			err ""
 			err "        $CFG_GITPATH_ANTIBOT/libantibot.so"
-			err "        $CFG_GITPATH_ANTIBOT/$build_dir/libantibot.so"
+			err "        $CFG_GITPATH_ANTIBOT/build/libantibot.so"
 			err ""
 			exit 1
 		fi
@@ -47,7 +47,7 @@ function cmake_refresh_teeworlds_binary() {
 		local libantibot_path=''
 		for libantibot_path_candidate in \
 			"$CFG_GITPATH_ANTIBOT"/libantibot.so \
-			"$CFG_GITPATH_ANTIBOT"/"$build_dir"/libantibot.so \
+			"$CFG_GITPATH_ANTIBOT"/build/libantibot.so \
 			"$CFG_GIT_PATH_MOD"/"$build_dir"/libantibot.so
 		do
 			if [ -f "$libantibot_path_candidate" ]
