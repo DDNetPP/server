@@ -55,8 +55,8 @@ set_vars() {
 	# compile time
 	export CC=clang
 	export CXX=clang++
-	export CXXFLAGS="-fsanitize=address,undefined -fsanitize-recover=address,undefined -fno-omit-frame-pointer"
-	export CFLAGS="-fsanitize=address,undefined -fsanitize-recover=address,undefined -fno-omit-frame-pointer"
+	export CXXFLAGS="-fsanitize=address,undefined,leak -fsanitize-recover=address,undefined -fno-omit-frame-pointer"
+	export CFLAGS="-fsanitize=address,undefined,leak -fsanitize-recover=address,undefined -fno-omit-frame-pointer"
 }
 
 set_vars
