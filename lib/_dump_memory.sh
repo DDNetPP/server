@@ -18,7 +18,7 @@ rm -rf "$dump_dir"
 mkdir -p "$dump_dir"
 
 # https://serverfault.com/a/408929
-grep rw-p "/proc/${server_pid}/maps" \
+grep "rw-p.*heap" "/proc/${server_pid}/maps" \
 	| sed -n 's/^\([0-9a-f]*\)-\([0-9a-f]*\) .*$/\1 \2/p' \
 	| while read -r start stop; do \
 	gdb --batch --pid "${server_pid}" -ex \
