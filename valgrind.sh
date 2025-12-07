@@ -45,13 +45,6 @@ then
 	exit 1
 fi
 
-
-# WARNING: this script is not really ready to be used yet
-#          valgrind cant run with asan so the entrie setup is a bit messy
-#          not sure if i ever put enough love into this so its actually usable
-#          but last time i lost my untracked valgrind.sh so this time i rather track
-#          the messy one than to start from scratch again
-
 export COMMIT_HASH
 if ! COMMIT_HASH="$(get_commit)"
 then
@@ -59,13 +52,19 @@ then
 	exit 1
 fi
 
-# TODO: enable logging
+logfile="$LOGS_PATH_FULL_TW/${CFG_SRV_NAME}_$(date +%F_%H-%M-%S)${CFG_LOG_EXT}"
+cache_logpath "$logfile"
+
 log_cmd='echo nologging'
+if is_cfg CFG_ENABLE_LOGGING
+then
+	log_cmd="logfile $logfile"
+fi
 
 read -rd '' run_cmd << EOF
 $CFG_ENV_RUNTIME valgrind \
 	--tool=massif \
-	./$CFG_BIN -f autoexec.cfg "$log_cmd;#sid:$SERVER_UUID:gdb.sh"
+	./$CFG_BIN -f autoexec.cfg "$log_cmd;#sid:$SERVER_UUID:valgrind.sh"
 EOF
 
 # valgrind \
