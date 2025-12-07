@@ -34,6 +34,12 @@ function is_running_loop() {
 	return 1
 }
 
+get_server_pid() {
+	# all main server processes should use the sid: prefix
+	# side runners also use the SERVER_UUID but not the sid: prefix
+	pgrep -f "sid:$SERVER_UUID"
+}
+
 function get_player_ips() {
 	if [ ! "$(command -v rg)" ]
 	then
