@@ -9,6 +9,13 @@ fi
 
 source lib/lib.sh
 
+check_deps "$1"
+check_warnings
+check_running
+install_dep valgrind
+archive_gmon
+restart_side_runner
+
 is_asan_runtime() {
 	if printf '%s' "$CFG_ENV_RUNTIME" | grep -qE '(env_san.sh|fsanitize)'
 	then
