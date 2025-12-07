@@ -61,9 +61,20 @@ then
 	log_cmd="logfile $logfile"
 fi
 
+massif_logpath="logs/massif_${COMMIT_HASH:-null}_$(date '+%F_%H-%M')"
+
+# traditionally massif also includes the pid with %p placeholder
+# but then it becomes tricky for us to log the logpath
+# because getting the pid only works at runtime
+# we can not use $$ because its a wrapped launcher
+# there should probably be a proper launch_cmd() helper
+# that can pritty print args and handle pid and exit codes
+# massif_logpath="${massif_logpath}.%p"
+
 read -rd '' run_cmd << EOF
 $CFG_ENV_RUNTIME valgrind \
 	--tool=massif \
+	--massif-out-file=$massif_logpath \
 	./$CFG_BIN -f autoexec.cfg "$log_cmd;#sid:$SERVER_UUID:valgrind.sh"
 EOF
 
@@ -83,4 +94,9 @@ if [ "$git_patches" != "" ]
 then
 	log "applied patches: $git_patches"
 fi
+log "created massif report at $massif_logpath"
+log "you can inspect it using this command:"
+echo ""
+echo "     $(tput bold)ms_print $massif_logpath$(tput sgr0)"
+echo ""
 
