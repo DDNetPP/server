@@ -61,7 +61,7 @@ then
 	log_cmd="logfile $logfile"
 fi
 
-massif_logpath="logs/massif_${COMMIT_HASH:-null}_$(date '+%F_%H-%M')"
+massif_logpath="logs/massif_${COMMIT_HASH:-null}_$(date '+%F_%H-%M').out.txt"
 
 # traditionally massif also includes the pid with %p placeholder
 # but then it becomes tricky for us to log the logpath
