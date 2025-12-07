@@ -9,7 +9,7 @@ fi
 
 source lib/lib.sh
 
-server_pid="$(pgrep -f "$SERVER_UUID")"
+server_pid="$(pgrep -f "sid:$SERVER_UUID")"
 
 if [ "$server_pid" = "" ]
 then
