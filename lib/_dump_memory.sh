@@ -18,9 +18,9 @@ rm -rf "$dump_dir"
 mkdir -p "$dump_dir"
 
 # https://serverfault.com/a/408929
-grep rw-p /proc/${server_pid}/maps \
+grep rw-p "/proc/${server_pid}/maps" \
 	| sed -n 's/^\([0-9a-f]*\)-\([0-9a-f]*\) .*$/\1 \2/p' \
-	| while read start stop; do \
+	| while read -r start stop; do \
 	gdb --batch --pid "${server_pid}" -ex \
 	"dump memory ${dump_dir}/${server_pid}-$start-$stop.dump 0x$start 0x$stop"; \
 done

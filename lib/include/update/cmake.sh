@@ -12,7 +12,8 @@ get_cmake_build_dir() {
 }
 
 function cmake_refresh_teeworlds_binary() {
-	local build_dir="$(get_cmake_build_dir)"
+	local build_dir
+	build_dir="$(get_cmake_build_dir)"
 	if [ ! -f "$CFG_GIT_PATH_MOD/$build_dir/$CFG_COMPILED_BIN" ]
 	then
 		err "Error: binary not found try ./update.sh"
@@ -192,7 +193,8 @@ function cmake_update() {
 	update_antibot
 	apply_git_patches
 	bin_commit="$(git rev-parse HEAD)"
-	local build_dir="$(get_cmake_build_dir)"
+	local build_dir
+	build_dir="$(get_cmake_build_dir)"
 	mkdir -p "$SCRIPT_ROOT/lib/tmp"
 	local cmake_cache="$SCRIPT_ROOT/lib/tmp/cmake_flags.txt"
 	if [ -f "$cmake_cache" ]
