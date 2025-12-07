@@ -61,29 +61,41 @@ then
 	log_cmd="logfile $logfile"
 fi
 
-massif_logpath="logs/massif_${COMMIT_HASH:-null}_$(date '+%F_%H-%M').out.txt"
+valgrind_tool=massif
+run_cmd=noop
 
-# traditionally massif also includes the pid with %p placeholder
-# but then it becomes tricky for us to log the logpath
-# because getting the pid only works at runtime
-# we can not use $$ because its a wrapped launcher
-# there should probably be a proper launch_cmd() helper
-# that can pritty print args and handle pid and exit codes
-# massif_logpath="${massif_logpath}.%p"
+if [ "$valgrind_tool" = "massif" ]
+then
+	massif_logpath="logs/massif_${COMMIT_HASH:-null}_$(date '+%F_%H-%M').out.txt"
 
-read -rd '' run_cmd << EOF
-$CFG_ENV_RUNTIME valgrind \
-	--tool=massif \
-	--massif-out-file=$massif_logpath \
-	./$CFG_BIN -f autoexec.cfg "$log_cmd;#sid:$SERVER_UUID:valgrind.sh"
-EOF
+	# traditionally massif also includes the pid with %p placeholder
+	# but then it becomes tricky for us to log the logpath
+	# because getting the pid only works at runtime
+	# we can not use $$ because its a wrapped launcher
+	# there should probably be a proper launch_cmd() helper
+	# that can pritty print args and handle pid and exit codes
+	# massif_logpath="${massif_logpath}.%p"
 
-# valgrind \
-# 	--tool=memcheck \
-# 	--gen-suppressions=all \
-# 	--suppressions=./lib/supp/memcheck.supp \
-# 	--leak-check=full \
-# 	--show-leak-kinds=all \
+	read -rd '' run_cmd <<- EOF
+	$CFG_ENV_RUNTIME valgrind \
+		--tool=massif \
+		--massif-out-file=$massif_logpath \
+		./$CFG_BIN -f autoexec.cfg "$log_cmd;#sid:$SERVER_UUID:valgrind.sh"
+	EOF
+elif [ "$valgrind_tool" = "memcheck" ]
+then
+	read -rd '' run_cmd <<- EOF
+	$CFG_ENV_RUNTIME valgrind \
+		--tool=memcheck \
+		--gen-suppressions=all \
+		--suppressions=./lib/supp/memcheck.supp \
+		--leak-check=full \
+		--show-leak-kinds=all \
+		./$CFG_BIN -f autoexec.cfg "$log_cmd;#sid:$SERVER_UUID:valgrind.sh"
+	EOF
+else
+	err "Error: unsupported valgrind tool '$valgrind_tool'"
+fi
 
 log "$run_cmd"
 git_patches="$(get_applied_git_patches)"
@@ -94,9 +106,13 @@ if [ "$git_patches" != "" ]
 then
 	log "applied patches: $git_patches"
 fi
-log "created massif report at $massif_logpath"
-log "you can inspect it using this command:"
-echo ""
-echo "     $(tput bold)ms_print $massif_logpath$(tput sgr0)"
-echo ""
+
+if [ "$valgrind_tool" = "massif" ]
+then
+	log "created massif report at $massif_logpath"
+	log "you can inspect it using this command:"
+	echo ""
+	echo "     $(tput bold)ms_print $massif_logpath$(tput sgr0)"
+	echo ""
+fi
 
