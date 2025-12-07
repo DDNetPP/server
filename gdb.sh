@@ -32,7 +32,6 @@ then
 	err "failed to get commit hash"
 	exit 1
 fi
-git_patches="$(get_applied_git_patches)"
 
 log_cmd='echo nologging'
 if is_cfg CFG_ENABLE_LOGGING
@@ -53,6 +52,7 @@ $CFG_ENV_RUNTIME gdb \
 EOF
 
 log "$run_cmd"
+git_patches="$(get_applied_git_patches)"
 launch_commit="$(get_commit)"
 bash -c "set -euo pipefail;$run_cmd"
 log "build commit: $launch_commit"

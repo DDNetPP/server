@@ -52,6 +52,14 @@ fi
 #          but last time i lost my untracked valgrind.sh so this time i rather track
 #          the messy one than to start from scratch again
 
+export COMMIT_HASH
+if ! COMMIT_HASH="$(get_commit)"
+then
+	err "failed to get commit hash"
+	exit 1
+fi
+git_patches="$(get_applied_git_patches)"
+
 srv_commit=77931f936c
 SRV_BIN=./bin/solofng1_no_asan_"${srv_commit}"
 
@@ -65,8 +73,18 @@ cp ~/git/ddnet-insta/build-valgrind/DDNet-Server "$SRV_BIN" || exit 1
 # 	--leak-check=full \
 # 	--show-leak-kinds=all \
 
+
+git_patches="$(get_applied_git_patches)"
+launch_commit="$(get_commit)"
+
 valgrind \
 	--tool=massif \
 	--suppressions=./lib/supp/memcheck.supp \
 	"$SRV_BIN" &> logs/valgrind_"$(date '+%F_%H-%M')".txt
+
+log "build commit: $launch_commit"
+if [ "$git_patches" != "" ]
+then
+	log "applied patches: $git_patches"
+fi
 
