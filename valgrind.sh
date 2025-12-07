@@ -58,13 +58,15 @@ then
 	err "failed to get commit hash"
 	exit 1
 fi
-git_patches="$(get_applied_git_patches)"
 
-srv_commit=77931f936c
-SRV_BIN=./bin/solofng1_no_asan_"${srv_commit}"
+# TODO: enable logging
+log_cmd='echo nologging'
 
-cp ~/git/ddnet-insta/build-valgrind/DDNet-Server "$SRV_BIN" || exit 1
-
+read -rd '' run_cmd << EOF
+$CFG_ENV_RUNTIME valgrind \
+	--tool=massif \
+	./$CFG_BIN -f autoexec.cfg "$log_cmd;#sid:$SERVER_UUID:gdb.sh"
+EOF
 
 # valgrind \
 # 	--tool=memcheck \
@@ -73,15 +75,10 @@ cp ~/git/ddnet-insta/build-valgrind/DDNet-Server "$SRV_BIN" || exit 1
 # 	--leak-check=full \
 # 	--show-leak-kinds=all \
 
-
+log "$run_cmd"
 git_patches="$(get_applied_git_patches)"
 launch_commit="$(get_commit)"
-
-valgrind \
-	--tool=massif \
-	--suppressions=./lib/supp/memcheck.supp \
-	"$SRV_BIN" &> logs/valgrind_"$(date '+%F_%H-%M')".txt
-
+bash -c "set -euo pipefail;$run_cmd"
 log "build commit: $launch_commit"
 if [ "$git_patches" != "" ]
 then
