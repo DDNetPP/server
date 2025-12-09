@@ -62,6 +62,7 @@ function cmake_refresh_teeworlds_binary() {
 		if [ "$libantibot_path" != "" ]
 		then
 			log "move libantibot.so ..."
+			mkdir -p "${SCRIPT_ROOT}/bin"
 			cp "$libantibot_path" "$libantibot_runtime_path"
 		else
 			err "Error: libantibot.so not found"
