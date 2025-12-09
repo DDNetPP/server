@@ -89,6 +89,26 @@ function create_settings() {
 		then
 			return
 		fi
+	else
+		read -p "Do you want to import a previously exported archive from stdin? [y/N]" -n 1 -r
+		echo ""
+		if [[ $REPLY =~ ^[Yy]$ ]]
+		then
+			mkdir -p lib/plugins
+			if [ ! -d lib/plugins/server-plugin-export ]
+			then
+				git clone https://github.com/DDNetPP/server-plugin-export lib/plugins/server-plugin-export
+			else
+				pushd lib/plugins/server-plugin-export
+				git_save_pull
+				popd
+			fi
+			./lib/plugins/server-plugin-export/bin/archive_cli import --stdin
+		fi
+		if [ -f $current_settings_file ];
+		then
+			return
+		fi
 	fi
 
 	read -p "Do you want to create one? [y/N]" -n 1 -r
