@@ -67,8 +67,32 @@ function create_settings() {
 	fi
 	local i
 	log "FileError: '$current_settings_file' not found"
+
+	if [ -d archive ]
+	then
+		read -p "Exported archive found in current directoy. Do you want to import it? [y/N]" -n 1 -r
+		echo ""
+		if [[ $REPLY =~ ^[Yy]$ ]]
+		then
+			mkdir -p lib/plugins
+			if [ ! -d lib/plugins/server-plugin-export ]
+			then
+				git clone https://github.com/DDNetPP/server-plugin-export lib/plugins/server-plugin-export
+			else
+				pushd lib/plugins/server-plugin-export
+				git_save_pull
+				popd
+			fi
+			./lib/plugins/server-plugin-export/bin/archive_cli import
+		fi
+		if [ -f $current_settings_file ];
+		then
+			return
+		fi
+	fi
+
 	read -p "Do you want to create one? [y/N]" -n 1 -r
-	echo 
+	echo ""
 	if [[ $REPLY =~ ^[Yy]$ ]]
 	then
 		{

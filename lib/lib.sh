@@ -14,8 +14,8 @@ source lib/include/port.sh
 source lib/include/dir.sh
 source lib/include/sid.sh
 source lib/include/deps.sh
-source lib/include/settings.sh
 source lib/include/git.sh
+source lib/include/settings.sh
 source lib/include/logs.sh
 source lib/include/screen.sh
 source lib/include/audit_code.sh
