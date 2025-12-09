@@ -59,6 +59,12 @@ function create_settings() {
 	then
 		return
 	fi
+	if [ "$SKIP_CREATE_SETTINGS_FILE" = 1 ]
+	then
+		# this is used for archive importer
+		wrn "WARNING: skipping auto creation of $current_settings_file"
+		return
+	fi
 	local i
 	log "FileError: '$current_settings_file' not found"
 	read -p "Do you want to create one? [y/N]" -n 1 -r
