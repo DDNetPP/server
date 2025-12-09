@@ -13,6 +13,7 @@ get_cmake_build_dir() {
 
 function cmake_refresh_teeworlds_binary() {
 	local build_dir
+	mkdir -p "${SCRIPT_ROOT}/bin"
 	build_dir="$(get_cmake_build_dir)"
 	if [ ! -f "$CFG_GIT_PATH_MOD/$build_dir/$CFG_COMPILED_BIN" ]
 	then
@@ -62,7 +63,6 @@ function cmake_refresh_teeworlds_binary() {
 		if [ "$libantibot_path" != "" ]
 		then
 			log "move libantibot.so ..."
-			mkdir -p "${SCRIPT_ROOT}/bin"
 			cp "$libantibot_path" "$libantibot_runtime_path"
 		else
 			err "Error: libantibot.so not found"
