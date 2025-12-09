@@ -452,6 +452,7 @@ function get_running_procs() {
 	do
 		ps o cmd -p "$proc" | tail -n1 |
 			grep -v 'lib/commit.sh' |
+			grep -v '^SCREEN ' |
 			grep -v 'node .*.js'
 	done
 }
