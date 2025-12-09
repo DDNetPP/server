@@ -251,6 +251,11 @@ function read_settings_file() {
 	# return
 	local filename="$1"
 	current_settings_file="$filename"
+	if [ ! -f "$current_settings_file" ]
+	then
+		wrn "WARNING: settings file not found $current_settings_file"
+		return
+	fi
 	line_num=0
 	local i
 	local split_line
