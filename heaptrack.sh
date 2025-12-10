@@ -58,6 +58,7 @@ then
 	log "applied patches: $git_patches"
 fi
 
+heaptrack_filename="$(basename "$heaptrack_logpath")"
 log "created heaptrack report at $heaptrack_logpath"
 log "you can inspect it using this command:"
 echo ""
@@ -67,8 +68,8 @@ log "or publish it via http and download locally to inspect with heaptrack gui v
 echo ""
 echo "     ${WHITE}cp ${heaptrack_logpath}.zst /var/www/html/tmp/${RESET}"
 echo ""
-log "then click here to download https://zillyhuhn.com/tmp/${heaptrack_logpath}.zst"
+log "then click here to download https://zillyhuhn.com/tmp/${heaptrack_filename}.zst"
 log "after downloading clean it up using this command:"
 echo ""
-echo "     ${WHITE}rm /var/www/html/tmp/${heaptrack_logpath}.zst${RESET}"
+echo "     ${WHITE}rm /var/www/html/tmp/${heaptrack_filename}.zst${RESET}"
 echo ""
