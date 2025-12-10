@@ -112,6 +112,38 @@ function get_cores() {
     echo "$cores"
 }
 
+is_asan_runtime() {
+	if printf '%s' "$CFG_ENV_RUNTIME" | grep -qE '(env_san.sh|fsanitize)'
+	then
+		return 0
+	fi
+	return 1
+}
+
+is_asan_build() {
+	if printf '%s' "$CFG_ENV_BUILD" | grep -qE '(env_san.sh|fsanitize)'
+	then
+		return 0
+	fi
+	return 1
+}
+
+die_if_asan_on_because() {
+	local conflicting_tool="$1"
+	if is_asan_runtime || is_asan_build
+	then
+		err "Error: in your server.cnf you enabled a sanitizer already"
+		err "       $conflicting_tool does not work well when combined with asan and ubsan"
+		err "       go to your server.cnf and check where you set env_build and env_runtime"
+		err "       their current values are:"
+		err ""
+		err "        env_build=$CFG_ENV_BUILD"
+		err "        env_runtime=$CFG_ENV_RUNTIME"
+		err ""
+		exit 1
+	fi
+}
+
 function save_move() {
 	if [[ ! -f "$1" ]]
 	then
