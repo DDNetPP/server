@@ -39,9 +39,9 @@ function _log() {
 	ts="[$(date '+%F %H:%M:%S')]"
 	if [ "${LOG_TS:-}" == "1" ]
 	then
-		echo -ne "$ts$msg_rich"
+		echo -ne "${ts}${msg_rich}${RESET}"
 	else
-		echo -ne "$msg_rich"
+		echo -ne "${msg_rich}${RESET}"
 	fi
 	_log_to_file "$ts$msg_plain"
 }

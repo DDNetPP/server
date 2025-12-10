@@ -121,7 +121,7 @@ then
 	log "created massif report at $massif_logpath"
 	log "you can inspect it using this command:"
 	echo ""
-	echo "     $(tput bold)ms_print $massif_logpath$(tput sgr0)"
+	echo -e "     ${BOLD}ms_print $massif_logpath${RESET}"
 	echo ""
 fi
 
