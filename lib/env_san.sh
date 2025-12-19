@@ -49,7 +49,7 @@ set_vars() {
 
 	# runtime
 	export UBSAN_OPTIONS=suppressions="$lib_dir"/supp/ubsan.supp:log_path="$logfile":print_stacktrace=1:halt_on_errors=0
-	export ASAN_OPTIONS=log_path="$logfile":print_stacktrace=1:check_initialization_order=1:detect_leaks=1:halt_on_errors=0
+	export ASAN_OPTIONS=log_path="$logfile":quarantine_size_mb=100:print_stacktrace=1:check_initialization_order=1:detect_leaks=1:halt_on_errors=0
 	export LSAN_OPTIONS=suppressions="$lib_dir"/supp/lsan.supp
 
 	# compile time
