@@ -6,6 +6,7 @@ export SCRIPT_ROOT
 source lib/include/string.sh
 source lib/include/colors.sh
 source lib/include/logger.sh
+source lib/include/settings.sh
 source lib/include/common.sh
 source lib/include/editor.sh
 source lib/include/tw_config.sh
