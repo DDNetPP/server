@@ -4,7 +4,7 @@
 # so updating the script without restarting it is possible
 
 # max log size - delete logfile and start writing a new one when line count is reached
-MAX_LOG_SIZE=5000
+MAX_LOG_SIZE=50000
 
 # restart delay - sleep time after server crash/shutdown
 # recommended is '5' which is 5 seconds
