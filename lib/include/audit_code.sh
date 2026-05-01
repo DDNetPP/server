@@ -291,6 +291,12 @@ function audit_code() {
 	then
 		return
 	fi
+	if [ ! -d "$CFG_GIT_PATH_MOD/src" ]
+	then
+		wrn "Warning: skipping code audit because no source code was found"
+		wrn "         missing directory $CFG_GIT_PATH_MOD/src"
+		return
+	fi
 	(
 		cd "$CFG_GIT_PATH_MOD" || exit 1
 		audit_code_rcon
