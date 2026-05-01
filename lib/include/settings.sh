@@ -103,7 +103,11 @@ function create_settings() {
 				git_save_pull
 				popd
 			fi
-			./lib/plugins/server-plugin-export/bin/archive_cli import --stdin
+			if ! ./lib/plugins/server-plugin-export/bin/archive_cli import --stdin
+			then
+				err "import error"
+				exit 1
+			fi
 		fi
 		if [ -f $current_settings_file ];
 		then
