@@ -9,6 +9,29 @@ fi
 
 source lib/lib.sh
 
+arg_interactive=0
+for arg in "$@"
+do
+	if [ "$arg" = "-i" ]
+	then
+		arg_interactive=1
+	elif [ "$arg" = "-h" ] || [ "$arg" = "--help" ]
+	then
+		echo "usage: ./gdb.sh [yes|-i]"
+		echo "description:"
+		echo " starts the server with gdb it will drop into the"
+		echo " interactive gdb console on crash and until then"
+		echo " it runs like a production server with all the side runners"
+		echo " and logging setup"
+		echo "parameters:"
+		echo " 'yes' - to have a non interactive dependency check"
+		echo " '-i' - to start in interactive mode"
+		echo "        it will also open the gdb prompt before the launch"
+		echo "        so you can set breakpoints and then call run"
+		exit 0
+	fi
+done
+
 check_deps "$1"
 check_warnings
 check_running
@@ -39,6 +62,12 @@ then
 	log_cmd="logfile $logfile"
 fi
 
+ex_run='-ex=run'
+if [ "$arg_interactive" = 1 ]
+then
+	ex_run=''
+fi
+
 read -rd '' run_cmd << EOF
 $CFG_ENV_RUNTIME gdb \
     -ex='set confirm off' \
@@ -46,7 +75,7 @@ $CFG_ENV_RUNTIME gdb \
     -ex='set disassembly-flavor intel' \
     -ex='handle SIGPIPE nostop noprint pass' \
     -ex='handle SIGINT nostop noprint pass' \
-    -ex=run \
+    ${ex_run} \
     --args \
     ./$CFG_BIN -f autoexec.cfg "$log_cmd;#sid:$SERVER_UUID:gdb.sh"
 EOF
