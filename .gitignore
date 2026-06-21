@@ -68,3 +68,6 @@ delay.txt
 detects.txt 
 IPs.fifo
 lua
+
+# ddnet++ lua plugins
+plugins
